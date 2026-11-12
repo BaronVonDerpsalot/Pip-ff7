@@ -15,3 +15,4 @@ Append-only. One dated line each. A later line supersedes an earlier one. Lines 
 - 2026-11-12 — The repo is BaronVonDerpsalot/Pip-ff7 (private, main).
 - 2026-11-12 — Mark joins as an equal partner across art, code and story, with his own Claude Project and agents on the same repo and board.
 - 2026-11-12 — Changing the brief, changing direction and ticking a milestone each need a yes from both Mike and Mark.
+- 2026-11-12 — Supersedes the line above: a yes from either Mike or Mark is enough. Mark works on the project as and when, so nothing waits on him.

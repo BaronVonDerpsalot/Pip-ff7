@@ -1,6 +1,6 @@
 # Pip 2 — Brief
 
-Changes only when both Mike and Mark have said yes. Status is on the board, decisions are in `DECISIONS.md`, how-tos are in `recipes/`. None of that is repeated here.
+Changes only when Mike or Mark has said yes. Status is on the board, decisions are in `DECISIONS.md`, how-tos are in `recipes/`. None of that is repeated here.
 
 ## What this is
 A short game for Christine starring Pip, the chibi creature she and Mike created. It follows the birthday game (Part 1, which is canon). Pip walks through hand-painted screens shown from fixed cameras, in the manner of FF7's backgrounds. Purely personal.
