@@ -13,3 +13,5 @@ Append-only. One dated line each. A later line supersedes an earlier one. Lines 
 - 2026-11-12 — Flow video is back in the plan, for animated screen loops only. Untested.
 - 2026-11-12 — The engine is Godot 4.7 (latest 4.7.x patch). Not the 4.8 beta; move up only as a deliberate step once 4.8 is stable.
 - 2026-11-12 — The repo is BaronVonDerpsalot/Pip-ff7 (private, main).
+- 2026-11-12 — Mark joins as an equal partner across art, code and story, with his own Claude Project and agents on the same repo and board.
+- 2026-11-12 — Changing the brief, changing direction and ticking a milestone each need a yes from both Mike and Mark.
