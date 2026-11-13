@@ -21,7 +21,7 @@ On Mike's PC in `Pip FF7/kept-assets/blender/`:
 3. Lines: Line Art traces the model as pencil strokes, which are subdivided, doubled and given a wobble that re-randomises every 2 frames.
 4. Camera: orthographic, 22 degrees of elevation, the same for every direction. Rotate the character, not the camera.
 5. Render 320px transparent frames with the feet at a fixed anchor (160, 276). Mirror for the left-facing directions.
-6. Multiply a paper grain over the frames, then pack them into sheets. Name each `pip_<kind>_<direction>_sheet.png` and put it in the repo's `assets/pip/` (GIFs and single frames go to `kept-assets/sprites/`).
+6. Multiply a paper grain over the frames, then pack them into sheets. The grain is one fixed 320px texture used on every frame of every sheet, at strength 0.15 (light), normalised so his overall brightness doesn't shift: `kept-assets/sprites/_grain/grain.py` (`make_grain()`, `apply()`), with the texture saved as `pip_paper_grain_320.png` beside it. Grain the clean sheets kept in `kept-assets/sprites/`, never sheets that are already grained. Name each `pip_<kind>_<direction>_sheet.png` and put it in the repo's `assets/pip/` (GIFs and single frames go to `kept-assets/sprites/`).
 7. Let the editor import the sheets, then rebuild Pip's animations with `BuildPipFrames.build()` (`tools/build_pip_frames.gd`, e.g. from Ziva's `execute_script`). Every sheet becomes an animation named `<kind>_<direction>`. Run the marsh scene and check he walks.
 
 ## Run and creep
@@ -40,3 +40,5 @@ The game already handles running (toggled with L3 or Shift) and creeping (a gent
 - Use a pose file that matches the `.blend`: `pip_poses_named.json` goes with `pip3d_named.blend`.
 - Arms are thin and have no hands: use arm poses for silhouette, not hand detail.
 - Don't colour-grade Pip to match a screen. He stays full colour.
+- Every sheet needs the same grain at the same strength, or his texture changes when he switches gait.
+- Run and creep are keyed by `kept-assets/blender/pip_runcreep_gen.py` (also a text block in `pip_runcreep_work.blend`). It poses legs by phase, then plants each stance foot by adjusting hip height and leg extension.
