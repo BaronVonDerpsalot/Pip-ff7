@@ -22,3 +22,4 @@ Append-only. One dated line each. A later line supersedes an earlier one. Lines 
 - 2026-11-13 — Pip walks and idles in eight directions: five rendered (down, down-right, right, up-right, up) and three mirrored. Supersedes the brief's four. (Mike)
 - 2026-11-13 — The project's name is Pip FF7, everywhere: docs, board, Godot. ("Pip 2" in older lines means the same project.) (Mike)
 - 2026-11-13 — ◆ M1's pad check moved into ◆ M3's Done when, since no pad was to hand; M1 was ticked after a keyboard play. (Mike)
+- 2026-11-13 — Delivery: a web link on itch.io (a private page), with a Windows .exe as the fallback. Both are exported from `export_presets.cfg` into `../builds/`, outside git. (Mike)

@@ -37,7 +37,6 @@ Hand-sketched storybook: soft watercolour fills, loose pencil linework, visible 
 
 ## Open decisions
 This is the only list of open decisions. When one closes, it moves to `DECISIONS.md` and leaves this list.
-1. Delivery: a web link, a Windows build, or both. Decided by the first-playable milestone.
-2. How other characters are made (Meshy plus Blender, or another route). Decided by the other-character milestone.
-3. The font.
-4. How often character lines redraw.
+1. How other characters are made (Meshy plus Blender, or another route). Decided by the other-character milestone.
+2. The font.
+3. How often character lines redraw.
