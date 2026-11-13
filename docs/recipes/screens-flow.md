@@ -27,6 +27,7 @@ A screen is a flat picture (see DECISIONS, 2026-11-13). Copy `scenes/screens/mar
 3. Draw the walk area by editing the `WalkArea` polygon's points in the 2D editor. Press F in game to see it.
 4. Set the two depth numbers on the screen root: `far_y`/`far_height` and `near_y`/`near_height` are where Pip's feet are and how tall he should be there, in pixels. Judge by eye against something in the painting, like the path's width.
 5. Place `Pip` where he enters.
+6. Exits: under `Exits`, add a `Polygon2D` with `scripts/screen_exit.gd` over each end of the walk area where the path leaves the picture, and set `to_screen` and `to_entry`. Under `Entries`, add a `Marker2D` with `scripts/screen_entry.gd` for each way in, named to match an exit's `to_entry`, inside the walk area and clear of every exit, with `facing` set to the way he walks in. F shows exits in blue. The fade itself is the `ScreenChanger` autoload (`scripts/screen_changer.gd`). Until the marsh has neighbours, its two exits lead back to the marsh itself.
 
 ## Cut-outs
 `tools/cutout.gd` cuts a foreground piece straight out of the painting: it finds the ink lines inside a rough outline, bridges small gaps, fills enclosed shapes (leaves, reed heads) and keeps the painting's own colours. Because the colours are the painting's, a cut-out is invisible until Pip walks behind it, so rough edges don't show.

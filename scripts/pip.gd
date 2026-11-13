@@ -116,6 +116,17 @@ func _set_gait(new_gait: String, push: float) -> void:
 		_gait_is_placeholder = placeholder
 
 
+## Puts Pip at a point (in his parent's space), standing and facing a direction.
+## Used when he arrives on a screen through an exit.
+func arrive_at(point: Vector2, look: Vector2) -> void:
+	position = point
+	running = false
+	_face(look)
+	gait = "idle"
+	sprite.play("idle_" + facing)
+	_apply_depth_scale()
+
+
 func _flash_colour(colour: Color) -> void:
 	if _flash:
 		_flash.kill()

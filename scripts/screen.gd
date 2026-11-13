@@ -11,16 +11,58 @@ extends Node2D
 @export var near_height := 253.0
 
 @onready var walk_area: Polygon2D = $WalkArea
+@onready var pip: Pip = $World/Pip
+## ScreenExit zones (under an Exits node) and ScreenEntry points (under Entries).
+var exits: Array[ScreenExit] = []
 
 
 func _ready() -> void:
-	# The walk area shows in the editor for drawing, but not in the game (F toggles it).
-	walk_area.visible = false
+	var exit_nodes := get_node_or_null("Exits")
+	if exit_nodes:
+		for node in exit_nodes.get_children():
+			if node is ScreenExit:
+				exits.append(node)
+	# The walk area and exits show in the editor for drawing, but not in the game (F toggles them).
+	_show_guides(false)
+	_arrive()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("debug_walk_area"):
-		walk_area.visible = not walk_area.visible
+		_show_guides(not walk_area.visible)
+
+
+func _physics_process(_delta: float) -> void:
+	if ScreenChanger.busy:
+		return
+	for exit in exits:
+		if exit.contains(pip.position, pip.get_parent()):
+			# Pip stops where he is and fades out with the screen.
+			pip.process_mode = Node.PROCESS_MODE_DISABLED
+			ScreenChanger.go(exit.to_screen, exit.to_entry)
+			return
+
+
+## Puts Pip at the entry point he came through, and holds him still until the fade-in ends.
+func _arrive() -> void:
+	var entry_name := ScreenChanger.take_entry()
+	if entry_name == &"":
+		return
+	var entry := get_node_or_null("Entries/" + entry_name) as ScreenEntry
+	if entry == null:
+		push_warning("%s has no entry point %s; Pip stays at his start." % [name, entry_name])
+	else:
+		pip.arrive_at(pip.get_parent().to_local(entry.global_position), entry.facing)
+	if ScreenChanger.busy:
+		pip.process_mode = Node.PROCESS_MODE_DISABLED
+		await ScreenChanger.arrived
+		pip.process_mode = Node.PROCESS_MODE_INHERIT
+
+
+func _show_guides(on: bool) -> void:
+	walk_area.visible = on
+	for exit in exits:
+		exit.visible = on
 
 
 ## Pip's on-screen height in pixels when his feet are at screen y.
