@@ -37,8 +37,7 @@ Hand-sketched storybook: soft watercolour fills, loose pencil linework, visible 
 
 ## Open decisions
 This is the only list of open decisions. When one closes, it moves to `DECISIONS.md` and leaves this list.
-1. How a screen is built in the engine: a flat picture with two depth-scale numbers, or a 3D scene with a camera matched to the painting. Decided by the first-screen milestone.
-2. Delivery: a web link, a Windows build, or both. Decided by the first-playable milestone.
-3. How other characters are made (Meshy plus Blender, or another route). Decided by the other-character milestone.
-4. The font.
-5. How often character lines redraw.
+1. Delivery: a web link, a Windows build, or both. Decided by the first-playable milestone.
+2. How other characters are made (Meshy plus Blender, or another route). Decided by the other-character milestone.
+3. The font.
+4. How often character lines redraw.

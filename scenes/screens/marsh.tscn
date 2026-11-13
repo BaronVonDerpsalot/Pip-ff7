@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://6cvlkh74cxp1"]
+
+[ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" uid="uid://dhx2cg7grpk6k" path="res://assets/screens/marsh/marsh_bg.jpg" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bpo5qcpnxsvew" path="res://assets/screens/marsh/marsh_fg_reeds.png" id="3_reeds"]
+[ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_fg_tuft_path.png" id="5_tuft"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_fg_reed_path.png" id="6_reedpath"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_fg_willow_canopy.png" id="7_willow"]
+
+[node name="Marsh" type="Node2D" unique_id=399422856]
+script = ExtResource("1_screen")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=111614623]
+texture = ExtResource("2_bg")
+centered = false
+
+[node name="World" type="Node2D" parent="." unique_id=1469137363]
+y_sort_enabled = true
+
+[node name="Pip" parent="World" unique_id=1983619796 instance=ExtResource("4_pip")]
+position = Vector2(760, 625)
+
+[node name="Reeds" type="Sprite2D" parent="World" unique_id=1137231898]
+position = Vector2(532, 1080)
+texture = ExtResource("3_reeds")
+centered = false
+offset = Vector2(0, -381)
+
+[node name="TuftPath" type="Sprite2D" parent="World"]
+position = Vector2(1155, 525)
+texture = ExtResource("5_tuft")
+centered = false
+offset = Vector2(0, -86)
+
+[node name="ReedPath" type="Sprite2D" parent="World"]
+position = Vector2(826, 701)
+texture = ExtResource("6_reedpath")
+centered = false
+offset = Vector2(0, -85)
+
+[node name="Overhead" type="Node2D" parent="."]
+
+[node name="WillowCanopy" type="Sprite2D" parent="Overhead"]
+position = Vector2(1087, 0)
+texture = ExtResource("7_willow")
+centered = false
+
+[node name="WalkArea" type="Polygon2D" parent="." unique_id=404130654]
+color = Color(1, 0.2, 0.2, 0.3)
+polygon = PackedVector2Array(1566, 156, 1631, 162, 1629, 227, 1346, 315, 1256, 433, 1078, 587, 896, 658, 716, 771, 463, 863, 515, 938, 436, 1003, 353, 1075, 260, 1080, 185, 1080, 128, 1079, 11, 1079, 6, 967, 236, 832, 387, 725, 722, 594, 903, 525, 1043, 468, 1206, 296, 1449, 183)

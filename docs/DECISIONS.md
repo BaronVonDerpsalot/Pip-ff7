@@ -16,3 +16,6 @@ Append-only. One dated line each. A later line supersedes an earlier one. Lines 
 - 2026-11-12 — Mark joins as an equal partner across art, code and story, with his own Claude Project and agents on the same repo and board.
 - 2026-11-12 — Changing the brief, changing direction and ticking a milestone each need a yes from both Mike and Mark.
 - 2026-11-12 — Supersedes the line above: a yes from either Mike or Mark is enough. Mark works on the project as and when, so nothing waits on him.
+- 2026-11-13 — A screen is built as a flat picture: the painting as a 2D backdrop, cut-out foreground layers, a drawn walk area, and two numbers for Pip's size near and far. Not a 3D scene with a matched camera. (Mike)
+- 2026-11-13 — Picked, game-ready screen art (paintings and their cut-outs) is committed under `assets/screens/`. "Raw Flow output" in CLAUDE.md means unpicked generations and video. (Mike)
+- 2026-11-13 — The Ziva editor plugin (`addons/ziva_agent/`) stays out of git; each person installs it in their own editor. (Mike)
