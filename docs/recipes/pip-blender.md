@@ -25,7 +25,7 @@ On Mike's PC in `Pip FF7/kept-assets/blender/`:
 7. Let the editor import the sheets, then rebuild Pip's animations with `BuildPipFrames.build()` (`tools/build_pip_frames.gd`, e.g. from Ziva's `execute_script`). Every sheet becomes an animation named `<kind>_<direction>`. Run the marsh scene and check he walks.
 
 ## Run and creep
-The game already handles running (toggled with L3 or Shift) and creeping (a gentle push of the stick, or holding C). Until their sheets exist, it plays the walk loop faster or slower and flashes Pip a colour when he changes gait. To add the real loops:
+The game handles running (L3 or Shift) and creeping (a gentle push, or holding C), with its own loop for each in all five directions. To re-render them:
 1. Key a run loop and a creep loop on the rig. A run leans forward with longer strides and both feet briefly off the ground. A creep is low, slow and careful, with the knees bent.
 2. Render and pack them exactly like the walk (steps 2–6 above): the same five directions, 320px frames, feet at (160, 276), the same camera, lines and paper grain.
 3. Name them `pip_run_<direction>_sheet.png` and `pip_creep_<direction>_sheet.png`, with `<direction>` one of `down`, `downright`, `right`, `upright`, `up`. That's ten sheets in all, in the repo's `assets/pip/`.
@@ -42,3 +42,5 @@ The game already handles running (toggled with L3 or Shift) and creeping (a gent
 - Don't colour-grade Pip to match a screen. He stays full colour.
 - Every sheet needs the same grain at the same strength, or his texture changes when he switches gait.
 - Run and creep are keyed by `kept-assets/blender/pip_runcreep_gen.py` (also a text block in `pip_runcreep_work.blend`). It poses legs by phase, then plants each stance foot by adjusting hip height and leg extension.
+- **Rebuilding Pip's frames from a script drops their uids** (2026-11-13, M4): `BuildPipFrames.build()` run from `execute_script` saved `pip_frames.tres` without its own uid (`uid://dt72edp4e1f1l`) or the sheets' uids. It was committed and pushed like that. When you rebuild from a script, compare the file's header with the last commit before committing, and put the uids back from each sheet's `.import` file if they've gone. Nothing broke this time, because `pip.tscn` loads the file by path.
+- **Win: measure the feet, not the whole frame** (2026-11-13, M4): in the side and diagonal views, the run and creep leans move the body's bounding box 25–30px ahead of centre, though the feet stay centred. When checking that the feet sit on the contact shadow, try `get_used_rect` on just the bottom 25 rows of each frame.
