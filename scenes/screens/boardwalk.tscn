@@ -1,0 +1,58 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" uid="uid://bguv40sv7wsui" path="res://assets/screens/boardwalk/boardwalk_bg.jpg" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
+[ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
+[ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
+
+[node name="Boardwalk" type="Node2D"]
+script = ExtResource("1_screen")
+far_y = 250.0
+far_height = 70.0
+near_y = 1075.0
+near_height = 270.0
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("2_bg")
+centered = false
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Pip" parent="World" instance=ExtResource("4_pip")]
+position = Vector2(260, 930)
+
+[node name="Overhead" type="Node2D" parent="."]
+
+[node name="WalkArea" type="Polygon2D" parent="."]
+color = Color(1, 0.2, 0.2, 0.3)
+polygon = PackedVector2Array(1300, 245, 1365, 245, 1400, 310, 1300, 390, 1210, 460, 1130, 525, 980, 610, 850, 700, 770, 790, 640, 790, 430, 900, 330, 1080, 0, 1080, 0, 800, 170, 790, 420, 760, 560, 690, 680, 600, 860, 510, 1090, 420, 1280, 320)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="NearEnd" type="Polygon2D" parent="Exits"]
+color = Color(0.2, 0.5, 1, 0.4)
+polygon = PackedVector2Array(-20, 1010, 350, 1010, 350, 1100, -20, 1100)
+script = ExtResource("8_exit")
+to_screen = "res://scenes/screens/marsh.tscn"
+to_entry = &"far_end"
+
+[node name="FarEnd" type="Polygon2D" parent="Exits"]
+color = Color(0.2, 0.5, 1, 0.4)
+polygon = PackedVector2Array(1270, 200, 1430, 200, 1430, 280, 1270, 280)
+script = ExtResource("8_exit")
+to_screen = "res://scenes/screens/stream.tscn"
+to_entry = &"near_end"
+
+[node name="Entries" type="Node2D" parent="."]
+
+[node name="near_end" type="Marker2D" parent="Entries"]
+position = Vector2(260, 930)
+script = ExtResource("9_entry")
+facing = Vector2(1, -1)
+
+[node name="far_end" type="Marker2D" parent="Entries"]
+position = Vector2(1320, 330)
+script = ExtResource("9_entry")
+facing = Vector2(-1, 1)

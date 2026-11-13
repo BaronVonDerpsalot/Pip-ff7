@@ -1,17 +1,17 @@
 [gd_scene format=3 uid="uid://6cvlkh74cxp1"]
 
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
-[ext_resource type="Texture2D" uid="uid://dhx2cg7grpk6k" path="res://assets/screens/marsh/marsh_bg.jpg" id="2_bg"]
-[ext_resource type="Texture2D" uid="uid://bpo5qcpnxsvew" path="res://assets/screens/marsh/marsh_fg_reeds.png" id="3_reeds"]
+[ext_resource type="Texture2D" uid="uid://cf60cr7m26hor" path="res://assets/screens/marsh/marsh_willow_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_fg_tuft_path.png" id="5_tuft"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_fg_reed_path.png" id="6_reedpath"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_fg_willow_canopy.png" id="7_willow"]
 [ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
 
 [node name="Marsh" type="Node2D" unique_id=399422856]
 script = ExtResource("1_screen")
+far_y = 265.0
+far_height = 50.0
+near_y = 1075.0
+near_height = 260.0
 
 [node name="Background" type="Sprite2D" parent="." unique_id=111614623]
 texture = ExtResource("2_bg")
@@ -21,61 +21,26 @@ centered = false
 y_sort_enabled = true
 
 [node name="Pip" parent="World" unique_id=1983619796 instance=ExtResource("4_pip")]
-position = Vector2(760, 625)
-
-[node name="Reeds" type="Sprite2D" parent="World" unique_id=1137231898]
-position = Vector2(532, 1080)
-texture = ExtResource("3_reeds")
-centered = false
-offset = Vector2(0, -381)
-
-[node name="TuftPath" type="Sprite2D" parent="World"]
-position = Vector2(1155, 525)
-texture = ExtResource("5_tuft")
-centered = false
-offset = Vector2(0, -86)
-
-[node name="ReedPath" type="Sprite2D" parent="World"]
-position = Vector2(826, 701)
-texture = ExtResource("6_reedpath")
-centered = false
-offset = Vector2(0, -85)
+position = Vector2(1200, 985)
 
 [node name="Overhead" type="Node2D" parent="."]
 
-[node name="WillowCanopy" type="Sprite2D" parent="Overhead"]
-position = Vector2(1087, 0)
-texture = ExtResource("7_willow")
-centered = false
-
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=404130654]
 color = Color(1, 0.2, 0.2, 0.3)
-polygon = PackedVector2Array(1566, 156, 1631, 162, 1629, 227, 1346, 315, 1256, 433, 1078, 587, 896, 658, 716, 771, 463, 863, 515, 938, 436, 1003, 353, 1075, 260, 1080, 185, 1080, 128, 1079, 11, 1079, 6, 967, 236, 832, 387, 725, 722, 594, 903, 525, 1043, 468, 1206, 296, 1449, 183)
+polygon = PackedVector2Array(820, 262, 880, 262, 890, 280, 860, 320, 790, 360, 700, 400, 630, 440, 640, 470, 730, 520, 860, 580, 940, 640, 1000, 700, 1130, 770, 1250, 860, 1380, 950, 1400, 1080, 1020, 1080, 1000, 950, 880, 850, 830, 760, 780, 700, 680, 640, 580, 575, 520, 520, 465, 470, 500, 425, 590, 390, 700, 340, 780, 300)
 
 [node name="Exits" type="Node2D" parent="."]
 
 [node name="FarEnd" type="Polygon2D" parent="Exits"]
 color = Color(0.2, 0.5, 1, 0.4)
-polygon = PackedVector2Array(1520, 120, 1680, 120, 1680, 260, 1520, 260)
+polygon = PackedVector2Array(790, 230, 920, 230, 920, 285, 790, 285)
 script = ExtResource("8_exit")
-to_screen = "res://scenes/screens/marsh.tscn"
+to_screen = "res://scenes/screens/boardwalk.tscn"
 to_entry = &"near_end"
-
-[node name="NearEnd" type="Polygon2D" parent="Exits"]
-color = Color(0.2, 0.5, 1, 0.4)
-polygon = PackedVector2Array(-20, 880, 70, 880, 70, 1100, -20, 1100)
-script = ExtResource("8_exit")
-to_screen = "res://scenes/screens/marsh.tscn"
-to_entry = &"far_end"
 
 [node name="Entries" type="Node2D" parent="."]
 
 [node name="far_end" type="Marker2D" parent="Entries"]
-position = Vector2(1440, 235)
+position = Vector2(810, 320)
 script = ExtResource("9_entry")
 facing = Vector2(-1, 1)
-
-[node name="near_end" type="Marker2D" parent="Entries"]
-position = Vector2(160, 1010)
-script = ExtResource("9_entry")
-facing = Vector2(1, -1)
