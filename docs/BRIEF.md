@@ -1,4 +1,4 @@
-# Pip 2 — Brief
+# Pip FF7 — Brief
 
 Changes only when Mike or Mark has said yes. Status is on the board, decisions are in `DECISIONS.md`, how-tos are in `recipes/`. None of that is repeated here.
 
@@ -14,7 +14,7 @@ A short game for Christine starring Pip, the chibi creature she and Mike created
 ## The slice
 The slice is done when Christine plays this from start to end, on the pad, on final art:
 1. Pip arrives in Monarch's Wallow and walks through about three connected marsh screens.
-2. Pip has a walk and an idle in four directions (three rendered, one mirrored).
+2. Pip has a walk and an idle in eight directions (five rendered, three mirrored).
 3. At least one screen has an animated loop.
 4. One villager, hypnotised, blocks the way. Pip can talk to them.
 5. Pip's fart wakes the villager and the way on opens.

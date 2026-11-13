@@ -1,8 +1,15 @@
-# CLAUDE.md — Pip 2
+# CLAUDE.md — Pip FF7
 
-Rules for every agent working in this repo. Keep this file short. Engine-specific rules are added once the first screen runs.
+Rules for every agent working in this repo. Keep this file short.
 
-The engine is Godot 4.7, scripted in GDScript. It is newer than most examples online, so check the 4.7 documentation before using a feature rather than trusting memory.
+The engine is Godot 4.7, scripted in GDScript. It is newer than most examples online, so check the 4.7 documentation before using a feature rather than trusting memory (Ziva's `search_docs` reads the running editor's own API).
+
+## Engine rules
+- Layout: `scenes/` (screens in `scenes/screens/`), `scripts/`, `assets/` (art by subject, e.g. `assets/screens/marsh/`, `assets/pip/`), `tools/` (scripts we run by hand, not used by the game).
+- Change project settings and input actions only in the Godot editor or with Ziva's `update_project_setting`. Never edit `project.godot` by hand.
+- Game code reads the input actions (`move_left`, `move_right`, `move_up`, `move_down`), never raw keys or buttons, so the pad and keyboard stay equal.
+- Typed GDScript: declare types (`var speed := 1.5`, `func f(x: int) -> void`).
+- How a screen is built: `docs/recipes/screens-flow.md`. Godot and Ziva gotchas: `docs/recipes/godot.md`.
 
 ## Who works here
 Mike and Mark both work on this, each with their own Claude Project and agents. Mark joins in as and when, so nothing waits on him, and either of them can give a yes. Their chats and memories are not shared. The repo and the board are the only things everyone sees, so a decision counts only once it is in `docs/DECISIONS.md`, and work counts only once it is on the board.
@@ -29,7 +36,7 @@ If you are about to write a fact that already lives somewhere, link to it instea
 - Sign every comment with the agent and the person it is working for, e.g. `— Code (Mark)`, `— Planning (Mike)`.
 
 ## Done means
-You ran it, looked at the result, and said on the card what you saw. For anything a person has to judge by eye or by feel, the card goes to them instead of being ticked.
+You ran it, looked at the result, and said on the card what you saw. For game work that means running the scene (Ziva's `run_scene`, with inputs if it needs walking) and looking at the screenshot, not just checking the code parses. For anything a person has to judge by eye or by feel, the card goes to them instead of being ticked.
 
 ## Never
 - Commit `.blend` files, raw Flow output or secrets.

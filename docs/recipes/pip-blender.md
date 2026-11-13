@@ -10,7 +10,10 @@ On Mike's PC in `Pip FF7/kept-assets/blender/`:
 - `pip3d_bone_map.json`: old bone names to new. `pip_poses_named.json`: the pose spec in the new names.
 - The untouched original is in Mike's Eagle library. Always work on a copy.
 
-The current sprite set is in `Pip FF7/kept-assets/sprites/`: walk, idle and bored loops in five directions (down, down-right, right, up, up-right), as GIFs, sheets and single frames. The other three directions are mirrors.
+## Where the sprites live
+- **The game's sheets are in the repo**, in `assets/pip/`: one `pip_<kind>_<direction>_sheet.png` per loop, 320px frames side by side. This is the copy that counts.
+- `Pip FF7/kept-assets/sprites/` (outside git) keeps the extras: GIFs, single frames, and loops the game doesn't use yet (bored).
+- Five directions are rendered (down, down-right, right, up-right, up); the game mirrors them for the other three.
 
 ## Steps
 1. Pose and key the loop on the rig. Render-only proportion tweaks (head ×1.16, slightly chubbier body) live on the pose, never on the model.
@@ -18,7 +21,8 @@ The current sprite set is in `Pip FF7/kept-assets/sprites/`: walk, idle and bore
 3. Lines: Line Art traces the model as pencil strokes, which are subdivided, doubled and given a wobble that re-randomises every 2 frames.
 4. Camera: orthographic, 22 degrees of elevation, the same for every direction. Rotate the character, not the camera.
 5. Render 320px transparent frames with the feet at a fixed anchor (160, 276). Mirror for the left-facing directions.
-6. Multiply a paper grain over the frames, then pack them into sheets.
+6. Multiply a paper grain over the frames, then pack them into sheets. Name each `pip_<kind>_<direction>_sheet.png` and put it in the repo's `assets/pip/` (GIFs and single frames go to `kept-assets/sprites/`).
+7. Let the editor import the sheets, then rebuild Pip's animations with `BuildPipFrames.build()` (`tools/build_pip_frames.gd`, e.g. from Ziva's `execute_script`). Every sheet becomes an animation named `<kind>_<direction>`. Run the marsh scene and check he walks.
 
 ## Gotchas
 - Through the Blender MCP, changes made by script don't mark the file as unsaved. Save explicitly.

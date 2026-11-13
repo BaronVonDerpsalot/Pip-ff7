@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: End-of-session review for Pip 2. Looks back over this session for what went wrong, what cost time and what worked unexpectedly well, turns each into a dated gotcha, proposes where it belongs in docs/recipes/, prunes gotchas the session proved stale, and writes only what Mike or Mark approves. Use when the user says /reflect, "reflect", "what did we learn", "wrap up the session", or asks to capture gotchas or lessons.
+description: End-of-session review for Pip FF7. Looks back over this session for what went wrong, what cost time and what worked unexpectedly well, turns each into a dated gotcha, proposes where it belongs in docs/recipes/, prunes gotchas the session proved stale, and writes only what Mike or Mark approves. Use when the user says /reflect, "reflect", "what did we learn", "wrap up the session", or asks to capture gotchas or lessons.
 ---
 
 # Reflect
@@ -13,7 +13,7 @@ Go back over the whole session (not just the last few turns) and list:
 - **Time sinks**: anything that took several attempts or a detour.
 - **Wins**: a trick or approach that worked better than expected and should be reused.
 
-Only include what actually happened and was confirmed (you saw the error, the fix, the result). No speculation, no "might be worth checking".
+Only include what actually happened and was confirmed (you saw the error, the fix, the result). No speculation, no "might be worth checking". Before writing "X can't do Y", check that it really can't: tools may be deferred (search for them) or have options you haven't loaded.
 
 ## 2. Filter
 Drop anything that is:
