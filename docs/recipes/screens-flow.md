@@ -35,8 +35,7 @@ A screen is a flat picture (see DECISIONS, 2026-11-13). Copy `scenes/screens/mar
 3. Play it, look for lines that cross Pip where they shouldn't, and erase them.
 4. Works because Flow screens are ink outlines over watercolour. A soft painted shape with no outline won't cut cleanly.
 
-## Gotchas (Godot)
-- If you overwrite an image file outside the editor, Godot can keep using its old imported copy until the editor window gets focus. Rename the file (or click into Godot) to force a fresh import.
+Godot-side gotchas (stale imports and so on) are in `godot.md`.
 
 ## An animated screen
 Untested. Written during the screen pipeline milestone. Flow's video models change often, so check the model picker rather than trusting a name written here.
@@ -49,3 +48,4 @@ Untested. Written during the screen pipeline milestone. Flow's video models chan
 - The grid reshuffles. Identify images by title, never by position. Titles are editable and a good place for scores.
 - Downloads are JPEG named after the image title.
 - Images kept in Drive can't be seen by the planning room. Attach them in the chat.
+- **Check what's actually covering Pip** (2026-11-13, M1): a "reed blade across his belly" turned out to be faint grey wash in the old cut-out, not a reed. When judging whether Pip passes behind something, make sure the overlap is the object itself: compare with the cut-out hidden, or look at the cut-out on a bright background.

@@ -15,7 +15,7 @@ Mike and Mark both work on this, each with their own Claude Project and agents. 
 ## One home per fact
 - Scope: `docs/BRIEF.md`. Changes only when Mike or Mark has said yes.
 - Decisions: `docs/DECISIONS.md`. Append one dated line; never rewrite.
-- How-to and gotchas: `docs/recipes/`.
+- How-to and gotchas: `docs/recipes/`. At the end of a session, run `/reflect` to turn the session's snags and wins into gotchas there.
 - Status: the board, and nowhere else. Don't write status into any file.
 If you are about to write a fact that already lives somewhere, link to it instead.
 

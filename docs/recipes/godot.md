@@ -1,0 +1,14 @@
+# Recipe: Godot and Ziva
+
+Working in the Godot 4.7 project, through the editor or the Ziva MCP tools. How a screen is built is in `screens-flow.md`.
+
+## Gotchas
+- **Ziva needs a sign-in to see the game** (2026-11-13, M0): `run_scene` ran the game but failed at the screenshot, and `get_screenshot` and `view_image` failed outright with "Not signed in". When you see that, ask Mike or Mark to sign in to Ziva in the Godot dock; the free Hobby plan is enough.
+- **Ziva won't run a game someone is playing** (2026-11-13, M1): `run_scene` refuses while the scene is already running in the editor, because starting it would close their game. When that happens, ask the person to stop their game, then run it.
+- **Ziva's test runner has no GUT** (2026-11-13, M0): tests extending `GutTest` fail to parse, and tests extending `RefCounted` aren't found. When writing tests for `run_tests`, extend `Node` and name each test function `test_...`.
+- **Edited images keep their old import** (2026-11-13, M1): an image overwritten from a script still showed its old version in game, because the editor hadn't reimported it. When you change an image file outside the editor, rename it (Ziva's `mv`) or have someone click into the Godot window so it reimports. Compare `source_md5` in `.godot/imported/*.md5` with the file to check.
+- **A folder won't delete if a shell is inside it** (2026-11-13, M0): Ziva's `rm` deleted the files but failed on the folder while a terminal's working directory was inside it. When deleting a folder, make sure no shell is sitting in it.
+- **Ziva's `create_file` never overwrites** (2026-11-13, M0): it refuses if the file exists. When changing an existing file, use `edit_file`, or write the file directly from the shell.
+- **`execute_script` needs types on loop variables over literal lists** (2026-11-13, M1): `for ox in [-8, 0, 8]` then `var bx := 500 + ox` fails to parse ("Cannot infer the type"). When looping over a literal list, write `for ox: int in [...]`.
+- **Win: do image work in Godot** (2026-11-13, M1): the system Python has no PIL. When you need to measure, crop or edit images, use `execute_script` with Godot's `Image` (`Image.load_from_file`, `get_used_rect`, `save_png`), which works on project files without importing them.
+- **Win: print logs prove behaviour without screenshots** (2026-11-13, M0): printing Pip's position and scale during a `run_scene` with injected inputs showed he walked and shrank, even when the screenshot failed. When checking movement or numbers, print them and read the run's output.
