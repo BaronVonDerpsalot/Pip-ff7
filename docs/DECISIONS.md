@@ -27,3 +27,4 @@ Append-only. One dated line each. A later line supersedes an earlier one. Lines 
 - 2026-11-13 — Pip runs (toggled with L3 or Shift) and creeps (a gentle push of the stick, or holding C) as well as walking. Both are in the slice. Until their loops are rendered, the walk loop stands in. (Mike)
 - 2026-11-13 — Moving between screens: Pip and the whole screen fade out together, then the next screen fades in with Pip already at his entry point. (Mike)
 - 2026-11-13 — Pip's paper grain is light (strength 0.15): one fixed grain multiplied over every frame of every sheet (idle, walk, run, creep), so his texture never changes between gaits. (Mike)
+- 2026-11-13 — Pip's run and creep loops are signed off as they are: speeds stay at run_speed 3.0 and creep_speed 0.6, and the feet sliding a little faster than the legs (as the walk already does) is fine. (Mike)
