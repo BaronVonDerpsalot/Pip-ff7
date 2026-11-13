@@ -1,0 +1,7 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Ziva (per-machine Godot AI editor plugin, ~58 MB of binaries; each person installs it themselves)
+addons/ziva_agent/
+.ziva/
