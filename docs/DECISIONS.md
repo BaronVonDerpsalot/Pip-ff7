@@ -24,3 +24,5 @@ Append-only. One dated line each. A later line supersedes an earlier one. Lines 
 - 2026-11-13 — ◆ M1's pad check moved into ◆ M3's Done when, since no pad was to hand; M1 was ticked after a keyboard play. (Mike)
 - 2026-11-13 — Delivery: a web link on itch.io (a private page), with a Windows .exe as the fallback. Both are exported from `export_presets.cfg` into `../builds/`, outside git. (Mike)
 - 2026-11-13 — Christine only ever gets finished products. Milestones and the slice are signed off by Mike or Mark playing them; nothing in progress goes to her. Supersedes the brief and board lines that had her playing M3 and the slice. (Mike)
+- 2026-11-13 — Pip runs (toggled with L3 or Shift) and creeps (a gentle push of the stick, or holding C) as well as walking. Both are in the slice. Until their loops are rendered, the walk loop stands in. (Mike)
+- 2026-11-13 — Moving between screens: Pip and the whole screen fade out together, then the next screen fades in with Pip already at his entry point. (Mike)

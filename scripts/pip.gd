@@ -11,11 +11,27 @@ const SECTORS := ["right", "downright", "down", "downright", "right", "upright",
 
 ## Walking speed, in Pip-heights per second, so he covers ground at the same pace near and far.
 @export var speed := 1.5
+## Running speed (toggled with run_toggle: L3 or Shift). Running stops when Pip stands still.
+@export var run_speed := 3.0
+## Top creeping speed (a gentle push of the stick, or holding creep: C).
+@export var creep_speed := 0.6
+## A push on the stick below this creeps; above it walks.
+@export var creep_below := 0.5
 ## Up and down the screen is foreshortened, so vertical movement is slowed by this much.
 @export var vertical_factor := 0.6
 
+## How fast a stand-in walk loop plays for a gait that has no sheets of its own yet.
+const PLACEHOLDER_ANIM_SPEED := {"run": 1.8, "creep": 0.55}
+## Colour Pip flashes when he changes gait while it's played by a stand-in walk loop.
+const PLACEHOLDER_FLASH := {"walk": Color(1.6, 1.6, 1.6), "run": Color(1.8, 1.25, 0.6), "creep": Color(0.6, 0.9, 1.7)}
+
 var facing := "down"
+## "idle", "creep", "walk" or "run".
+var gait := "idle"
+var running := false
 var screen: Screen
+var _flash: Tween
+var _gait_is_placeholder := false
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -26,21 +42,86 @@ func _ready() -> void:
 	sprite.play("idle_down")
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("run_toggle"):
+		running = not running
+
+
 func _physics_process(delta: float) -> void:
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	var moving := input.length() > 0.1
+	var push := minf(input.length(), 1.0)
+	var moving := push > 0.1
+	if not moving:
+		running = false
 
+	var new_gait := _gait_for(push, moving)
 	if moving:
 		_face(input)
 		var height := screen.height_at(position.y) if screen else FRAME_HEIGHT
-		var step := Vector2(input.x, input.y * vertical_factor) * height * speed * delta
+		var direction := input.normalized()
+		var step := Vector2(direction.x, direction.y * vertical_factor) * height * _speed_for(new_gait, push) * delta
 		_move(step)
+	_set_gait(new_gait, push)
+	_apply_depth_scale()
 
-	var anim := ("walk_" if moving else "idle_") + facing
+
+func _gait_for(push: float, moving: bool) -> String:
+	if not moving:
+		return "idle"
+	if running:
+		return "run"
+	if Input.is_action_pressed("creep") or push < creep_below:
+		return "creep"
+	return "walk"
+
+
+## Pip-heights per second for a gait. Walking and creeping follow how far the stick is pushed.
+func _speed_for(g: String, push: float) -> float:
+	match g:
+		"run":
+			return run_speed
+		"creep":
+			if Input.is_action_pressed("creep"):
+				return creep_speed
+			return creep_speed * clampf(push / creep_below, 0.3, 1.0)
+		"walk":
+			return speed * push
+	return 0.0
+
+
+## Plays <gait>_<facing>. A gait without its own sheets yet (run, creep) plays the
+## walk loop faster or slower instead, and Pip flashes a colour when he changes into it.
+func _set_gait(new_gait: String, push: float) -> void:
+	var kind := new_gait
+	var placeholder := false
+	if not sprite.sprite_frames.has_animation(kind + "_" + facing):
+		kind = "walk"
+		placeholder = true
+	var anim := kind + "_" + facing
 	if sprite.animation != anim:
 		sprite.play(anim)
-	sprite.speed_scale = clampf(input.length(), 0.5, 1.0) if moving else 1.0
-	_apply_depth_scale()
+
+	if new_gait == "walk":
+		sprite.speed_scale = clampf(push, 0.5, 1.0)
+	elif placeholder:
+		sprite.speed_scale = PLACEHOLDER_ANIM_SPEED.get(new_gait, 1.0)
+	else:
+		sprite.speed_scale = 1.0
+
+	if new_gait != gait:
+		# Flash into a stand-in gait, and back out of one into a walk.
+		if new_gait != "idle" and (placeholder or _gait_is_placeholder):
+			_flash_colour(PLACEHOLDER_FLASH.get(new_gait, Color.WHITE))
+		gait = new_gait
+		_gait_is_placeholder = placeholder
+
+
+func _flash_colour(colour: Color) -> void:
+	if _flash:
+		_flash.kill()
+	sprite.modulate = colour
+	_flash = create_tween()
+	_flash.tween_property(sprite, "modulate", Color.WHITE, 0.3)
 
 
 func _draw() -> void:

@@ -12,7 +12,7 @@ const SHEET_DIR := "res://assets/pip/"
 const OUTPUT := "res://assets/pip/pip_frames.tres"
 const FRAME_SIZE := 320
 ## Frames per second by kind; anything not listed uses DEFAULT_FPS.
-const FPS := {"walk": 9.0, "idle": 8.0}
+const FPS := {"walk": 9.0, "idle": 8.0, "run": 12.0, "creep": 7.0}
 const DEFAULT_FPS := 8.0
 
 

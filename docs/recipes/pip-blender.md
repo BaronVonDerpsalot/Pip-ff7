@@ -24,6 +24,14 @@ On Mike's PC in `Pip FF7/kept-assets/blender/`:
 6. Multiply a paper grain over the frames, then pack them into sheets. Name each `pip_<kind>_<direction>_sheet.png` and put it in the repo's `assets/pip/` (GIFs and single frames go to `kept-assets/sprites/`).
 7. Let the editor import the sheets, then rebuild Pip's animations with `BuildPipFrames.build()` (`tools/build_pip_frames.gd`, e.g. from Ziva's `execute_script`). Every sheet becomes an animation named `<kind>_<direction>`. Run the marsh scene and check he walks.
 
+## Run and creep
+The game already handles running (toggled with L3 or Shift) and creeping (a gentle push of the stick, or holding C). Until their sheets exist, it plays the walk loop faster or slower and flashes Pip a colour when he changes gait. To add the real loops:
+1. Key a run loop and a creep loop on the rig. A run leans forward with longer strides and both feet briefly off the ground. A creep is low, slow and careful, with the knees bent.
+2. Render and pack them exactly like the walk (steps 2–6 above): the same five directions, 320px frames, feet at (160, 276), the same camera, lines and paper grain.
+3. Name them `pip_run_<direction>_sheet.png` and `pip_creep_<direction>_sheet.png`, with `<direction>` one of `down`, `downright`, `right`, `upright`, `up`. That's ten sheets in all, in the repo's `assets/pip/`.
+4. Rebuild with `BuildPipFrames.build()`. It makes `run_<direction>` and `creep_<direction>`, at 12 and 7 frames a second (`FPS` in `tools/build_pip_frames.gd`). The game switches to them on its own, and the stand-in and flash stop for any direction that has a real sheet.
+5. Run the marsh and check each gait in a few directions. If a loop's stride doesn't match how fast Pip slides, adjust `run_speed`/`creep_speed` on Pip (`scripts/pip.gd`) or the loop's frame rate.
+
 ## Gotchas
 - Through the Blender MCP, changes made by script don't mark the file as unsaved. Save explicitly.
 - Rendered frames come back as base64 up to about 2 MB per call, so render one direction per call.
