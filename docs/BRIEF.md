@@ -23,7 +23,7 @@ The slice is done when Mike or Mark plays this from start to end, on the pad, on
 Not in the slice: sword combat, a boss, saves, Firefly, a story data pipeline, the phone, audio beyond a single track.
 
 ## Look
-Hand-sketched storybook: soft watercolour fills, loose pencil linework, visible paper texture, at full HD. A muted, quiet, slightly melancholy painted world, with Pip the brightest, cleanest thing in it. Pip is the only chibi character; everyone else has grounded proportions. Lines on characters redraw every couple of frames.
+Screens are hand-painted animated-film backgrounds (Miyazaki-like, with subdued colours): soft painterly fills, clean outlines, warm low light, at full HD. Pip keeps his own look: watercolour fill, pencil linework, paper grain. A muted, quiet, slightly melancholy painted world, with Pip the brightest, cleanest thing in it. Pip is the only chibi character; everyone else has grounded proportions. Lines on characters redraw every couple of frames.
 
 ## How it is made
 | Part | Made with |

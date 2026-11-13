@@ -13,6 +13,13 @@ Image generation is free but rate-capped per account, so work is spread across f
 
 Before generating, confirm the active account by clicking the username at the top right of Flow. Never trust the user number in the URL. If you can't confirm it, stop and ask Mike.
 
+## Style block
+Start every screen prompt with this, word for word, then add that screen's own details (what's in it, where the path goes):
+
+> In the style of Hayao Miyazaki, but with slightly more subdued colours: a hand-painted animated-film background. Soft painterly fills with clean, confident dark-brown outlines and light texture, not fussy detail. Subdued, slightly desaturated colours: olive and moss greens, ochre, muddy browns. Warm, low sunset light from out of shot, long soft shadows, pale mist in the distance. A quiet, slightly melancholy, lived-in marsh. High three-quarter view looking down on the path. No people, animals or characters. No text, letters or symbols anywhere, including on signs. 16:9.
+
+The look it's aiming for is `kept-assets/style-tests/Path_fork_in_marsh_land_920427ef.jpg` (outside git), made from Mike's prompt: "In the style of Hayao Miyazaki, but slightly more subdued colours, I'd like high angle illustration of a marsh land path, with a fork in the road. There should be a wooden signpost, uncared for, delapidated, tilted, slightly rotten. There should be a few very small red and white mushrooms along the path, there should be the occasional puddle. The time is sunset, out of shot". Keep the artist's name in: without it the style drifts (Mike, 2026-11-13).
+
 ## A still screen
 1. Generate the painting at 16:9 from the style block, with no characters in it. Ask for "a raised three-quarter view".
 2. Check the camera steepness against the screens already accepted. Pip's sprites are rendered from one angle, so screens must roughly agree.
