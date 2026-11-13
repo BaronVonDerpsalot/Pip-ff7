@@ -3,7 +3,8 @@ extends Node2D
 ## Pip on a painted screen. His position is where his feet touch the ground.
 ## Size comes from the screen's depth numbers; movement stays inside its walk area.
 
-## Pip's height in a sprite frame, in pixels (frames are 320x320, feet at y=277).
+## Pip's height in a sprite frame, in pixels (frames are 320x320; feet on pixel row 276,
+## so the Sprite's offset of -117 puts this node's origin at y=277, just under them).
 const FRAME_HEIGHT := 245.0
 ## Directions with rendered sheets. The left-hand ones are these, mirrored.
 const SECTORS := ["right", "downright", "down", "downright", "right", "upright", "up", "upright"]
