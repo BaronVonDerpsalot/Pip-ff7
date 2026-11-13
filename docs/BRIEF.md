@@ -10,9 +10,10 @@ A short game for Christine starring Pip, the chibi creature she and Mike created
 2. One milestone at a time. Everything else waits in the Parking lot.
 3. Playing something decides things. Documents don't.
 4. Nothing is built "for later games" until the slice ships.
+5. Christine only ever gets finished products. Mike and Mark play everything before that; nothing in progress goes to her.
 
 ## The slice
-The slice is done when Christine plays this from start to end, on the pad, on final art:
+The slice is done when Mike or Mark plays this from start to end, on the pad, on final art:
 1. Pip arrives in Monarch's Wallow and walks through about three connected marsh screens.
 2. Pip has a walk and an idle in eight directions (five rendered, three mirrored).
 3. At least one screen has an animated loop.
