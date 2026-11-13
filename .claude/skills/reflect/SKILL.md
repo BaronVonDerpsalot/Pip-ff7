@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: End-of-session review for Pip FF7. Looks back over this session for what went wrong, what cost time and what worked unexpectedly well, turns each into a dated gotcha, proposes where it belongs in docs/recipes/, prunes gotchas the session proved stale, and writes only what Mike or Mark approves. Use when the user says /reflect, "reflect", "what did we learn", "wrap up the session", or asks to capture gotchas or lessons.
+description: End-of-session review for Pip FF7. Looks back over this session for what went wrong, what cost time and what worked unexpectedly well, turns each into a dated gotcha, proposes where it belongs in docs/recipes/, prunes gotchas the session proved stale, flags docs the session showed to be out of date, and writes only what Mike or Mark approves. Use when the user says /reflect, "reflect", "what did we learn", "wrap up the session", or asks to capture gotchas or lessons.
 ---
 
 # Reflect
@@ -48,10 +48,20 @@ Create the file if it doesn't exist yet: a `# Recipe: <area>` heading, one line 
 ## 5. Prune
 Read the Gotchas sections you're about to add to. For any existing entry that this session showed to be wrong, outdated or superseded, propose removing or rewriting it, with the reason. A stale gotcha is worse than none.
 
-## 6. Ask, then write
+## 6. Drift
+List anything this session showed to be out of step, and only what the session actually touched (a full sweep is `/housekeeping`'s job):
+- a doc that says one thing while the build does another (brief, decisions, a recipe, `CLAUDE.md`, the README);
+- a "later" or "once X happens" in a doc whose moment has now come;
+- the same fact, file or asset now living in two places;
+- something made by hand this session that someone will need to remake.
+
+For each, propose the fix. Anything that changes scope or a decision needs a yes from Mike or Mark and goes to `DECISIONS.md`.
+
+## 7. Ask, then write
 Show the user one list, grouped by file:
 - **Add**: each new gotcha, worded as it would be written.
 - **Change or remove**: each existing one, with why.
 - **Wins** worth keeping, placed the same way.
+- **Drift fixes**, each with what it changes.
 
 Ask which to keep. Write only the approved ones, exactly as approved. Don't commit unless asked. If the board is in use, leave a one-line comment on the session's card naming the files you changed, signed `— <agent> (<person>)`.

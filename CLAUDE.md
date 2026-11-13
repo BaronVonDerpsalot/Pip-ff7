@@ -32,7 +32,7 @@ If you are about to write a fact that already lives somewhere, link to it instea
 - Before starting a card, check nobody has claimed it, then comment `Claimed — <agent> (<person>)`. Never start without the claim: the other person's agents can't see your chat. When done, comment what you did and what you saw, then tick it.
 - New idea or work the active milestone doesn't need: one line in the Parking lot, then carry on.
 - Blocked on a person: comment the question and change the card's prefix to [Mike] or [Mark].
-- A milestone (◆) card is ticked only when Mike or Mark has said they've seen its "Done when".
+- A milestone (◆) card is ticked only when Mike or Mark has said they've seen its "Done when". Before it's ticked, run `/housekeeping`.
 - Sign every comment with the agent and the person it is working for, e.g. `— Code (Mark)`, `— Planning (Mike)`.
 
 ## Done means
