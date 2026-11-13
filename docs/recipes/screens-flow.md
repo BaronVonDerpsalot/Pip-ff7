@@ -16,10 +16,11 @@ Before generating, confirm the active account by clicking the username at the to
 ## Style block
 Use Mike's prompt shape, word for word apart from the scene in the middle, and attach the style montage as a reference:
 
-> In the style of Hayao Miyazaki, but slightly more subdued colours, I'd like high angle overhead photo of **[the scene: a marsh land path, what's in it, what it passes]**. There should be a few very small red and white mushrooms along the path, there should be the occasional puddle. Sunset lighting
+> In the style of Hayao Miyazaki, but slightly more subdued colours, I'd like high angle overhead photo with ray tracing and reflections of **[the scene: a marsh land path, what's in it, what it passes]**. There should be a few very small red and white mushrooms along the path, there should be the occasional puddle. Sunset lighting
 
 - **Reference:** attach `kept-assets/look-reference/flow_style_montage.jpg` (outside git; Mike drags it in, since agents can't upload).
-- **Say "photo", not "image" or "illustration"** (2026-11-13): swapping that one word gave much nicer results. The montage keeps it painted.
+- **Say "photo with ray tracing and reflections", not "image" or "illustration"** (2026-11-13): "photo" alone gave much nicer results, and adding "with ray tracing and reflections" is the look Mike is going for (`kept-assets/style-tests/reeds_bridge_stream_raytraced.jpg`). The montage keeps it painted.
+- More looks to aim for, for later screens with people: `kept-assets/look-reference/village_market_squirrels_1.jpg` and `_2.jpg`. Marsh screens still have no characters in them.
 - **Keep the artist's name in** (2026-11-13): without it the style drifts.
 - The best result so far, and the one to match: `kept-assets/style-tests/reeds_boardwalk_sunset.jpg`, from "…photo of a marsh land path, giant reeds and rushes towering over. There should be a small wooden bridge, uncared for, delapidated, tilted, slightly rotten. …". Pip on it in the style bench looks right: brightest thing on screen, at a size that fits the boardwalk.
 - Check each result for stray people (the montage has some) and lettering on signs. If they keep turning up, add "no people, no writing" and see whether the style holds.
