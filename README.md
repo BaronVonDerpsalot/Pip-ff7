@@ -16,3 +16,5 @@ Status lives only on the board.
 3. Press **F5**. Pip starts on the marsh screen. Move with the left stick, d-pad, arrows or WASD. L3 or Shift toggles running; a gentle push of the stick, or holding C, creeps. F shows the walk area.
 
 For AI agents (optional): install **Ziva** in Godot from https://ziva.sh, sign in to Ziva in its dock (the free plan is enough), then connect it to Claude Code from Ziva's settings ("Ziva as an MCP server"). Its addon folder stays out of git, so each person installs it themselves. Open Claude Code sessions in this repo folder so `CLAUDE.md` and the project's skills load: `/reflect` at the end of a session, `/housekeeping` when a milestone closes.
+
+Brief test from Mark
