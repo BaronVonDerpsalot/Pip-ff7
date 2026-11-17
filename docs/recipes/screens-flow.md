@@ -48,6 +48,8 @@ A screen is a flat picture (see DECISIONS, 2026-11-13). Copy `scenes/screens/mar
 3. Play it, look for lines that cross Pip where they shouldn't, and erase them.
 4. Works because Flow screens are ink outlines over watercolour. A soft painted shape with no outline won't cut cleanly.
 
+When a person would rather select the pieces by hand in Affinity, use `screens-layering.md` (the `/layering` skill): they draw the layers, press a button, and the agent brings them into the scene.
+
 Godot-side gotchas (stale imports and so on) are in `godot.md`.
 
 ## An animated screen

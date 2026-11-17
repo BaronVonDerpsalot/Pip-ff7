@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_bend_mound.png" id="20_mound"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_bank_left.png" id="21_bank"]
 
 [node name="Marsh" type="Node2D" unique_id=399422856]
 script = ExtResource("1_screen")
@@ -22,6 +24,18 @@ y_sort_enabled = true
 
 [node name="Pip" parent="World" unique_id=1983619796 instance=ExtResource("4_pip")]
 position = Vector2(1200, 985)
+
+[node name="BendMound" type="Sprite2D" parent="World"]
+position = Vector2(727, 470)
+texture = ExtResource("20_mound")
+centered = false
+offset = Vector2(-105, -114)
+
+[node name="BankLeft" type="Sprite2D" parent="World"]
+position = Vector2(803, 1080)
+texture = ExtResource("21_bank")
+centered = false
+offset = Vector2(-404, -596)
 
 [node name="Overhead" type="Node2D" parent="."]
 

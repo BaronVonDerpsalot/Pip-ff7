@@ -1,0 +1,34 @@
+# Recipe: layering a screen in Affinity
+
+The person draws the cut-outs in Affinity; an agent brings them into the game each time they press a button. It replaces cutting by script for anything the person can select faster than a tool can (see "Cut-outs" in `screens-flow.md`). Agents run it with the `/layering` skill.
+
+## How it works
+1. **Open.** The agent copies `assets/screens/<screen>/<screen>_bg.jpg` into `Desktop/PipFF7_layering/` (Affinity scripts can only read the Desktop), opens it there at its real 1920x1080 and saves it as `<screen>.afdesign`. The document name is the screen name: `marsh`, `boardwalk`, `stream`.
+2. **Layer.** The person makes pixel layers above the painting (select, duplicate to a new layer).
+3. **Send.** They run the library script **Pip FF7 - Send layers v2** (Scripts panel). It writes each layer, cropped, next to the document and touches `<screen>__READY`.
+4. **Receive.** The agent's watcher sees `READY`, and runs `tools/send_layers.sh <screen>`. That writes `assets/screens/<screen>/<screen>_occ_<name>.png`, rewrites the `Occ_<name>` sprites in `scenes/screens/<screen>.tscn`, and imports. The agent then runs the screen and looks.
+
+Sending again replaces every `Occ_` sprite and PNG, so the person can iterate. Nothing else in the scene is touched.
+
+## Which screens are done
+A screen counts as layered when its scene's `Overhead` node carries `metadata/layered = true`. `tools/layers_to_game.gd` sets it on every send, and an empty send (no layers above the painting) is how a person says "I looked, this screen needs none". `bash tools/layering_status.sh` lists each screen as `TODO` or `DONE`. There is no other record: the plan and who's doing it live on the board, and a screen that has no scene yet doesn't appear until someone builds it. Sending again is always allowed (a new walk area or a repaint makes the stamp stale), and a layer that existed before and is no longer sent is removed along with its PNG.
+
+To do several or all of the screens in one go, use `/layering all`. It opens every `TODO` painting in Affinity at once; the watcher handles all of them.
+
+## No naming
+- The bottom layer is the painting and is never sent.
+- Every visible layer above it is an overlay: it goes under `Overhead` and is always drawn in front of Pip, whatever it's called (even "Background"). So only put in a layer what should hide Pip wherever the two overlap; there's no ground line and no y-sorting.
+- Hidden layers and non-pixel layers (groups, shapes) are skipped and reported. Rasterise a shape first.
+- Sprites are named `Occ_layer<N>`, N being the layer's position above the painting, so a layer keeps its name between sends. (`layers_to_game.gd` can still place a `WORLD` layer with a ground line if a manifest asks for one; the Affinity script doesn't send any.)
+
+## Gotchas
+- **Affinity's script library can't overwrite or delete** (2026-11-14): saving a script under an existing title fails, and there's no delete tool. When the send script changes, save it under a new title (the current one is "v2"; update the references here and in the skill), and ask the person to delete the old one so they don't run it by mistake.
+- **Affinity can only read and write the Desktop** (2026-11-14): `Document.load` of a path in the repo returns PERMISSION_DENIED. When a screen has to be opened, copy the painting to the work folder first.
+- **Affinity can't tell you when the user saves, and a script ends when it returns** (2026-11-14): there is no save event and no timer outlives the call. When something must happen on the user's action, have a script write a file and watch for it from outside (the `READY` file, with Monitor).
+- **`PixelBuffer.create` is not zeroed** (2026-11-14): layers built from it carried leftover pixels from earlier buffers. When writing a transparent layer from a script, `fill(0)` the array first.
+- **`children.all` is recursive, `children` is not** (2026-11-14): listing a clipped shape showed its painting copy twice, and deleting the "stray" one removed the clip. When listing a spread's layers, iterate `spread.children`.
+- **Exporting a selection doesn't isolate it** (2026-11-14): `doc.export` with a selection area included the layers beneath. When you need one layer's pixels, read them with `node.createCompatibleBuffer(true)`, which is laid out in canvas coordinates.
+- **Slicing one cut-out into horizontal bands gave a straight cut across Pip** (2026-11-14): each band had its own ground line, and where Pip's feet fell between two lines the upper band stopped covering him along a dead-straight edge. When a cut-out looks wrong at a boundary, keep it as one piece, and judge the overlap.
+- **The editor keeps its own copy of the scene** (2026-11-14): after `send_layers.sh` rewrote `marsh.tscn`, Ziva's `get_godot_errors` said the scene "changed on disk" and refused until `open_scene` reloaded it. `run_scene` still ran the new file. If a Ziva scene tool complains, `open_scene` the file, then carry on.
+- **A document that isn't 1920x1080 still works** (2026-11-14): `layers_to_game.gd` scales the layer's mask to game size and takes the colours from the painting, so it stays sharp. Better to work at full size.
+- **Check what Pip can actually reach before cutting** (2026-11-14): most of a screen's foreground is outside his walk area, and cut-outs there never hide him. Draw the walk area over the painting with Pip's body drawn at every foot position (height from `far_height`/`near_height`), and cut only what falls inside.
