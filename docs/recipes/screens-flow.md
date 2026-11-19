@@ -53,7 +53,20 @@ When a person would rather select the pieces by hand in Affinity, use `screens-l
 Godot-side gotchas (stale imports and so on) are in `godot.md`.
 
 ## An animated screen
-Untested. Written during the screen pipeline milestone. Flow's video models change often, so check the model picker rather than trusting a name written here.
+First done on the marsh, 2026-11-19 (M4). Flow's video models change often, so check the model picker rather than trusting a name written here.
+
+1. **Start from the accepted still**, the same 1K download the screen uses. The loop is animated from it, not generated fresh.
+2. **Flow, video mode, "First and last frame"**: the same still as both frames, length 3 seconds, prompt `subtle looping animation, seamless, no camera movement`. On the marsh the picker said Omni 1.2.
+3. **Make two clips and join them in Scene mode.** "No camera movement" holds better on short clips, and two different clips make the loop harder to spot.
+4. **Clean it before it goes near the game.** The cleaning scripts live in `kept-assets/screen-video/` (`flow_loop_motion.py` finds what moves, `flow_loop_clean.py` builds the frames): they're one-offs for now, so read them before reusing them on another screen.
+   - Find what moves (per-pixel spread across the frames), turn it into a feathered mask, and composite only those parts over the full-size painting. Everything else stays the painting, pixel for pixel.
+   - Drop the audio track and encode Theora `.ogv` at the screen's size (Godot plays nothing else).
+5. Keep the raw Flow video, masks and `.ogv` in `kept-assets/screen-video/` until Git LFS is set up; only the `.ogv` goes into the repo, under LFS.
+
+Gotchas
+- **Judge the loop by eye, not by numbers** (2026-11-19): measured frame to frame, the marsh clip's join and loop point looked like jumps, so a crossfade was added. Watched, the uncut clip loops cleanly and the crossfade wasn't needed. When a loop is in question, watch it wrap before changing it.
+- **The video redraws everything, not just what moves** (2026-11-19): it comes back at 720p with every ink line slightly re-rendered (the colours stay true). Masking keeps everything that doesn't move at the painting's own sharpness. Whether the full-frame clip is visibly softer in game hasn't been judged by eye yet, so both versions were kept; pick by watching them on the screen.
+- **Some movement sits on the ground, some in front of Pip** (2026-11-19): on the marsh the fronds and bulrushes should cover Pip, and the puddle glints should go under him. When a loop has both, split the mask in two (`mask_front`, `mask_ground`).
 
 ## Gotchas
 - Flow paints every scene in its own perspective. Asking for a flat top-down view doesn't work; judge steepness across screens instead.
