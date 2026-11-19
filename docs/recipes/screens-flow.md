@@ -35,7 +35,7 @@ Use Mike's prompt shape, word for word apart from the scene in the middle, and a
 ## Building a screen in Godot
 A screen is a flat picture (see DECISIONS, 2026-11-13). Copy `scenes/screens/marsh.tscn` as the template.
 1. Put the painting in `assets/screens/<name>/` and set it as the `Background` texture (not centered, at 0,0).
-2. Cut out everything that should hide Pip (see "Cut-outs" below). Each one is a `Sprite2D` under `World`, positioned where its **base** touches the ground, with the image pulled up by `offset` (offset y = minus its height). `World` y-sorts, so Pip goes behind anything whose base is lower on screen than his feet. Things that hang overhead (willow leaves) go under `Overhead` instead, which always draws over Pip.
+2. Layer everything that should hide Pip in Affinity (`screens-layering.md`): each shape hides him only when he's behind it, and "Over..." layers always do. On an animated screen, add the `Loop` node first ("An animated screen" below). The scripted alternative is "Cut-outs" below.
 3. Draw the walk area by editing the `WalkArea` polygon's points in the 2D editor. Press F in game to see it.
 4. Set the two depth numbers on the screen root: `far_y`/`far_height` and `near_y`/`near_height` are where Pip's feet are and how tall he should be there, in pixels. Judge by eye against something in the painting, like the path's width.
 5. Place `Pip` where he enters.
@@ -67,6 +67,7 @@ Gotchas
 - **Judge the loop by eye, not by numbers** (2026-11-19): measured frame to frame, the marsh clip's join and loop point looked like jumps, so a crossfade was added. Watched, the uncut clip loops cleanly and the crossfade wasn't needed. When a loop is in question, watch it wrap before changing it.
 - **The video redraws everything, not just what moves** (2026-11-19): it comes back at 720p with every ink line slightly re-rendered (the colours stay true). Masking keeps everything that doesn't move at the painting's own sharpness. So the screen plays the masked clip (`DECISIONS.md`, 2026-11-19); the full-frame one stays in `kept-assets/screen-video/` only.
 - **Some movement sits on the ground, some in front of Pip** (2026-11-19): on the marsh the fronds and bulrushes should cover Pip, and the puddle glints should go under him. Don't make a mask for what covers him: layer the screen in Affinity like a still one (`screens-layering.md`); the sent shapes draw the video's pixels over him.
+- **PyAV reads `.ogv` frames on this PC** (2026-11-19, M4): there's no ffmpeg on the PATH, but `import av` (PyAV 18) decoded the marsh loop frame by frame for the motion check. When you need a video's frames in Python, try `av.open(path).decode(video=0)`.
 - **A shape in front of Pip at the bottom of the screen can be behind him further up** (2026-11-19): one front mask drawn over Pip always made the marsh's far bank cover his face while he stood in front of it. When a shape should hide Pip only once he has walked past it, it needs the bottom-edge rule (`screens-layering.md`), not a mask.
 
 ## Gotchas
