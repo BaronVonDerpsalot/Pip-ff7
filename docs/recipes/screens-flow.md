@@ -16,11 +16,13 @@ Before generating, confirm the active account by clicking the username at the to
 ## Style block
 Use Mike's prompt shape, word for word apart from the scene in the middle, and attach the style montage as a reference:
 
-> In the style of Hayao Miyazaki, but slightly more subdued colours, I'd like high angle overhead photo with ray tracing and reflections of **[the scene: a marsh land path, what's in it, what it passes]**. There should be a few very small red and white mushrooms along the path, there should be the occasional puddle. Sunset lighting
+> In the style of Hayao Miyazaki, but slightly more subdued colours, I'd like high angle overhead image with ray tracing and reflections of a marsh land path, seen from a raised viewpoint about as high as a two-storey house, looking down at the path at about 45 degrees, close enough that the path is wide and fills the lower half of the picture. **[The scene: where the path runs, what's in it, what it passes.]** Only a thin band of distant marsh and sky along the top. Soft, muted greens and browns. There should be a few very small red and white mushrooms along the path, there should be the occasional puddle. Sunset lighting
 
 - **Reference:** attach `kept-assets/look-reference/flow_style_montage.jpg` (outside git; Mike drags it in, since agents can't upload).
-- **Say "photo with ray tracing and reflections", not "image" or "illustration"** (2026-11-13): "photo" alone gave much nicer results, and adding "with ray tracing and reflections" is the look Mike is going for (`kept-assets/style-tests/reeds_bridge_stream_raytraced.jpg`). The montage keeps it painted.
+- **Say "image with ray tracing and reflections", not "photo"** (2026-11-19, supersedes 2026-11-13): "photo" sometimes pushes the result too photorealistic. "With ray tracing and reflections" is still the look Mike is after (`kept-assets/style-tests/reeds_bridge_stream_raytraced.jpg`). The montage keeps it painted.
 - More looks to aim for, for later screens with people: `kept-assets/look-reference/village_market_squirrels_1.jpg` and `_2.jpg`. Marsh screens still have no characters in them.
+- **The camera sentence is fixed** (2026-11-19): "seen from a raised viewpoint about as high as a two-storey house, looking down at the path at about 45 degrees, close enough that the path is wide and fills the lower half of the picture", plus "only a thin band of distant marsh and sky along the top". Without it Flow drifts to ground level; "seen from high above" swung between ground level and a drone shot with a tiny path. With it, 3 of 3 test screens matched the marsh's raised three-quarter view. Keep words like "towering" out of the scene: they pull the camera down.
+- **Name the path's route** (bottom left corner to top right, and so on) so exits line up between screens, and leave open ground where characters will stand.
 - **Keep the artist's name in** (2026-11-13): without it the style drifts.
 - The best result so far, and the one to match: `kept-assets/style-tests/reeds_boardwalk_sunset.jpg`, from "…photo of a marsh land path, giant reeds and rushes towering over. There should be a small wooden bridge, uncared for, delapidated, tilted, slightly rotten. …". Pip on it in the style bench looks right: brightest thing on screen, at a size that fits the boardwalk.
 - Check each result for stray people (the montage has some) and lettering on signs. If they keep turning up, add "no people, no writing" and see whether the style holds.
@@ -53,19 +55,28 @@ When a person would rather select the pieces by hand in Affinity, use `screens-l
 Godot-side gotchas (stale imports and so on) are in `godot.md`.
 
 ## An animated screen
-First done on the marsh, 2026-11-19 (M4). Flow's video models change often, so check the model picker rather than trusting a name written here.
+Proven on the marsh and the lily pond, 2026-11-19 (M4). Flow's video models change often, so check the model picker rather than trusting a name written here. Cowork's part ends at `preprocessing/<name>/`; masking and putting the loop in the game are Code's (`screens-layering.md`).
 
-1. **Start from the accepted still**, the same 1K download the screen uses. The loop is animated from it, not generated fresh.
-2. **Flow, video mode, "First and last frame"**: the same still as both frames, length 3 seconds, prompt `subtle looping animation, seamless, no camera movement`. On the marsh the picker said Omni 1.2.
-3. **Make two clips and join them in Scene mode.** "No camera movement" holds better on short clips, and two different clips make the loop harder to spot.
-4. **Clean it before it goes near the game.** The cleaning scripts live in `kept-assets/screen-video/` (`flow_loop_motion.py` finds what moves, `flow_loop_clean.py` builds the frames): they're one-offs for now, so read them before reusing them on another screen.
-   - Find what moves (per-pixel spread across the frames), turn it into a feathered mask, and composite only those parts over the full-size painting. Everything else stays the painting, pixel for pixel.
-   - Drop the audio track and encode Theora `.ogv` at the screen's size (Godot plays nothing else).
-5. Keep the raw Flow video, masks and `.ogv` in `kept-assets/screen-video/` until Git LFS is set up; only the `.ogv` goes into the repo, under LFS.
+1. **Start from the picked still**, the one Mike moved into Flow's "For video" folder.
+2. **Flow, Video, "Frames" mode**: the same still as Start and End (pick it from the library; nothing needs uploading), 16:9, 720p, length 3 seconds, **x2**, and the loop prompt below. x2 makes the two clips in one submit (2 × 9 credits). On 2026-11-19 the picker said Omni 1.2 Flash.
+
+   > Cinemagraph: a locked-off, perfectly still shot of this painting where almost nothing moves. Only quiet ambient life: **[2–4 light, water and breeze details for this screen, e.g. warm sunlight shimmering softly on the water, faint ripples spreading under the lily pads, the reflections wavering slightly, the tips of the reeds barely swaying in a light breeze, a few specks of pollen drifting through the low sunbeams]**. The path, ground, trees, sky and every outline stay exactly where they are. No camera movement, no zoom, no new objects or creatures, no gusts. Seamless loop.
+3. **Title the clips** `<name>_loop_a` and `_b` and download both at 720p (original size), plus the still at 1K.
+4. **Join them here, not in Flow** (Scene mode dropped): concatenate a then b, drop the audio Flow adds, scale to 1920x1080, encode Theora `.ogv` (Godot plays nothing else). Don't crossfade: the marsh clips looped cleanly as they were.
+5. **Save to `preprocessing/<name>/`**: `<name>_bg.jpg` and `<name>_loop.ogv`. The raw clips go to `kept-assets/screen-video/`. Only Code moves anything into the repo (`.ogv` under Git LFS).
+
+## Collecting from Flow
+Mike sorts picks into two Flow library folders in the project: **Game images** (stills) and **For video** (stills to animate). Cowork then:
+1. Downloads each still at 1K (original size). Chrome's download location is `Pip FF7\preprocessing\`, with "Ask where to save" off: the Chrome extension can't drive a Save As window, and desktop control can only look at Chrome, not type in it. Flow adds a short hash to each name (`reedbed_v3_4ae1dc7b.jpg`).
+2. Sorts each file into `preprocessing/<name>/<name>_bg.jpg`, using the Flow title without the hash or any `_vN` round suffix.
+3. For each For video still, runs "An animated screen" above.
 
 Gotchas
 - **Judge the loop by eye, not by numbers** (2026-11-19): measured frame to frame, the marsh clip's join and loop point looked like jumps, so a crossfade was added. Watched, the uncut clip loops cleanly and the crossfade wasn't needed. When a loop is in question, watch it wrap before changing it.
-- **The video redraws everything, not just what moves** (2026-11-19): it comes back at 720p with every ink line slightly re-rendered (the colours stay true). Masking keeps everything that doesn't move at the painting's own sharpness. So the screen plays the masked clip (`DECISIONS.md`, 2026-11-19); the full-frame one stays in `kept-assets/screen-video/` only.
+- **Video eats the credits** (2026-11-19): each account gets 50 free credits a day and a video costs 9, so about five clips per account per day; stills are cheap by comparison. A pooled 1000-credit top-up comes every so often (next around 21 Nov). When a batch is big, plan which account does what, and save big video runs for after a top-up.
+- **Ask for light, not events** (2026-11-19): with `subtle looping animation, seamless, no camera movement`, Omni spent the motion on one thing flying across the pond. The cinemagraph prompt spreads it over shimmer, reflections and swaying reeds instead, which reads as alive rather than busy. A stronger version (sweeping sunbeams, cloud shadows, waves through the grass) doubled the movement but added sunbeams over open ground that a drawn mask would cut off, so the gentler one was kept. Keep creatures out of stills meant for video: Omni animates them across the frame.
+- **Generating in Flow** (2026-11-19): stills cost 0 credits on Nano Banana 2.1, High, x1. Attach the style reference by searching the asset picker for "style" and choosing Add to prompt; it clears after every submit. The X in the prompt box clears the prompt and its references; close the settings popup with Escape instead. Retitle each image by clicking its title in the image view.
+- **The video redraws everything, not just what moves** (2026-11-19): it comes back at 720p with every ink line slightly re-rendered (the colours stay true). So the game plays the masked clip, where everything that doesn't move stays at the painting's own sharpness (DECISIONS, 2026-11-19).
 - **Some movement sits on the ground, some in front of Pip** (2026-11-19): on the marsh the fronds and bulrushes should cover Pip, and the puddle glints should go under him. Don't make a mask for what covers him: layer the screen in Affinity like a still one (`screens-layering.md`); the sent shapes draw the video's pixels over him.
 - **PyAV reads `.ogv` frames on this PC** (2026-11-19, M4): there's no ffmpeg on the PATH, but `import av` (PyAV 18) decoded the marsh loop frame by frame for the motion check. When you need a video's frames in Python, try `av.open(path).decode(video=0)`.
 - **A shape in front of Pip at the bottom of the screen can be behind him further up** (2026-11-19): one front mask drawn over Pip always made the marsh's far bank cover his face while he stood in front of it. When a shape should hide Pip only once he has walked past it, it needs the bottom-edge rule (`screens-layering.md`), not a mask.

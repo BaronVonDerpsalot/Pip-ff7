@@ -31,7 +31,7 @@ Screens are hand-painted animated-film backgrounds (Miyazaki-like, with subdued 
 | Engine | Godot 4.7 |
 | Pip | Rendered from his Blender rig (`recipes/pip-blender.md`) |
 | Screens | Google Flow stills (`recipes/screens-flow.md`) |
-| Screen animation | Flow video loops (untested; recipe written in the screen pipeline milestone) |
+| Screen animation | Flow video loops (`recipes/screens-flow.md`, "An animated screen") |
 | Other characters | Open |
 | Story | Story Room holds canon. The slice's lines live in a file in this repo. |
 | Input | Xbox controller first; keyboard fully supported |
