@@ -4,8 +4,11 @@ extends SceneTree
 ##   godot --headless --path . -s tools/layers_to_game.gd -- <screen> <work folder>
 ##
 ## For each layer in <screen>__manifest.json it writes assets/screens/<screen>/<screen>_occ_<name>.png
-## and puts a Sprite2D named Occ_<name> in scenes/screens/<screen>.tscn:
-##   OVERHEAD under Overhead, drawn over Pip always. This is what Affinity's script sends for every layer.
+## and puts a Sprite2D named Occ_<name> in scenes/screens/<screen>.tscn, with scripts/occluder.gd:
+##   SORTED   under Overhead, covering Pip only while his feet are above its bottom edge at his x.
+##            Each separate shape in the layer becomes its own piece (Occ_<name>_<k>) with its own edge.
+##            Affinity's script sends every layer as SORTED unless its name starts with "Over".
+##   OVERHEAD under Overhead, covering Pip always (layers named "Over...", like hanging fronds).
 ##   WORLD    (only if a manifest asks for it) under World, positioned at its base (the layer's lowest opaque
 ##            pixel unless the manifest gives one), image pulled up by offset, so World's y-sort puts Pip
 ##            behind it while his feet are above the base.
@@ -54,9 +57,7 @@ func _run(screen: String, work: String) -> int:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir_res))
 	var placed: Array[Dictionary] = []
 	for layer: Dictionary in manifest.get("layers", []):
-		var p := _place_layer(layer, work, screen, dir_res, doc_w, doc_h, scaled, painting)
-		if not p.is_empty():
-			placed.append(p)
+		placed.append_array(_place_layer(layer, work, screen, dir_res, doc_w, doc_h, scaled, painting))
 
 	_remove_stale(dir_res, screen, placed)
 	_write_scene(scene_path, scene_text, dir_res, placed)
@@ -73,18 +74,20 @@ func _run(screen: String, work: String) -> int:
 	return 0
 
 
-## Reads one layer's pixels, scales if needed, crops, saves the PNG and returns where it goes.
-func _place_layer(layer: Dictionary, work: String, screen: String, dir_res: String, doc_w: int, doc_h: int, scaled: bool, painting: Image) -> Dictionary:
+## Reads one layer's pixels, scales if needed, crops, saves the PNG(s) and returns where each piece goes.
+## A SORTED layer is split into its separate shapes, since each sorts against Pip by its own bottom edge.
+func _place_layer(layer: Dictionary, work: String, screen: String, dir_res: String, doc_w: int, doc_h: int, scaled: bool, painting: Image) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
 	var w := int(layer.w)
 	var h := int(layer.h)
 	var f := FileAccess.open(work.path_join(layer.file), FileAccess.READ)
 	if f == null:
 		printerr("Missing pixel file ", layer.file)
-		return {}
+		return out
 	var bytes := f.get_buffer(w * h * 4)
 	if bytes.size() != w * h * 4:
 		printerr("Pixel file ", layer.file, " is the wrong size")
-		return {}
+		return out
 	var img := Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, bytes)
 	var origin := Vector2i(int(layer.x), int(layer.y))
 	if scaled:
@@ -102,15 +105,78 @@ func _place_layer(layer: Dictionary, work: String, screen: String, dir_res: Stri
 		origin = Vector2i.ZERO
 	var rect := img.get_used_rect()
 	if rect.size == Vector2i.ZERO:
-		return {}
+		return out
 	var crop := img.get_region(rect)
-	var game_rect := Rect2i(origin + rect.position, rect.size)
-	var name := String(layer.name)
-	crop.save_png(ProjectSettings.globalize_path("%s%s_occ_%s.png" % [dir_res, screen, name]))
-	var base := game_rect.end.y
-	if layer.get("base") != null:
-		base = int(layer.base)
-	return {"name": name, "role": String(layer.role), "rect": game_rect, "base": base, "file": "%s_occ_%s.png" % [screen, name]}
+	var role := String(layer.role)
+	var pieces: Array[Dictionary] = [{"img": crop, "at": Vector2i.ZERO}]
+	if role == "SORTED":
+		pieces = _split_shapes(crop)
+	for k in pieces.size():
+		var piece: Dictionary = pieces[k]
+		var pimg: Image = piece.img
+		var game_rect := Rect2i(origin + rect.position + Vector2i(piece.at), pimg.get_size())
+		var name := String(layer.name) + ("" if pieces.size() == 1 else "_%d" % (k + 1))
+		pimg.save_png(ProjectSettings.globalize_path("%s%s_occ_%s.png" % [dir_res, screen, name]))
+		var base := game_rect.end.y
+		if layer.get("base") != null:
+			base = int(layer.base)
+		out.append({"name": name, "role": role, "rect": game_rect, "base": base, "file": "%s_occ_%s.png" % [screen, name]})
+	return out
+
+
+## Splits a layer into its separate shapes (8-connected, any alpha), each cropped to itself.
+## Specks under MIN_PIECE pixels are dropped and reported.
+const MIN_PIECE := 64
+func _split_shapes(img: Image) -> Array[Dictionary]:
+	var w := img.get_width()
+	var h := img.get_height()
+	var data := img.get_data()  # RGBA8
+	var lab := PackedInt32Array()
+	lab.resize(w * h)
+	var pieces: Array[Dictionary] = []
+	var dropped := 0
+	var stack := PackedInt32Array()
+	var n := 0
+	for start in w * h:
+		if lab[start] != 0 or data[start * 4 + 3] == 0:
+			continue
+		n += 1
+		lab[start] = n
+		stack.append(start)
+		var members := PackedInt32Array()
+		var x0 := w
+		var y0 := h
+		var x1 := -1
+		var y1 := -1
+		while not stack.is_empty():
+			var i := stack[stack.size() - 1]
+			stack.remove_at(stack.size() - 1)
+			members.append(i)
+			var x := i % w
+			var y := i / w
+			x0 = mini(x0, x); x1 = maxi(x1, x); y0 = mini(y0, y); y1 = maxi(y1, y)
+			for dy in range(-1, 2):
+				for dx in range(-1, 2):
+					var nx := x + dx
+					var ny := y + dy
+					if nx < 0 or ny < 0 or nx >= w or ny >= h:
+						continue
+					var j := ny * w + nx
+					if lab[j] == 0 and data[j * 4 + 3] != 0:
+						lab[j] = n
+						stack.append(j)
+		if members.size() < MIN_PIECE:
+			dropped += 1
+			continue
+		var piece := Image.create_empty(x1 - x0 + 1, y1 - y0 + 1, false, Image.FORMAT_RGBA8)
+		for i in members:
+			piece.set_pixel(i % w - x0, i / w - y0, img.get_pixel(i % w, i / w))
+		pieces.append({"img": piece, "at": Vector2i(x0, y0)})
+	if dropped > 0:
+		print("Dropped %d speck(s) under %d pixels." % [dropped, MIN_PIECE])
+	if pieces.is_empty():
+		pieces.append({"img": img, "at": Vector2i.ZERO})
+	return pieces
 
 
 ## Deletes occluder PNGs from earlier runs that aren't in this run.
@@ -147,17 +213,21 @@ func _write_scene(scene_path: String, text: String, dir_res: String, placed: Arr
 		i += 1
 
 	var ext_lines := PackedStringArray()
+	if not placed.is_empty():
+		ext_lines.append("[ext_resource type=\"Script\" path=\"res://scripts/occluder.gd\" id=\"occ_script\"]")
 	var world_lines := PackedStringArray()
 	var over_lines := PackedStringArray()
 	for p: Dictionary in placed:
 		ext_lines.append("[ext_resource type=\"Texture2D\" path=\"%s%s\" id=\"occ_%s\"]" % [dir_res, p.file, p.name])
 		var rect: Rect2i = p.rect
 		var node := PackedStringArray()
-		if p.role == "OVERHEAD":
+		if p.role == "OVERHEAD" or p.role == "SORTED":
 			node.append("[node name=\"Occ_%s\" type=\"Sprite2D\" parent=\"Overhead\"]" % p.name)
 			node.append("position = Vector2(%d, %d)" % [rect.position.x, rect.position.y])
 			node.append("texture = ExtResource(\"occ_%s\")" % p.name)
 			node.append("centered = false")
+			node.append("script = ExtResource(\"occ_script\")")
+			node.append("sort = %s" % ("true" if p.role == "SORTED" else "false"))
 			node.append("")
 			over_lines.append_array(node)
 		else:

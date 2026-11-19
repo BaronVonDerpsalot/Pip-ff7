@@ -65,8 +65,9 @@ First done on the marsh, 2026-11-19 (M4). Flow's video models change often, so c
 
 Gotchas
 - **Judge the loop by eye, not by numbers** (2026-11-19): measured frame to frame, the marsh clip's join and loop point looked like jumps, so a crossfade was added. Watched, the uncut clip loops cleanly and the crossfade wasn't needed. When a loop is in question, watch it wrap before changing it.
-- **The video redraws everything, not just what moves** (2026-11-19): it comes back at 720p with every ink line slightly re-rendered (the colours stay true). Masking keeps everything that doesn't move at the painting's own sharpness. Whether the full-frame clip is visibly softer in game hasn't been judged by eye yet, so both versions were kept; pick by watching them on the screen.
-- **Some movement sits on the ground, some in front of Pip** (2026-11-19): on the marsh the fronds and bulrushes should cover Pip, and the puddle glints should go under him. When a loop has both, split the mask in two (`mask_front`, `mask_ground`).
+- **The video redraws everything, not just what moves** (2026-11-19): it comes back at 720p with every ink line slightly re-rendered (the colours stay true). Masking keeps everything that doesn't move at the painting's own sharpness. So the screen plays the masked clip (`DECISIONS.md`, 2026-11-19); the full-frame one stays in `kept-assets/screen-video/` only.
+- **Some movement sits on the ground, some in front of Pip** (2026-11-19): on the marsh the fronds and bulrushes should cover Pip, and the puddle glints should go under him. Don't make a mask for what covers him: layer the screen in Affinity like a still one (`screens-layering.md`); the sent shapes draw the video's pixels over him.
+- **A shape in front of Pip at the bottom of the screen can be behind him further up** (2026-11-19): one front mask drawn over Pip always made the marsh's far bank cover his face while he stood in front of it. When a shape should hide Pip only once he has walked past it, it needs the bottom-edge rule (`screens-layering.md`), not a mask.
 
 ## Gotchas
 - Flow paints every scene in its own perspective. Asking for a flat top-down view doesn't work; judge steepness across screens instead.

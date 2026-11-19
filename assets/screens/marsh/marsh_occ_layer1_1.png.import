@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfcsq0mxmrgg"
-path="res://.godot/imported/marsh_bank_left.png-0e1e608596fdd57fb0124f46ef86420f.ctex"
+uid="uid://fijnfs0sek25"
+path="res://.godot/imported/marsh_occ_layer1_1.png-f2d07f46868602f818fcaf7ba75634e7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/screens/marsh/marsh_bank_left.png"
-dest_files=["res://.godot/imported/marsh_bank_left.png-0e1e608596fdd57fb0124f46ef86420f.ctex"]
+source_file="res://assets/screens/marsh/marsh_occ_layer1_1.png"
+dest_files=["res://.godot/imported/marsh_occ_layer1_1.png-f2d07f46868602f818fcaf7ba75634e7.ctex"]
 
 [params]
 

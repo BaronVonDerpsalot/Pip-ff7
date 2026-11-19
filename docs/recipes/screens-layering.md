@@ -5,7 +5,7 @@ The person draws the cut-outs in Affinity; an agent brings them into the game ea
 ## How it works
 1. **Open.** The agent copies `assets/screens/<screen>/<screen>_bg.jpg` into `Desktop/PipFF7_layering/` (Affinity scripts can only read the Desktop), opens it there at its real 1920x1080 and saves it as `<screen>.afdesign`. The document name is the screen name: `marsh`, `boardwalk`, `stream`.
 2. **Layer.** The person makes pixel layers above the painting (select, duplicate to a new layer).
-3. **Send.** They run the library script **Pip FF7 - Send layers v2** (Scripts panel). It writes each layer, cropped, next to the document and touches `<screen>__READY`.
+3. **Send.** They run the library script **Pip FF7 - Send layers v3** (Scripts panel). It writes each layer, cropped, next to the document and touches `<screen>__READY`.
 4. **Receive.** The agent's watcher sees `READY`, and runs `tools/send_layers.sh <screen>`. That writes `assets/screens/<screen>/<screen>_occ_<name>.png`, rewrites the `Occ_<name>` sprites in `scenes/screens/<screen>.tscn`, and imports. The agent then runs the screen and looks.
 
 Sending again replaces every `Occ_` sprite and PNG, so the person can iterate. Nothing else in the scene is touched.
@@ -15,14 +15,17 @@ A screen counts as layered when its scene's `Overhead` node carries `metadata/la
 
 To do several or all of the screens in one go, use `/layering all`. It opens every `TODO` painting in Affinity at once; the watcher handles all of them.
 
-## No naming
+## Front or behind: the bottom-edge rule
 - The bottom layer is the painting and is never sent.
-- Every visible layer above it is an overlay: it goes under `Overhead` and is always drawn in front of Pip, whatever it's called (even "Background"). So only put in a layer what should hide Pip wherever the two overlap; there's no ground line and no y-sorting.
+- Every visible layer above it is cut into its separate shapes, and **each shape covers Pip only while his feet are above its bottom edge** at his x (`scripts/occluder.gd`). So he walks behind a bank from above and in front of it from below. A shape whose bottom edge is the bottom of the screen always covers him. The edge is read from the shape's own pixels: nothing to set by hand, and a slanted edge works.
+- **Name a layer "Over..."** (any case) for things that hang, like willow fronds or branches: their bottom edge is in mid-air, so the rule would let Pip walk in front of them. An "Over" layer always covers him and isn't split.
+- **Still or animated, it's the same.** On a screen with a `Loop` node (`screens-flow.md`, "An animated screen") each shape draws the video's pixels through itself, so it moves with the loop; on a still screen it draws the painting's pixels.
+- Specks under 64 pixels are dropped (the receive step says how many).
 - Hidden layers and non-pixel layers (groups, shapes) are skipped and reported. Rasterise a shape first.
-- Sprites are named `Occ_layer<N>`, N being the layer's position above the painting, so a layer keeps its name between sends. (`layers_to_game.gd` can still place a `WORLD` layer with a ground line if a manifest asks for one; the Affinity script doesn't send any.)
+- Sprites are named `Occ_layer<N>`, or `Occ_layer<N>_<k>` when the layer has several shapes, N being the layer's position above the painting, so a layer keeps its name between sends. (`layers_to_game.gd` can still place a `WORLD` layer with a fixed ground line if a manifest asks for one; the Affinity script doesn't send any.)
 
 ## Gotchas
-- **Affinity's script library can't overwrite or delete** (2026-11-14): saving a script under an existing title fails, and there's no delete tool. When the send script changes, save it under a new title (the current one is "v2"; update the references here and in the skill), and ask the person to delete the old one so they don't run it by mistake.
+- **Affinity's script library can't overwrite or delete** (2026-11-14): saving a script under an existing title fails, and there's no delete tool. When the send script changes, save it under a new title (the current one is "v3"; update the references here and in the skill), and ask the person to delete the old one so they don't run it by mistake.
 - **Affinity can only read and write the Desktop** (2026-11-14): `Document.load` of a path in the repo returns PERMISSION_DENIED. When a screen has to be opened, copy the painting to the work folder first.
 - **Affinity can't tell you when the user saves, and a script ends when it returns** (2026-11-14): there is no save event and no timer outlives the call. When something must happen on the user's action, have a script write a file and watch for it from outside (the `READY` file, with Monitor).
 - **`PixelBuffer.create` is not zeroed** (2026-11-14): layers built from it carried leftover pixels from earlier buffers. When writing a transparent layer from a script, `fill(0)` the array first.

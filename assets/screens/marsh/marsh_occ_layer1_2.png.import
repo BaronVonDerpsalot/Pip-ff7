@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://un0b4mfb8txt"
-path="res://.godot/imported/marsh_bend_mound.png-1daf976667e3bca4950e33c0b19ba2d3.ctex"
+uid="uid://ka3lwfj76kvo"
+path="res://.godot/imported/marsh_occ_layer1_2.png-a4670879009618e2c67335b0b991dc5f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/screens/marsh/marsh_bend_mound.png"
-dest_files=["res://.godot/imported/marsh_bend_mound.png-1daf976667e3bca4950e33c0b19ba2d3.ctex"]
+source_file="res://assets/screens/marsh/marsh_occ_layer1_2.png"
+dest_files=["res://.godot/imported/marsh_occ_layer1_2.png-a4670879009618e2c67335b0b991dc5f.ctex"]
 
 [params]
 

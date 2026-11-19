@@ -1,12 +1,13 @@
 'use strict';
-// Pip FF7 -- "Send layers" (Affinity script; library title "Pip FF7 - Send layers v2").
+// Pip FF7 -- "Send layers" (Affinity script; library title "Pip FF7 - Send layers v3").
 // Run from Affinity's Scripts panel with a screen document open (marsh.afdesign, boardwalk.afdesign, ...).
 // It writes every visible layer above the painting, cropped to its content, next to the document:
 //   <screen>__layer<N>.rgba   raw RGBA8 pixels (cropped)
 //   <screen>__manifest.json   what each layer is and where it sits
 //   <screen>__READY           touched last; the agent's watcher fires on this
-// No naming rules: the bottom layer is the painting, and every visible layer above it is an overlay
-// that the game draws in front of Pip, whatever it's called (even "Background").
+// The bottom layer is the painting. Every visible layer above it is sent as SORTED: in the game, each separate
+// shape in it covers Pip only while his feet are above that shape's bottom edge (he walks behind it from above).
+// A layer whose name starts with "Over" is sent as OVERHEAD and always covers him (hanging fronds, branches).
 // Hidden layers are skipped. See docs/recipes/screens-layering.md.
 
 const { Application } = require('/application.js');
@@ -47,7 +48,7 @@ function sendToGame(doc) {
         const name = 'layer' + i;                              // by position, so it's stable between sends
         const file = screen + '__layer' + layers.length + '.rgba';
         const f = File.create(dir + '/' + file, 'wb'); f.write(out.buffer, out.length); f.close();
-        layers.push({ name: name, role: 'OVERHEAD', file: file, x: x0, y: y0, w: w, h: h, buf_w: bw, buf_h: bh, base: null, source: raw });
+        layers.push({ name: name, role: /^over/i.test(raw) ? 'OVERHEAD' : 'SORTED', file: file, x: x0, y: y0, w: w, h: h, buf_w: bw, buf_h: bh, base: null, source: raw });
     }
     // Layers exist but none could be sent (all hidden, empty or not pixel layers): that's probably a mistake, so don't mark the screen.
     if (kids.length > 1 && layers.length === 0) { say('No layers could be sent, so the screen was not marked.\nSkipped: ' + skipped.join('; ')); return; }

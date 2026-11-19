@@ -5,8 +5,11 @@
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_bend_mound.png" id="20_mound"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_bank_left.png" id="21_bank"]
+[ext_resource type="Script" path="res://scripts/screen_loop.gd" id="30_loop"]
+[ext_resource type="VideoStream" path="res://assets/screens/marsh/marsh_loop.ogv" id="32_masked"]
+[ext_resource type="Script" path="res://scripts/occluder.gd" id="occ_script"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_occ_layer1_1.png" id="occ_layer1_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_occ_layer1_2.png" id="occ_layer1_2"]
 
 [node name="Marsh" type="Node2D" unique_id=399422856]
 script = ExtResource("1_screen")
@@ -19,25 +22,32 @@ near_height = 260.0
 texture = ExtResource("2_bg")
 centered = false
 
+[node name="Loop" type="VideoStreamPlayer" parent="."]
+script = ExtResource("30_loop")
+clip = ExtResource("32_masked")
+
 [node name="World" type="Node2D" parent="." unique_id=1469137363]
 y_sort_enabled = true
 
 [node name="Pip" parent="World" unique_id=1983619796 instance=ExtResource("4_pip")]
 position = Vector2(1200, 985)
 
-[node name="BendMound" type="Sprite2D" parent="World"]
-position = Vector2(727, 470)
-texture = ExtResource("20_mound")
-centered = false
-offset = Vector2(-105, -114)
-
-[node name="BankLeft" type="Sprite2D" parent="World"]
-position = Vector2(803, 1080)
-texture = ExtResource("21_bank")
-centered = false
-offset = Vector2(-404, -596)
-
 [node name="Overhead" type="Node2D" parent="."]
+metadata/layered = true
+
+[node name="Occ_layer1_1" type="Sprite2D" parent="Overhead"]
+position = Vector2(614, 277)
+texture = ExtResource("occ_layer1_1")
+centered = false
+script = ExtResource("occ_script")
+sort = true
+
+[node name="Occ_layer1_2" type="Sprite2D" parent="Overhead"]
+position = Vector2(397, 484)
+texture = ExtResource("occ_layer1_2")
+centered = false
+script = ExtResource("occ_script")
+sort = true
 
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=404130654]
 color = Color(1, 0.2, 0.2, 0.3)
