@@ -11,6 +11,11 @@ uniform float phase = 0.0;      // offsets this piece so neighbours don't move i
 uniform float lean = 0.3;       // share of amp the piece leans downwind on average
 uniform float gustiness = 0.6;  // 0 = steady breeze, 1 = gusts from near calm to full
 uniform bool hang = false;      // pinned at the top edge instead (willow fronds, vines)
+// Depth mode (scripts/depth_occluder.gd): draws the screen's depth map through the swaying shape instead of
+// the piece's own colours, so the depth moves with it. piece_pos is the piece's position on the screen.
+uniform bool depth_mode = false;
+uniform sampler2D depth_map : filter_nearest;
+uniform vec2 piece_pos = vec2(0.0);
 
 float hash(float n) { return fract(sin(n) * 43758.5453); }
 
@@ -35,5 +40,12 @@ void fragment() {
 		+ 0.15 * sin(t * 1.73 + phase * 0.7 - lag * 3.0);
 	float gust = mix(1.0, noise(TIME * 0.12 + phase * 3.1) * 1.4, gustiness);
 	float dx = amp * w * (lean + (1.0 - lean) * s) * gust;
-	COLOR = texture(TEXTURE, UV - vec2(dx * px.x, 0.0));
+	vec2 uv = UV - vec2(dx * px.x, 0.0);
+	if (depth_mode) {
+		// Hard edge: blending two packed depths would make a third, wrong one.
+		float a = step(0.5, texture(TEXTURE, uv).a);
+		COLOR = vec4(texture(depth_map, (piece_pos + uv / px) / vec2(textureSize(depth_map, 0))).rgb, a);
+	} else {
+		COLOR = texture(TEXTURE, uv);
+	}
 }

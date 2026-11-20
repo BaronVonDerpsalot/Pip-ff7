@@ -26,6 +26,17 @@ To do several or all of the screens in one go, use `/layering all`. It opens eve
 - Hidden layers and non-pixel layers (groups, shapes) are skipped and reported. Rasterise a shape first.
 - Sprites are named `Occ_layer<N>`, or `Occ_layer<N>_<k>` when the layer has several shapes, N being the layer's position above the painting, so a layer keeps its name between sends. (`layers_to_game.gd` can still place a `WORLD` layer with a fixed ground line if a manifest asks for one; the Affinity script doesn't send any.)
 
+## Depth occlusion (trial, M5)
+A screen can hide Pip by depth instead of drawn shapes: anything nearer than the ground at his feet covers him. Trialled on the stream (`scenes/screens/stream_depth.tscn`, the stream with no `Occ_` sprites), where it matched the Affinity layers on the posts and near plants and hid most of him behind the far reeds (DECISIONS, 2026-11-20).
+1. **Depth map.** `../segment-env/venv/Scripts/python.exe tools/depth/depth.py assets/screens/<screen>/<screen>_bg.jpg ../segment-env/out/depth/<screen>.png` (same environment and `HF_HOME` as `screens-shader-motion.md`; about 13 s). Look at `<screen>_preview.jpg` next to it (nearer is whiter), then copy `<screen>.png` to `assets/screens/<screen>/<screen>_depth.png`.
+2. **Into the game.** Import, then add a `Sprite2D` under `Overhead` with `scripts/depth_occluder.gd` and `depth_map` set. It draws over Pip only inside his box and above his feet, so ground in front of him never hides him. On a shader-motion screen the swaying pieces carry their depth (a hidden viewport sways the depth map with the same shaders).
+3. **Tune** on the node: `tolerance` (0.01: how much nearer something must be), `grow` (3 px past an edge, since the depth map's edges run small), `show_mask` (tints what covers him red).
+
+Gotchas
+- **One whole-painting run can't tell a post from its bridge** (2026-11-20): Depth Anything at 1036 px made the stream's posts only 0.002 nearer than Pip's feet, so they covered 4% and 39% of what Affinity covers. Six zoomed tiles fitted to the whole run took them to 99% and 98%. When something thin at mid-distance doesn't hide Pip, look at the tiling before the tolerance.
+- **The ground under Pip must come from the walk area** (2026-11-20): reading it at points along his feet took the post he stood behind as his ground, so it could never hide him; the lowest reading took water seen between planks and hid him behind the bridge. `depth_occluder.gd` takes the middle of the points inside the walk area.
+- **Bigger models weren't better here** (2026-11-20): Depth Anything V2 Base and Large, with tiles, scored the same as Small on the posts and a little worse on the far reeds, and Large took 110 s. The project is private, so their non-commercial licence is no obstacle if a screen needs them.
+
 ## Gotchas
 - **Affinity's script library can't overwrite or delete** (2026-11-14): saving a script under an existing title fails, and there's no delete tool. When the send script changes, save it under a new title (the current one is "v3"; update the references here and in the skill), and ask the person to delete the old one so they don't run it by mistake.
 - **Affinity can only read and write the Desktop** (2026-11-14): `Document.load` of a path in the repo returns PERMISSION_DENIED. When a screen has to be opened, copy the painting to the work folder first.
