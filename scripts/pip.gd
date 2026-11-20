@@ -19,6 +19,18 @@ const SECTORS := ["right", "downright", "down", "downright", "right", "upright",
 @export var creep_below := 0.5
 ## Up and down the screen is foreshortened, so vertical movement is slowed by this much.
 @export var vertical_factor := 0.6
+## How far Pip takes on the screen's light where he stands (0 = never, 1 = fully).
+@export_range(0.0, 1.0) var light_strength := 0.5
+## How much that light changes from his feet to his head (0 = one tint for all of him).
+@export_range(0.0, 1.0) var light_spread := 0.35
+
+## The light map: the painting shrunk to this size, then blurred this many times.
+const LIGHT_MAP_SIZE := Vector2i(32, 18)
+const LIGHT_MAP_BLURS := 3
+## Light-map pixels are kept within this range of the screen's average brightness, so
+## a bright sky or black shadow never washes Pip out.
+const LIGHT_MAP_MIN := 0.45
+const LIGHT_MAP_MAX := 1.6
 
 ## How fast a stand-in walk loop plays for a gait that has no sheets of its own yet.
 const PLACEHOLDER_ANIM_SPEED := {"run": 1.8, "creep": 0.55}
@@ -32,6 +44,7 @@ var running := false
 var screen: Screen
 var _flash: Tween
 var _gait_is_placeholder := false
+var _light: ShaderMaterial
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -39,6 +52,7 @@ var _gait_is_placeholder := false
 func _ready() -> void:
 	screen = _find_screen()
 	_apply_depth_scale()
+	_setup_light()
 	sprite.play("idle_down")
 
 
@@ -63,6 +77,8 @@ func _physics_process(delta: float) -> void:
 		_move(step)
 	_set_gait(new_gait, push)
 	_apply_depth_scale()
+	if _light:
+		_light.set_shader_parameter("feet", global_position)
 
 
 func _gait_for(push: float, moving: bool) -> String:
@@ -125,6 +141,8 @@ func arrive_at(point: Vector2, look: Vector2) -> void:
 	gait = "idle"
 	sprite.play("idle_" + facing)
 	_apply_depth_scale()
+	if _light:
+		_light.set_shader_parameter("feet", global_position)
 
 
 func _flash_colour(colour: Color) -> void:
@@ -167,6 +185,75 @@ func _apply_depth_scale() -> void:
 		return
 	var s := screen.height_at(position.y) / FRAME_HEIGHT
 	scale = Vector2(s, s)
+
+
+## Gives Pip's sprite the light shader, with a light map made from the screen's painting.
+## Every screen gets one this way, with no per-screen step; Background stays loaded even
+## where shader motion hides it.
+func _setup_light() -> void:
+	if screen == null:
+		return
+	var background := screen.get_node_or_null("Background") as Sprite2D
+	if background == null or background.texture == null:
+		return
+	var image := background.texture.get_image()
+	if image == null:
+		return
+	_light = ShaderMaterial.new()
+	_light.shader = preload("res://scripts/pip_light.gdshader")
+	_light.set_shader_parameter("light_map", ImageTexture.create_from_image(make_light_map(image)))
+	_light.set_shader_parameter("map_origin", background.global_position)
+	_light.set_shader_parameter("map_size", background.texture.get_size() * background.global_scale)
+	_light.set_shader_parameter("strength", light_strength)
+	_light.set_shader_parameter("spread", light_spread)
+	_light.set_shader_parameter("feet", global_position)
+	sprite.material = _light
+
+
+## A tiny, heavily blurred copy of a painting, divided by its average brightness so 1.0
+## is the screen's average light. Halving step by step averages every pixel in.
+static func make_light_map(painting: Image) -> Image:
+	var image := painting.duplicate() as Image
+	if image.is_compressed():
+		image.decompress()
+	image.convert(Image.FORMAT_RGBF)
+	while image.get_width() > LIGHT_MAP_SIZE.x * 2:
+		image.resize(maxi(image.get_width() >> 1, LIGHT_MAP_SIZE.x), maxi(image.get_height() >> 1, LIGHT_MAP_SIZE.y), Image.INTERPOLATE_BILINEAR)
+	image.resize(LIGHT_MAP_SIZE.x, LIGHT_MAP_SIZE.y, Image.INTERPOLATE_BILINEAR)
+	for i in LIGHT_MAP_BLURS:
+		image = _box_blur(image)
+	var total := 0.0
+	for y in image.get_height():
+		for x in image.get_width():
+			total += image.get_pixel(x, y).get_luminance()
+	var mean := maxf(total / (image.get_width() * image.get_height()), 0.01)
+	for y in image.get_height():
+		for x in image.get_width():
+			var c := image.get_pixel(x, y) / mean
+			var lum := maxf(c.get_luminance(), 0.001)
+			c *= clampf(lum, LIGHT_MAP_MIN, LIGHT_MAP_MAX) / lum
+			c.a = 1.0
+			image.set_pixel(x, y, c)
+	image.convert(Image.FORMAT_RGBH)
+	return image
+
+
+static func _box_blur(image: Image) -> Image:
+	var w := image.get_width()
+	var h := image.get_height()
+	var out := Image.create_empty(w, h, false, image.get_format())
+	for y in h:
+		for x in w:
+			var sum := Color(0, 0, 0, 0)
+			var n := 0
+			for dy in range(-1, 2):
+				for dx in range(-1, 2):
+					var sx := clampi(x + dx, 0, w - 1)
+					var sy := clampi(y + dy, 0, h - 1)
+					sum += image.get_pixel(sx, sy)
+					n += 1
+			out.set_pixel(x, y, sum / n)
+	return out
 
 
 func _find_screen() -> Screen:
