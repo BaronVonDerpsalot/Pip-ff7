@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://tools/capture_frames.gd" id="1_cap"]
+
+[node name="Capture" type="Node"]
+
+[node name="Frames" type="Node" parent="."]
+script = ExtResource("1_cap")
+screen = "marsh_shader"

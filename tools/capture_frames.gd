@@ -1,8 +1,10 @@
 extends Node
 ## Records a running screen as numbered half-size JPGs, for a capture to approve (docs/recipes/screens-shader-motion.md).
-## Put it in a scene with the screen instanced next to it and run that scene; frames go to
+## Run tools/capture_screen.tscn after setting `screen` on its Frames node (a file in scenes/screens/, no
+## extension); it loads that screen next to itself. Frames go to
 ## user://capture/<frame>.jpg with times.txt (on Windows: %APPDATA%/Godot/app_userdata/<project>/capture/).
 
+@export var screen := "stream"
 @export var start_after := 0.5   # seconds, so loading doesn't land in the capture
 @export var every := 3           # frames between saves (60 fps / 3 = 20 fps)
 @export var count := 160         # 8 s at 20 fps: the sway is slow, so shorter shows under one cycle
@@ -14,6 +16,7 @@ var _times: PackedInt64Array = []
 
 
 func _ready() -> void:
+	get_parent().add_child.call_deferred((load("res://scenes/screens/%s.tscn" % screen) as PackedScene).instantiate())
 	DirAccess.make_dir_recursive_absolute("user://capture")
 	for f in DirAccess.get_files_at("user://capture"):
 		DirAccess.remove_absolute("user://capture/" + f)

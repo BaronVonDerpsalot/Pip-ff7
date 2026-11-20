@@ -1,0 +1,92 @@
+{
+ "pieces": [
+  {
+   "file": "fronds_1.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    807,
+    0,
+    793,
+    518
+   ]
+  },
+  {
+   "file": "fronds_2.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    1578,
+    0,
+    166,
+    192
+   ]
+  },
+  {
+   "file": "fronds_3.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    1685,
+    0,
+    235,
+    561
+   ]
+  },
+  {
+   "file": "fronds_4.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    1033,
+    505,
+    416,
+    139
+   ]
+  },
+  {
+   "file": "fronds_5.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    1800,
+    541,
+    120,
+    91
+   ]
+  },
+  {
+   "file": "fronds_6.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    1748,
+    584,
+    135,
+    61
+   ]
+  },
+  {
+   "file": "sway_1.png",
+   "group": "sway",
+   "hang": false,
+   "rect": [
+    0,
+    668,
+    1181,
+    412
+   ]
+  }
+ ],
+ "water_masks": [
+  {
+   "file": "river_mask.png",
+   "flow": true,
+   "flow_map": "river_flow.png"
+  },
+  {
+   "file": "ponds_mask.png",
+   "flow": false
+  }
+ ]
+}

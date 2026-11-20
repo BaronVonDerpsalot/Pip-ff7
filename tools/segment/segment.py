@@ -12,10 +12,13 @@ things the words can't pin down, like a stream that fills half the screen.
                    water runs at each point, worked out along the water from each stretch's end nearest
                    the horizon; "source": [x, y] picks the upstream end by hand if that's wrong.
   "kind": "sway"   cut into one padded piece per clump, and inpainted out of the clean plate (LaMa)
+  "kind": "hang"   like sway, but pinned at the top edge (willow fronds, hanging moss, vines)
   "kind": "still"  never moves: subtracted from the other groups (bridges, mushrooms, posts)
   "minus": [...]   other groups subtracted from this one
   "max_box": 0.3   ignore detector boxes larger than this share of the screen (they swallow the banks)
   "max_side": 90   ignore detector boxes with a side longer than this, in pixels
+  "within": [x0, y0, x1, y1]  keep only the part of the group inside this box (words that also match
+                   something elsewhere, like reeds read as willow leaves)
 
 Writes to out_dir: <group>_mask.png, <group>_<k>.png pieces, plate.png, preview.jpg, manifest.json.
 """
@@ -30,7 +33,7 @@ from PIL import Image, ImageFilter
 
 DINO = "IDEA-Research/grounding-dino-tiny"
 SAM = "facebook/sam2.1-hiera-small"
-TINTS = {"water": (60, 140, 255), "sway": (60, 220, 90), "still": (255, 60, 60)}
+TINTS = {"water": (60, 140, 255), "sway": (60, 220, 90), "hang": (240, 200, 40), "still": (255, 60, 60)}
 _models = {}
 
 
@@ -161,8 +164,9 @@ def flow_map(mask, source=None, scale=4):
     return Image.fromarray((rgb * 255).astype(np.uint8))
 
 
-def split(cut, mask, name, out_dir, pad, min_area=600):
-    """Each separate clump becomes its own padded piece, so it sways from its own bottom edge."""
+def split(cut, mask, name, out_dir, pad, hang=False, min_area=600):
+    """Each separate clump becomes its own padded piece, so it sways from its own bottom edge (or, for
+    hanging things, its top edge): no padding on the root side, `pad` on the other three."""
     import cv2
 
     n, labels, stats, _ = cv2.connectedComponentsWithStats(mask.astype(np.uint8), connectivity=8)
@@ -173,13 +177,14 @@ def split(cut, mask, name, out_dir, pad, min_area=600):
         x, y, w, h, area = stats[i]
         if area < min_area:
             continue
-        x0, y0 = max(0, x - pad), max(0, y - pad)
-        x1, y1 = min(W, x + w + pad), min(H, y + h)  # no padding below: the bottom edge is the root
+        x0, x1 = max(0, x - pad), min(W, x + w + pad)
+        y0, y1 = (y, min(H, y + h + pad)) if hang else (max(0, y - pad), y + h)
         piece = rgba[y0:y1, x0:x1].copy()
         piece[..., 3] = np.where(labels[y0:y1, x0:x1] == i, piece[..., 3], 0)
         k = len(pieces) + 1
         Image.fromarray(piece).save(os.path.join(out_dir, f"{name}_{k}.png"))
-        pieces.append({"file": f"{name}_{k}.png", "group": name, "rect": [int(x0), int(y0), int(x1 - x0), int(y1 - y0)]})
+        pieces.append({"file": f"{name}_{k}.png", "group": name, "hang": hang,
+                       "rect": [int(x0), int(y0), int(x1 - x0), int(y1 - y0)]})
     print(f"  {len(pieces)} pieces (clumps under {min_area} px dropped)")
     return pieces
 
@@ -190,6 +195,14 @@ def main():
     root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # the repo
     device = "cuda" if torch.cuda.is_available() else "cpu"
     os.makedirs(out_dir, exist_ok=True)
+    # Clear what an earlier run wrote here, so stale pieces can't be copied into the game with the new ones.
+    old = os.path.join(out_dir, "manifest.json")
+    if os.path.exists(old):
+        prev = json.load(open(old))
+        for f in [p["file"] for p in prev.get("pieces", [])] + [w["file"] for w in prev.get("water_masks", [])]:
+            for stale in (f, f.replace("_mask.png", "_flow.png")):
+                if os.path.exists(os.path.join(out_dir, stale)):
+                    os.remove(os.path.join(out_dir, stale))
     image = Image.open(os.path.join(root, spec["painting"])).convert("RGB")
     t0 = time.time()
 
@@ -203,6 +216,11 @@ def main():
                 m |= trace_boxes(image, boxes, device)
         for r in g.get("regions", []):
             m |= trace_region(image, r, device)
+        if "within" in g:  # keep only what falls inside this box
+            x0, y0, x1, y1 = g["within"]
+            keep = np.zeros_like(m)
+            keep[y0:y1, x0:x1] = True
+            m &= keep
         masks[name] = m
     for name, g in spec["groups"].items():
         for other in g.get("minus", []) + [n for n, o in spec["groups"].items() if o["kind"] == "still" and n != name]:
@@ -228,7 +246,7 @@ def main():
         else:
             cut = image.copy()
             cut.putalpha(soft)
-            pieces += split(cut, m, name, out_dir, spec.get("pad", 12))
+            pieces += split(cut, m, name, out_dir, spec.get("pad", 12), hang=g["kind"] == "hang")
             hole |= m
 
     Image.fromarray(preview.astype(np.uint8)).save(os.path.join(out_dir, "preview.jpg"), quality=88)

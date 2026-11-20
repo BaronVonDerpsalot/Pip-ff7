@@ -1,0 +1,40 @@
+{
+ "pieces": [
+  {
+   "file": "sway_1.png",
+   "group": "sway",
+   "rect": [
+    0,
+    0,
+    1361,
+    801
+   ]
+  },
+  {
+   "file": "sway_2.png",
+   "group": "sway",
+   "rect": [
+    1474,
+    0,
+    446,
+    844
+   ]
+  },
+  {
+   "file": "sway_3.png",
+   "group": "sway",
+   "rect": [
+    543,
+    488,
+    93,
+    89
+   ]
+  }
+ ],
+ "water_masks": [
+  {
+   "file": "pools_mask.png",
+   "flow": false
+  }
+ ]
+}

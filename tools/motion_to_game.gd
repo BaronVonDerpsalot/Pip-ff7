@@ -12,10 +12,11 @@ class_name MotionToGame
 ## nothing else. Tuning made by hand on those nodes is lost.
 
 
-static func build(screen: String, include_sway: bool = true) -> String:
+## `scene` writes to another scene than the screen's own, e.g. a copy to compare against a video loop.
+static func build(screen: String, include_sway: bool = true, scene: String = "") -> String:
 	var dir := "res://assets/screens/%s/motion/" % screen
 	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(dir + "manifest.json"))
-	var scene_path := "res://scenes/screens/%s.tscn" % screen
+	var scene_path := "res://scenes/screens/%s.tscn" % (scene if scene != "" else screen)
 	var blocks := _blocks(FileAccess.get_file_as_string(scene_path))
 
 	# Drop whatever an earlier run added.
@@ -66,7 +67,7 @@ static func build(screen: String, include_sway: bool = true) -> String:
 			# each gets its own phase so neighbours don't move in step.
 			# Speeds spread 0.16-0.28 cycles a second, so no two clumps keep the same tempo.
 			var tempo := 0.16 + fposmod(n * 0.37, 1.0) * 0.12
-			sub.append('[sub_resource type="ShaderMaterial" id="motion_sway_mat_%d"]\nshader = ExtResource("motion_sway")\nshader_parameter/amp = %.1f\nshader_parameter/phase = %.1f\nshader_parameter/speed = %.2f' % [n, clampf(float(r[3]) / 60.0, 4.0, 14.0), n * 1.7, tempo])
+			sub.append('[sub_resource type="ShaderMaterial" id="motion_sway_mat_%d"]\nshader = ExtResource("motion_sway")\nshader_parameter/amp = %.1f\nshader_parameter/phase = %.1f\nshader_parameter/speed = %.2f%s' % [n, clampf(float(r[3]) / 60.0, 4.0, 14.0), n * 1.7, tempo, "\nshader_parameter/hang = true" if p.get("hang", false) else ""])
 			nodes.append('[node name="Sway_%d" type="Sprite2D" parent="Loop/SubViewport"]\nmaterial = SubResource("motion_sway_mat_%d")\nposition = Vector2(%d, %d)\ntexture = ExtResource("motion_sway_%d")\ncentered = false' % [n, n, r[0], r[1], n])
 
 	# Reassemble: header, ext_resources, sub_resources, then nodes with Loop right after Background.

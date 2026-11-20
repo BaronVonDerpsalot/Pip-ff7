@@ -1,5 +1,4 @@
 [gd_scene format=3 uid="uid://dv3iguq1miqs2"]
-
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
 [ext_resource type="Texture2D" uid="uid://bguv40sv7wsui" path="res://assets/screens/boardwalk/boardwalk_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
@@ -8,6 +7,36 @@
 [ext_resource type="Texture2D" uid="uid://dnrmxwj3yl0vd" path="res://assets/screens/boardwalk/boardwalk_occ_layer1.png" id="occ_layer1"]
 [ext_resource type="Texture2D" uid="uid://cvjxwmmyovyel" path="res://assets/screens/boardwalk/boardwalk_occ_layer2.png" id="occ_layer2"]
 [ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
+[ext_resource type="Script" path="res://scripts/screen_motion.gd" id="motion_script"]
+[ext_resource type="Shader" path="res://scripts/motion_water.gdshader" id="motion_water"]
+[ext_resource type="Shader" path="res://scripts/motion_sway.gdshader" id="motion_sway"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/plate.png" id="motion_plate"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/pools_mask.png" id="motion_pond_mask"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/sway_1.png" id="motion_sway_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/sway_2.png" id="motion_sway_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/sway_3.png" id="motion_sway_3"]
+
+[sub_resource type="ShaderMaterial" id="motion_water_mat"]
+shader = ExtResource("motion_water")
+shader_parameter/pond_mask = ExtResource("motion_pond_mask")
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_1"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 13.4
+shader_parameter/phase = 1.7
+shader_parameter/speed = 0.20
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_2"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 14.0
+shader_parameter/phase = 3.4
+shader_parameter/speed = 0.25
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_3"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 4.0
+shader_parameter/phase = 5.1
+shader_parameter/speed = 0.17
 
 [node name="Boardwalk" type="Node2D" unique_id=1021682157]
 script = ExtResource("1_screen")
@@ -17,6 +46,36 @@ near_height = 270.0
 
 [node name="Background" type="Sprite2D" parent="." unique_id=674062477]
 texture = ExtResource("2_bg")
+centered = false
+
+[node name="Loop" type="Node2D" parent="."]
+script = ExtResource("motion_script")
+
+[node name="SubViewport" type="SubViewport" parent="Loop"]
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Plate" type="Sprite2D" parent="Loop/SubViewport"]
+texture = ExtResource("motion_plate")
+centered = false
+material = SubResource("motion_water_mat")
+
+[node name="Sway_1" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_1")
+position = Vector2(0, 0)
+texture = ExtResource("motion_sway_1")
+centered = false
+
+[node name="Sway_2" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_2")
+position = Vector2(1474, 0)
+texture = ExtResource("motion_sway_2")
+centered = false
+
+[node name="Sway_3" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_3")
+position = Vector2(543, 488)
+texture = ExtResource("motion_sway_3")
 centered = false
 
 [node name="World" type="Node2D" parent="." unique_id=1632357618]

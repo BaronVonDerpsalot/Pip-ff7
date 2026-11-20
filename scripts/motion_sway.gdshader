@@ -10,6 +10,7 @@ uniform float stiffness = 1.8;  // higher keeps more of the stem still; motion g
 uniform float phase = 0.0;      // offsets this piece so neighbours don't move in step
 uniform float lean = 0.3;       // share of amp the piece leans downwind on average
 uniform float gustiness = 0.6;  // 0 = steady breeze, 1 = gusts from near calm to full
+uniform bool hang = false;      // pinned at the top edge instead (willow fronds, vines)
 
 float hash(float n) { return fract(sin(n) * 43758.5453); }
 
@@ -23,7 +24,7 @@ float noise(float x) {
 
 void fragment() {
 	vec2 px = TEXTURE_PIXEL_SIZE;
-	float h = clamp(1.0 - UV.y, 0.0, 1.0);  // 0 at the root (bottom), 1 at the top
+	float h = clamp(hang ? UV.y : 1.0 - UV.y, 0.0, 1.0);  // 0 at the root, 1 at the free end
 	float w = pow(h, stiffness);
 	float x = UV.x / px.x;                   // pixels across the piece
 	float t = TIME * speed * 6.2832;

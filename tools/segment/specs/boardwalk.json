@@ -1,0 +1,22 @@
+{
+ "painting": "assets/screens/boardwalk/boardwalk_bg.jpg",
+ "pad": 28,
+ "groups": {
+  "pools": {
+   "kind": "water",
+   "flow": false,
+   "words": "puddle. pond. water.",
+   "threshold": 0.25,
+   "max_box": 0.3,
+   "regions": [
+    {"box": [500, 390, 1010, 670], "pos": [[700, 500], [880, 560], [600, 600]], "neg": [[700, 300]]},
+    {"box": [1370, 360, 1570, 460], "pos": [[1470, 410]]},
+    {"box": [0, 850, 180, 960], "pos": [[90, 900]]}
+   ],
+   "minus": ["sway"]
+  },
+  "sway": {"kind": "sway", "words": "cattail reeds. tall grass. cattail.", "threshold": 0.25},
+  "boardwalk": {"kind": "still", "words": "wooden boardwalk. wooden post."},
+  "mushrooms": {"kind": "still", "words": "mushroom.", "max_side": 90}
+ }
+}
