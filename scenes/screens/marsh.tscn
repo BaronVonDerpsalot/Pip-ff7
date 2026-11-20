@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://6cvlkh74cxp1"]
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_depth.png" id="depth_map"]
 [ext_resource type="Texture2D" uid="uid://cf60cr7m26hor" path="res://assets/screens/marsh/marsh_willow_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
@@ -80,6 +81,8 @@ shader_parameter/speed = 0.23
 
 [node name="Marsh" type="Node2D" unique_id=399422856]
 script = ExtResource("1_screen")
+shadow_dir = Vector2(-0.15, 0.4)
+depth_map = ExtResource("depth_map")
 far_y = 265.0
 far_height = 50.0
 near_height = 260.0

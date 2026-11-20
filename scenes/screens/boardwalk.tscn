@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dv3iguq1miqs2"]
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/boardwalk_depth.png" id="depth_map"]
 [ext_resource type="Texture2D" uid="uid://bguv40sv7wsui" path="res://assets/screens/boardwalk/boardwalk_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
@@ -40,6 +41,8 @@ shader_parameter/speed = 0.17
 
 [node name="Boardwalk" type="Node2D" unique_id=1021682157]
 script = ExtResource("1_screen")
+shadow_dir = Vector2(0.45, 0.28)
+depth_map = ExtResource("depth_map")
 far_y = 250.0
 far_height = 70.0
 near_height = 270.0

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://t0uwniw26db3"]
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/stream_depth.png" id="depth_map"]
 [ext_resource type="Texture2D" uid="uid://348wnrkiu6ex" path="res://assets/screens/stream/stream_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
@@ -93,6 +94,8 @@ shader_parameter/speed = 0.20
 
 [node name="Stream" type="Node2D" unique_id=928733559]
 script = ExtResource("1_screen")
+shadow_dir = Vector2(-0.35, 0.3)
+depth_map = ExtResource("depth_map")
 far_y = 330.0
 far_height = 60.0
 near_height = 270.0

@@ -153,15 +153,6 @@ func _flash_colour(colour: Color) -> void:
 	_flash.tween_property(sprite, "modulate", Color.WHITE, 0.3)
 
 
-func _draw() -> void:
-	# Soft contact shadow under the feet, in sprite-frame pixels (the node is scaled).
-	var points := PackedVector2Array()
-	for i in 24:
-		var a := TAU * i / 24.0
-		points.append(Vector2(cos(a) * 64.0, sin(a) * 18.0))
-	draw_colored_polygon(points, Color(0.1, 0.12, 0.15, 0.33))
-
-
 func _face(input: Vector2) -> void:
 	var sector := wrapi(roundi(input.angle() / (PI / 4.0)), 0, 8)
 	facing = SECTORS[sector]

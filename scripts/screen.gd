@@ -9,6 +9,12 @@ extends Node2D
 ## Screen y at the near end, and Pip's height there.
 @export var near_y := 1075.0
 @export var near_height := 253.0
+## Where Pip's shadow falls: his head's shadow lands this far from his feet, per unit of his height
+## (screen x, y). Away from the painting's sun.
+@export var shadow_dir := Vector2(0.3, 0.35)
+@export_range(0.0, 1.0) var shadow_strength := 0.7
+## The painting's depth map (tools/depth/depth.py), which Pip's shadow bends over. Optional.
+@export var depth_map: Texture2D
 
 @onready var walk_area: Polygon2D = $WalkArea
 @onready var pip: Pip = $World/Pip
