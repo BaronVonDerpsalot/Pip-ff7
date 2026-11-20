@@ -174,7 +174,6 @@ metadata/layered = true
 [node name="DepthOcc" type="Sprite2D" parent="Overhead"]
 centered = false
 script = ExtResource("depth_occ")
-depth_map = ExtResource("depth_map")
 
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=532830407]
 color = Color(1, 0.2, 0.2, 0.3)

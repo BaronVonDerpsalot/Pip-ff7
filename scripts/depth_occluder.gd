@@ -4,6 +4,7 @@ extends Sprite2D
 ## On a shader-motion screen the swaying pieces carry their depth with them: a hidden SubViewport redraws
 ## the depth map with the same sway as the Loop, and that is what the shader reads.
 
+## Leave empty to use the screen's depth_map.
 @export var depth_map: Texture2D
 ## How much nearer than his feet (0..1 of the screen's depth range) something must be to cover him.
 @export_range(0.0, 0.2, 0.001) var tolerance := 0.01
@@ -27,6 +28,8 @@ func _ready() -> void:
 	var screen: Node = owner if owner != null else get_parent().get_parent()
 	_pip = screen.get_node_or_null("World/Pip") as Node2D
 	_screen = screen as Screen
+	if depth_map == null and _screen != null:
+		depth_map = _screen.depth_map  # the screen's own depth map, unless this node is given another
 	_depth = depth_map.get_image()
 	if _depth.is_compressed():
 		_depth.decompress()
