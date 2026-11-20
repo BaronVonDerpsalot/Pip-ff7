@@ -4,7 +4,7 @@ extends Sprite2D
 ## sort = true: it covers Pip only while his feet are above its bottom edge at his x, so he goes behind it
 ## from above and in front of it from below. Its edge is read from its own pixels; nothing is set by hand.
 ## sort = false (layers named "Over..."): it always covers him, for things that hang, like willow fronds.
-## On a screen with a Loop node it draws the video's pixels through its own shape, so it moves with the loop;
+## On a screen with a Loop node (video or shader motion) it draws the Loop's pixels through its own shape, so it moves with it;
 ## on a still screen it draws its own pixels, cut from the painting.
 
 @export var sort := true
