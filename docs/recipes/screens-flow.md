@@ -24,14 +24,14 @@ Use Mike's prompt shape, word for word apart from the scene in the middle, and a
 - **The camera sentence is fixed** (2026-11-19): "seen from a raised viewpoint about as high as a two-storey house, looking down at the path at about 45 degrees, close enough that the path is wide and fills the lower half of the picture", plus "only a thin band of distant marsh and sky along the top". Without it Flow drifts to ground level; "seen from high above" swung between ground level and a drone shot with a tiny path. With it, 3 of 3 test screens matched the marsh's raised three-quarter view. Keep words like "towering" out of the scene: they pull the camera down.
 - **Name the path's route** (bottom left corner to top right, and so on) so exits line up between screens, and leave open ground where characters will stand.
 - **Keep the artist's name in** (2026-11-13): without it the style drifts.
-- The best result so far, and the one to match: `kept-assets/style-tests/reeds_boardwalk_sunset.jpg`, from "…photo of a marsh land path, giant reeds and rushes towering over. There should be a small wooden bridge, uncared for, delapidated, tilted, slightly rotten. …". Pip on it in the style bench looks right: brightest thing on screen, at a size that fits the boardwalk.
+- The screens to match are the three accepted ones in `assets/screens/` (marsh, boardwalk, stream). Pip on them looks right: the brightest thing on screen, at a size that fits the path. To judge a new screen with Pip in front, use the style bench in `tools/style_test/`.
 - Check each result for stray people (the montage has some) and lettering on signs. If they keep turning up, add "no people, no writing" and see whether the style holds.
 
 ## A still screen
-1. Generate the painting at 16:9 from the style block, with no characters in it. The block's "high angle overhead" is what sets the camera.
+1. Generate the painting at 16:9 from the style block, with no characters in it. The block's fixed camera sentence is what sets the camera.
 2. Check the camera steepness against the screens already accepted. Pip's sprites are rendered from one angle, so screens must roughly agree.
 3. Mike picks. Download at 1K (original size); 2K is an upscale.
-4. Cut out anything that should pass in front of a character as a foreground layer.
+4. Layer anything that should pass in front of a character in Affinity (`screens-layering.md`).
 5. Mark where characters can walk and where the exits are. See "Building a screen in Godot" below.
 
 ## Building a screen in Godot
@@ -89,7 +89,7 @@ Gotchas
 - Agents can't upload files into Flow (the Chrome file upload fails). Mike drags references in by hand. Don't retry in a loop.
 - References and prompt text clear after every submit, so re-attach each run. Check the mode chip says Image before submitting.
 - The grid reshuffles. Identify images by title, never by position. Titles are editable and a good place for scores.
-- Downloads are JPEG named after the image title.
+- Downloads are JPEG named after the image title, plus a short hash Flow adds (see "Collecting from Flow").
 - Images kept in Drive can't be seen by the planning room. Attach them in the chat.
 - **Check what's actually covering Pip** (2026-11-13, M1): a "reed blade across his belly" turned out to be faint grey wash in the old cut-out, not a reed. When judging whether Pip passes behind something, make sure the overlap is the object itself: compare with the cut-out hidden, or look at the cut-out on a bright background.
 - **A sharp corner in a walk area snags Pip** (2026-11-20, M4): Pip slides along an edge one axis at a time, so on the boardwalk the corner at (1335, 303) stopped him walking straight up until he stepped right. When drawing a walk area, keep corners that point into the path shallow.

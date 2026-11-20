@@ -10,6 +10,8 @@ The person draws the cut-outs in Affinity; an agent brings them into the game ea
 
 Sending again replaces every `Occ_` sprite and PNG, so the person can iterate. Nothing else in the scene is touched.
 
+The `.afdesign` documents are the only source for a screen's shapes. After a layering run, save them in Affinity and copy them to `kept-assets/screen-layers/` (outside git); to re-layer a screen, open that copy rather than starting from the painting. The `Desktop/PipFF7_layering/` folder is only a work folder.
+
 ## Which screens are done
 A screen counts as layered when its scene's `Overhead` node carries `metadata/layered = true`. `tools/layers_to_game.gd` sets it on every send, and an empty send (no layers above the painting) is how a person says "I looked, this screen needs none". `bash tools/layering_status.sh` lists each screen as `TODO` or `DONE`. There is no other record: the plan and who's doing it live on the board, and a screen that has no scene yet doesn't appear until someone builds it. Sending again is always allowed (a new walk area or a repaint makes the stamp stale), and a layer that existed before and is no longer sent is removed along with its PNG.
 

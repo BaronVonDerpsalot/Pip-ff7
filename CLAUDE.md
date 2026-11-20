@@ -12,7 +12,7 @@ The engine is Godot 4.7, scripted in GDScript. It is newer than most examples on
 - How a screen is built: `docs/recipes/screens-flow.md`. Godot and Ziva gotchas: `docs/recipes/godot.md`.
 
 ## Who works here
-Mike and Mark both work on this, each with their own Claude Project and agents. Mark joins in as and when, so nothing waits on him, and either of them can give a yes. Their chats and memories are not shared. The repo and the board are the only things everyone sees, so a decision counts only once it is in `docs/DECISIONS.md`, and work counts only once it is on the board.
+Mike works on this from two accounts, Mike and Mark (DECISIONS, 2026-11-20). Each account has its own Claude Project and agents, and their chats and memories are not shared. A yes from either account counts, and "Mike or Mark" anywhere in the docs means Mike. The repo and the board are the only things both accounts see, so a decision counts only once it is in `docs/DECISIONS.md`, and work counts only once it is on the board.
 
 ## Read first
 1. `docs/BRIEF.md`: what the game is and what the slice is.
