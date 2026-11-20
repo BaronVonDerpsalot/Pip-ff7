@@ -3,26 +3,25 @@
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
 [ext_resource type="Texture2D" uid="uid://cf60cr7m26hor" path="res://assets/screens/marsh/marsh_willow_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
-[ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
-[ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
-[ext_resource type="Script" path="res://scripts/screen_loop.gd" id="30_loop"]
-[ext_resource type="VideoStream" path="res://assets/screens/marsh/marsh_loop.ogv" id="32_masked"]
-[ext_resource type="Script" path="res://scripts/occluder.gd" id="occ_script"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_occ_layer1_1.png" id="occ_layer1_1"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_occ_layer1_2.png" id="occ_layer1_2"]
+[ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
+[ext_resource type="Script" uid="uid://jjj01s44urkd" path="res://scripts/screen_entry.gd" id="9_entry"]
+[ext_resource type="Script" uid="uid://b3k2uimcg874" path="res://scripts/screen_loop.gd" id="30_loop"]
+[ext_resource type="Texture2D" uid="uid://fijnfs0sek25" path="res://assets/screens/marsh/marsh_occ_layer1_1.png" id="occ_layer1_1"]
+[ext_resource type="Texture2D" uid="uid://ka3lwfj76kvo" path="res://assets/screens/marsh/marsh_occ_layer1_2.png" id="occ_layer1_2"]
+[ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
+[ext_resource type="VideoStream" uid="uid://d3oiiwogsjtvc" path="res://assets/screens/marsh/marsh_loop.ogv" id="32_masked"]
 
 [node name="Marsh" type="Node2D" unique_id=399422856]
 script = ExtResource("1_screen")
 far_y = 265.0
 far_height = 50.0
-near_y = 1075.0
 near_height = 260.0
 
 [node name="Background" type="Sprite2D" parent="." unique_id=111614623]
 texture = ExtResource("2_bg")
 centered = false
 
-[node name="Loop" type="VideoStreamPlayer" parent="."]
+[node name="Loop" type="VideoStreamPlayer" parent="." unique_id=273331630]
 script = ExtResource("30_loop")
 clip = ExtResource("32_masked")
 
@@ -32,39 +31,37 @@ y_sort_enabled = true
 [node name="Pip" parent="World" unique_id=1983619796 instance=ExtResource("4_pip")]
 position = Vector2(1200, 985)
 
-[node name="Overhead" type="Node2D" parent="."]
+[node name="Overhead" type="Node2D" parent="." unique_id=1122838171]
 metadata/layered = true
 
-[node name="Occ_layer1_1" type="Sprite2D" parent="Overhead"]
+[node name="Occ_layer1_1" type="Sprite2D" parent="Overhead" unique_id=1536618821]
 position = Vector2(614, 277)
 texture = ExtResource("occ_layer1_1")
 centered = false
 script = ExtResource("occ_script")
-sort = true
 
-[node name="Occ_layer1_2" type="Sprite2D" parent="Overhead"]
+[node name="Occ_layer1_2" type="Sprite2D" parent="Overhead" unique_id=2066961366]
 position = Vector2(397, 484)
 texture = ExtResource("occ_layer1_2")
 centered = false
 script = ExtResource("occ_script")
-sort = true
 
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=404130654]
 color = Color(1, 0.2, 0.2, 0.3)
-polygon = PackedVector2Array(820, 262, 880, 262, 890, 280, 860, 320, 790, 360, 700, 400, 630, 440, 640, 470, 730, 520, 860, 580, 940, 640, 1000, 700, 1130, 770, 1250, 860, 1380, 950, 1400, 1080, 1020, 1080, 1000, 950, 880, 850, 830, 760, 780, 700, 680, 640, 580, 575, 520, 520, 465, 470, 500, 425, 590, 390, 700, 340, 780, 300)
+polygon = PackedVector2Array(820, 262, 880, 262, 890, 280, 862, 319, 786, 354, 690, 396, 630, 440, 632, 472, 714, 520, 860, 580, 940, 640, 1000, 700, 1133, 744, 1250, 860, 1405, 897, 1759, 1080, 1400, 1080, 1158, 1076, 1007, 945, 883, 839, 806, 765, 748, 695, 658, 642, 580, 575, 513, 522, 465, 470, 500, 425, 590, 390, 700, 340, 780, 300)
 
-[node name="Exits" type="Node2D" parent="."]
+[node name="Exits" type="Node2D" parent="." unique_id=608031382]
 
-[node name="FarEnd" type="Polygon2D" parent="Exits"]
+[node name="FarEnd" type="Polygon2D" parent="Exits" unique_id=101141427]
 color = Color(0.2, 0.5, 1, 0.4)
 polygon = PackedVector2Array(790, 230, 920, 230, 920, 285, 790, 285)
 script = ExtResource("8_exit")
 to_screen = "res://scenes/screens/boardwalk.tscn"
 to_entry = &"near_end"
 
-[node name="Entries" type="Node2D" parent="."]
+[node name="Entries" type="Node2D" parent="." unique_id=1108000417]
 
-[node name="far_end" type="Marker2D" parent="Entries"]
+[node name="far_end" type="Marker2D" parent="Entries" unique_id=657759598]
 position = Vector2(810, 320)
 script = ExtResource("9_entry")
 facing = Vector2(-1, 1)

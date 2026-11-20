@@ -1,46 +1,104 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://t0uwniw26db3"]
 
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
 [ext_resource type="Texture2D" uid="uid://348wnrkiu6ex" path="res://assets/screens/stream/stream_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
-[ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
-[ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
+[ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
+[ext_resource type="Script" uid="uid://jjj01s44urkd" path="res://scripts/screen_entry.gd" id="9_entry"]
+[ext_resource type="Texture2D" uid="uid://q6l08107r0vg" path="res://assets/screens/stream/stream_occ_layer1.png" id="occ_layer1"]
+[ext_resource type="Texture2D" uid="uid://dh0kufj5goqol" path="res://assets/screens/stream/stream_occ_layer2_1.png" id="occ_layer2_1"]
+[ext_resource type="Texture2D" uid="uid://634kmbcro65g" path="res://assets/screens/stream/stream_occ_layer2_2.png" id="occ_layer2_2"]
+[ext_resource type="Texture2D" uid="uid://cc1ys08mw5ghx" path="res://assets/screens/stream/stream_occ_layer2_3.png" id="occ_layer2_3"]
+[ext_resource type="Texture2D" uid="uid://bh35ly2bjtp4x" path="res://assets/screens/stream/stream_occ_layer2_4.png" id="occ_layer2_4"]
+[ext_resource type="Texture2D" uid="uid://42wokjf3r5hh" path="res://assets/screens/stream/stream_occ_layer2_5.png" id="occ_layer2_5"]
+[ext_resource type="Texture2D" uid="uid://ch7nnfwmnuo8e" path="res://assets/screens/stream/stream_occ_layer2_6.png" id="occ_layer2_6"]
+[ext_resource type="Texture2D" uid="uid://g0bkm1sfrv0m" path="res://assets/screens/stream/stream_occ_layer2_7.png" id="occ_layer2_7"]
+[ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
 
-[node name="Stream" type="Node2D"]
+[node name="Stream" type="Node2D" unique_id=928733559]
 script = ExtResource("1_screen")
 far_y = 330.0
 far_height = 60.0
-near_y = 1075.0
 near_height = 270.0
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=720271066]
 texture = ExtResource("2_bg")
 centered = false
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node2D" parent="." unique_id=1479302956]
 y_sort_enabled = true
 
-[node name="Pip" parent="World" instance=ExtResource("4_pip")]
+[node name="Pip" parent="World" unique_id=707105562 instance=ExtResource("4_pip")]
 position = Vector2(1550, 960)
 
-[node name="Overhead" type="Node2D" parent="."]
+[node name="Overhead" type="Node2D" parent="." unique_id=440063470]
+metadata/layered = true
 
-[node name="WalkArea" type="Polygon2D" parent="."]
+[node name="Occ_layer1" type="Sprite2D" parent="Overhead" unique_id=1247281622]
+position = Vector2(837, 532)
+texture = ExtResource("occ_layer1")
+centered = false
+script = ExtResource("occ_script")
+sort = false
+
+[node name="Occ_layer2_1" type="Sprite2D" parent="Overhead" unique_id=1534401751]
+position = Vector2(524, 261)
+texture = ExtResource("occ_layer2_1")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Occ_layer2_2" type="Sprite2D" parent="Overhead" unique_id=631892502]
+position = Vector2(837, 533)
+texture = ExtResource("occ_layer2_2")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Occ_layer2_3" type="Sprite2D" parent="Overhead" unique_id=169713184]
+position = Vector2(1027, 623)
+texture = ExtResource("occ_layer2_3")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Occ_layer2_4" type="Sprite2D" parent="Overhead" unique_id=1883634416]
+position = Vector2(1198, 842)
+texture = ExtResource("occ_layer2_4")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Occ_layer2_5" type="Sprite2D" parent="Overhead" unique_id=1532668261]
+position = Vector2(1131, 862)
+texture = ExtResource("occ_layer2_5")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Occ_layer2_6" type="Sprite2D" parent="Overhead" unique_id=532187943]
+position = Vector2(1296, 864)
+texture = ExtResource("occ_layer2_6")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Occ_layer2_7" type="Sprite2D" parent="Overhead" unique_id=1524107533]
+position = Vector2(1251, 1033)
+texture = ExtResource("occ_layer2_7")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="WalkArea" type="Polygon2D" parent="." unique_id=532830407]
 color = Color(1, 0.2, 0.2, 0.3)
-polygon = PackedVector2Array(370, 330, 560, 318, 560, 350, 480, 390, 600, 440, 790, 505, 1040, 495, 1210, 555, 1310, 630, 1420, 690, 1560, 760, 1920, 800, 1920, 1080, 1300, 1080, 1250, 900, 1180, 780, 1150, 735, 1000, 645, 870, 585, 760, 560, 600, 520, 430, 470, 380, 420, 400, 370)
+polygon = PackedVector2Array(398, 332, 591, 300, 578, 346, 480, 390, 600, 440, 801, 479, 1040, 495, 1210, 555, 1310, 630, 1414, 693, 1560, 760, 1914, 863, 1920, 1080, 1600, 1070, 1237, 867, 1180, 780, 1150, 735, 1000, 645, 870, 585, 760, 560, 504, 477, 444, 481, 380, 420, 400, 370)
 
-[node name="Exits" type="Node2D" parent="."]
+[node name="Exits" type="Node2D" parent="." unique_id=1028539282]
 
-[node name="NearEnd" type="Polygon2D" parent="Exits"]
+[node name="NearEnd" type="Polygon2D" parent="Exits" unique_id=1169696827]
 color = Color(0.2, 0.5, 1, 0.4)
 polygon = PackedVector2Array(1280, 1030, 1940, 1030, 1940, 1100, 1280, 1100)
 script = ExtResource("8_exit")
 to_screen = "res://scenes/screens/boardwalk.tscn"
 to_entry = &"far_end"
 
-[node name="Entries" type="Node2D" parent="."]
+[node name="Entries" type="Node2D" parent="." unique_id=932334149]
 
-[node name="near_end" type="Marker2D" parent="Entries"]
+[node name="near_end" type="Marker2D" parent="Entries" unique_id=811870549]
 position = Vector2(1550, 960)
 script = ExtResource("9_entry")
 facing = Vector2(-1, -1)
