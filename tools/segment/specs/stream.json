@@ -1,0 +1,26 @@
+{
+ "painting": "assets/screens/stream/stream_bg.jpg",
+ "pad": 28,
+ "groups": {
+  "river": {
+   "kind": "water",
+   "flow": true,
+   "regions": [
+    {"box": [240, 610, 1130, 1080], "pos": [[600, 800], [450, 960], [1000, 760]], "neg": [[1500, 820], [1200, 960]]},
+    {"box": [1100, 300, 1545, 640]}
+   ],
+   "minus": ["sway"]
+  },
+  "puddles": {
+   "kind": "water",
+   "flow": false,
+   "words": "puddle.",
+   "threshold": 0.25,
+   "max_box": 0.03,
+   "minus": ["sway", "river"]
+  },
+  "sway": {"kind": "sway", "words": "cattail reeds. tall grass. cattail.", "threshold": 0.25},
+  "bridge": {"kind": "still", "words": "wooden bridge."},
+  "mushrooms": {"kind": "still", "words": "mushroom.", "max_side": 90}
+ }
+}

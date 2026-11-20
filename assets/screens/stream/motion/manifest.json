@@ -1,0 +1,105 @@
+{
+ "pieces": [
+  {
+   "file": "sway_1.png",
+   "group": "sway",
+   "rect": [
+    1358,
+    11,
+    562,
+    865
+   ]
+  },
+  {
+   "file": "sway_2.png",
+   "group": "sway",
+   "rect": [
+    0,
+    24,
+    550,
+    1056
+   ]
+  },
+  {
+   "file": "sway_3.png",
+   "group": "sway",
+   "rect": [
+    495,
+    28,
+    746,
+    456
+   ]
+  },
+  {
+   "file": "sway_4.png",
+   "group": "sway",
+   "rect": [
+    1030,
+    418,
+    143,
+    62
+   ]
+  },
+  {
+   "file": "sway_5.png",
+   "group": "sway",
+   "rect": [
+    740,
+    765,
+    80,
+    75
+   ]
+  },
+  {
+   "file": "sway_6.png",
+   "group": "sway",
+   "rect": [
+    561,
+    774,
+    402,
+    303
+   ]
+  },
+  {
+   "file": "sway_7.png",
+   "group": "sway",
+   "rect": [
+    1275,
+    841,
+    84,
+    82
+   ]
+  },
+  {
+   "file": "sway_8.png",
+   "group": "sway",
+   "rect": [
+    1252,
+    884,
+    221,
+    196
+   ]
+  },
+  {
+   "file": "sway_9.png",
+   "group": "sway",
+   "rect": [
+    1772,
+    932,
+    148,
+    96
+   ]
+  }
+ ],
+ "water_masks": [
+  {
+   "file": "river_mask.png",
+   "flow": true,
+   "flow_map": "river_flow.png"
+  },
+  {
+   "file": "puddles_mask.png",
+   "flow": false
+  }
+ ]
+}

@@ -32,6 +32,7 @@ Use Mike's prompt shape, word for word apart from the scene in the middle, and a
 2. Check the camera steepness against the screens already accepted. Pip's sprites are rendered from one angle, so screens must roughly agree.
 3. Mike picks. Download at 1K (original size); 2K is an upscale.
 4. Layer anything that should pass in front of a character in Affinity (`screens-layering.md`).
+   To make a still screen move without a video, see `screens-shader-motion.md`.
 5. Mark where characters can walk and where the exits are. See "Building a screen in Godot" below.
 
 ## Building a screen in Godot

@@ -12,14 +12,14 @@ extends Sprite2D
 var _x0 := 0
 var _bottom := PackedInt32Array()  # bottom edge (screen y) per column, from _x0
 var _pip: Node2D = null
-var _loop: VideoStreamPlayer = null
+var _loop: Node = null  # a VideoStreamPlayer (screen_loop.gd) or a shader-motion screen (screen_motion.gd)
 var _mat: ShaderMaterial = null
 
 
 func _ready() -> void:
 	var screen: Node = owner if owner != null else get_parent().get_parent()
 	_pip = screen.get_node_or_null("World/Pip") as Node2D
-	_loop = screen.get_node_or_null("Loop") as VideoStreamPlayer
+	_loop = screen.get_node_or_null("Loop")
 	if sort:
 		_read_bottom_edge()
 	if _loop != null:
@@ -61,7 +61,7 @@ func _read_bottom_edge() -> void:
 
 func _process(_delta: float) -> void:
 	if _mat != null and not _mat.get_shader_parameter("has_video"):
-		var t := _loop.get_video_texture()
+		var t: Texture2D = _loop.call("get_video_texture")
 		if t != null:
 			_mat.set_shader_parameter("video", t)
 			_mat.set_shader_parameter("has_video", true)
