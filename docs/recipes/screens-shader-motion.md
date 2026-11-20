@@ -19,6 +19,7 @@ The models run locally (an NVIDIA GTX 1050 Ti with 4 GB is enough). The environm
 5. **Tune** on the `Loop/SubViewport` nodes' materials. A rebuild overwrites hand tuning.
    - Sway (`motion_sway.gdshader`): `amp` (tip travel, px; the builder gives height/60, 4 to 14, and the spec's `pad` must stay above about 1.3 × the largest), `speed` (the builder spreads each clump between 0.16 and 0.28 cycles/s), `gustiness`, `lean`, `stiffness`. Hanging pieces get more: height/25, 8 to 24 px, and `stiffness` 1.2 so more of each frond moves; a spec with a `hang` group needs `pad` 44.
    - Water (`motion_water.gdshader`): a spec's water groups each say `"flow": true` (river: `river_amp`, `river_speed`, `river_flow` as a direction, `river_glints`) or `false` (puddles and ponds: `pond_amp`, `pond_speed`, `pond_glints`, `rings`, `ring_cell`, `ring_rate`); `shimmer` is shared. A river also gets a flow map (`<river>_flow.png`, made automatically), so its ripples follow its bends at `river_px_per_s`; `river_flow` is only used without one.
+   The water's ripple code lives in `motion_water.gdshaderinc`, shared with Pip's reflection (`pip_reflection.gdshader`), so he ripples exactly as the water does; change the ripple there, not in `motion_water.gdshader`.
    Both shaders are our own, built from tricks common on godotshaders.com (noise-driven distortion, crest glints, spawned rings), so there's no licence to track.
 
 ## How it fits together

@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/pip.gd" id="1_pip"]
 [ext_resource type="SpriteFrames" path="res://assets/pip/pip_frames.tres" id="2_frames"]
 [ext_resource type="Script" path="res://scripts/pip_shadow.gd" id="3_shadow"]
+[ext_resource type="Script" path="res://scripts/pip_reflection.gd" id="4_reflection"]
 
 [node name="Pip" type="Node2D"]
 script = ExtResource("1_pip")
@@ -14,3 +15,6 @@ script = ExtResource("3_shadow")
 offset = Vector2(0, -117)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
+
+[node name="Reflection" type="Node" parent="."]
+script = ExtResource("4_reflection")
