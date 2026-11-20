@@ -90,3 +90,4 @@ Gotchas
 - Downloads are JPEG named after the image title.
 - Images kept in Drive can't be seen by the planning room. Attach them in the chat.
 - **Check what's actually covering Pip** (2026-11-13, M1): a "reed blade across his belly" turned out to be faint grey wash in the old cut-out, not a reed. When judging whether Pip passes behind something, make sure the overlap is the object itself: compare with the cut-out hidden, or look at the cut-out on a bright background.
+- **A sharp corner in a walk area snags Pip** (2026-11-20, M4): Pip slides along an edge one axis at a time, so on the boardwalk the corner at (1335, 303) stopped him walking straight up until he stepped right. When drawing a walk area, keep corners that point into the path shallow.
