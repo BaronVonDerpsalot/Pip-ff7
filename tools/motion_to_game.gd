@@ -67,7 +67,14 @@ static func build(screen: String, include_sway: bool = true, scene: String = "")
 			# each gets its own phase so neighbours don't move in step.
 			# Speeds spread 0.16-0.28 cycles a second, so no two clumps keep the same tempo.
 			var tempo := 0.16 + fposmod(n * 0.37, 1.0) * 0.12
-			sub.append('[sub_resource type="ShaderMaterial" id="motion_sway_mat_%d"]\nshader = ExtResource("motion_sway")\nshader_parameter/amp = %.1f\nshader_parameter/phase = %.1f\nshader_parameter/speed = %.2f%s' % [n, clampf(float(r[3]) / 60.0, 4.0, 14.0), n * 1.7, tempo, "\nshader_parameter/hang = true" if p.get("hang", false) else ""])
+			# Hanging pieces (fronds) swing further and bend along more of their length than rooted reeds:
+			# up to 24 px, so a hanging spec needs `pad` of about 44.
+			var amp := clampf(float(r[3]) / 60.0, 4.0, 14.0)
+			var extra := ""
+			if p.get("hang", false):
+				amp = clampf(float(r[3]) / 25.0, 8.0, 24.0)
+				extra = "\nshader_parameter/hang = true\nshader_parameter/stiffness = 1.2"
+			sub.append('[sub_resource type="ShaderMaterial" id="motion_sway_mat_%d"]\nshader = ExtResource("motion_sway")\nshader_parameter/amp = %.1f\nshader_parameter/phase = %.1f\nshader_parameter/speed = %.2f%s' % [n, amp, n * 1.7, tempo, extra])
 			nodes.append('[node name="Sway_%d" type="Sprite2D" parent="Loop/SubViewport"]\nmaterial = SubResource("motion_sway_mat_%d")\nposition = Vector2(%d, %d)\ntexture = ExtResource("motion_sway_%d")\ncentered = false' % [n, n, r[0], r[1], n])
 
 	# Reassemble: header, ext_resources, sub_resources, then nodes with Loop right after Background.
@@ -89,6 +96,18 @@ static func build(screen: String, include_sway: bool = true, scene: String = "")
 			out.append_array(sub)
 		if kept[i].begins_with('[node name="Background"'):
 			out.append_array(nodes)
+	# Drop resources nothing uses any more (the video loop's, when shader motion replaces it).
+	var body := "\n\n".join(out)
+	var used: Array[String] = []
+	for b in out:
+		var head := b.get_slice("\n", 0)
+		if head.begins_with("[ext_resource"):
+			var id := head.get_slice(' id="', 1).get_slice('"', 0)  # the space keeps uid="..." from matching
+			if body.count('ExtResource("%s")' % id) == 0:
+				print("Dropped unused resource: ", head.get_slice('path="', 1).get_slice('"', 0))
+				continue
+		used.append(b)
+	out = used
 	var f := FileAccess.open(scene_path, FileAccess.WRITE)
 	f.store_string(("\n\n".join(out) + "\n").replace("]\n\n[ext_resource", "]\n[ext_resource"))
 	f.close()

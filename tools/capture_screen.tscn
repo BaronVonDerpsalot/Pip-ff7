@@ -6,4 +6,4 @@
 
 [node name="Frames" type="Node" parent="."]
 script = ExtResource("1_cap")
-screen = "marsh_shader"
+screen = "marsh"

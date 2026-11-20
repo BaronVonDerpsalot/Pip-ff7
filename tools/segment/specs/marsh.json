@@ -1,15 +1,7 @@
 {
  "painting": "assets/screens/marsh/marsh_willow_bg.jpg",
- "pad": 28,
+ "pad": 44,
  "groups": {
-  "river": {
-   "kind": "water",
-   "flow": true,
-   "regions": [
-    {"box": [400, 40, 930, 300], "pos": [[690, 105], [470, 185], [820, 262]], "neg": [[600, 140]]}
-   ],
-   "minus": ["sway", "fronds"]
-  },
   "ponds": {
    "kind": "water",
    "flow": false,
@@ -22,7 +14,7 @@
     {"box": [1250, 680, 1920, 860], "pos": [[1450, 760], [1800, 800]]},
     {"box": [180, 205, 480, 265], "pos": [[300, 235]]}
    ],
-   "minus": ["sway", "fronds", "river"]
+   "minus": ["sway", "fronds"]
   },
   "fronds": {"kind": "hang", "words": "hanging willow leaves.", "threshold": 0.25, "max_box": 0.45, "within": [800, 0, 1920, 800]},
   "sway": {"kind": "sway", "words": "tall grass. cattail.", "threshold": 0.25, "max_box": 0.3},

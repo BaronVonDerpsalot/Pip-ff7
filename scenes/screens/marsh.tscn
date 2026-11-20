@@ -1,15 +1,82 @@
 [gd_scene format=3 uid="uid://6cvlkh74cxp1"]
-
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
 [ext_resource type="Texture2D" uid="uid://cf60cr7m26hor" path="res://assets/screens/marsh/marsh_willow_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" uid="uid://jjj01s44urkd" path="res://scripts/screen_entry.gd" id="9_entry"]
-[ext_resource type="Script" uid="uid://b3k2uimcg874" path="res://scripts/screen_loop.gd" id="30_loop"]
 [ext_resource type="Texture2D" uid="uid://fijnfs0sek25" path="res://assets/screens/marsh/marsh_occ_layer1_1.png" id="occ_layer1_1"]
 [ext_resource type="Texture2D" uid="uid://ka3lwfj76kvo" path="res://assets/screens/marsh/marsh_occ_layer1_2.png" id="occ_layer1_2"]
 [ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
-[ext_resource type="VideoStream" uid="uid://d3oiiwogsjtvc" path="res://assets/screens/marsh/marsh_loop.ogv" id="32_masked"]
+[ext_resource type="Script" path="res://scripts/screen_motion.gd" id="motion_script"]
+[ext_resource type="Shader" path="res://scripts/motion_water.gdshader" id="motion_water"]
+[ext_resource type="Shader" path="res://scripts/motion_sway.gdshader" id="motion_sway"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/plate.png" id="motion_plate"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/ponds_mask.png" id="motion_pond_mask"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_1.png" id="motion_sway_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_2.png" id="motion_sway_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_3.png" id="motion_sway_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_4.png" id="motion_sway_4"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_5.png" id="motion_sway_5"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_6.png" id="motion_sway_6"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/sway_1.png" id="motion_sway_7"]
+
+[sub_resource type="ShaderMaterial" id="motion_water_mat"]
+shader = ExtResource("motion_water")
+shader_parameter/pond_mask = ExtResource("motion_pond_mask")
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_1"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 21.4
+shader_parameter/phase = 1.7
+shader_parameter/speed = 0.20
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_2"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.3
+shader_parameter/phase = 3.4
+shader_parameter/speed = 0.25
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_3"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 23.1
+shader_parameter/phase = 5.1
+shader_parameter/speed = 0.17
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_4"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.0
+shader_parameter/phase = 6.8
+shader_parameter/speed = 0.22
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_5"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.0
+shader_parameter/phase = 8.5
+shader_parameter/speed = 0.26
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_6"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.0
+shader_parameter/phase = 10.2
+shader_parameter/speed = 0.19
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_7"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 7.1
+shader_parameter/phase = 11.9
+shader_parameter/speed = 0.23
 
 [node name="Marsh" type="Node2D" unique_id=399422856]
 script = ExtResource("1_screen")
@@ -21,9 +88,59 @@ near_height = 260.0
 texture = ExtResource("2_bg")
 centered = false
 
-[node name="Loop" type="VideoStreamPlayer" parent="." unique_id=273331630]
-script = ExtResource("30_loop")
-clip = ExtResource("32_masked")
+[node name="Loop" type="Node2D" parent="."]
+script = ExtResource("motion_script")
+
+[node name="SubViewport" type="SubViewport" parent="Loop"]
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Plate" type="Sprite2D" parent="Loop/SubViewport"]
+texture = ExtResource("motion_plate")
+centered = false
+material = SubResource("motion_water_mat")
+
+[node name="Sway_1" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_1")
+position = Vector2(791, 0)
+texture = ExtResource("motion_sway_1")
+centered = false
+
+[node name="Sway_2" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_2")
+position = Vector2(1562, 0)
+texture = ExtResource("motion_sway_2")
+centered = false
+
+[node name="Sway_3" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_3")
+position = Vector2(1669, 0)
+texture = ExtResource("motion_sway_3")
+centered = false
+
+[node name="Sway_4" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_4")
+position = Vector2(1017, 505)
+texture = ExtResource("motion_sway_4")
+centered = false
+
+[node name="Sway_5" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_5")
+position = Vector2(1784, 541)
+texture = ExtResource("motion_sway_5")
+centered = false
+
+[node name="Sway_6" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_6")
+position = Vector2(1732, 584)
+texture = ExtResource("motion_sway_6")
+centered = false
+
+[node name="Sway_7" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_7")
+position = Vector2(0, 652)
+texture = ExtResource("motion_sway_7")
+centered = false
 
 [node name="World" type="Node2D" parent="." unique_id=1469137363]
 y_sort_enabled = true
