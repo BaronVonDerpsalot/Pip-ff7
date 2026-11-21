@@ -7,7 +7,7 @@ A short game for Christine starring Pip, the chibi creature she and Mike created
 
 ## Principles
 1. A short, complete game beats an ambitious unfinished one.
-2. One milestone at a time. Everything else waits in the Parking lot.
+2. One milestone at a time, plus at most one side track that never gates it. Everything else waits in a Later section or the Parking lot.
 3. Playing something decides things. Documents don't.
 4. Nothing is built "for later games" until the slice ships.
 5. Christine only ever gets finished products. Mike and Mark play everything before that; nothing in progress goes to her.
@@ -32,12 +32,11 @@ Screens are hand-painted animated-film backgrounds (Miyazaki-like, with subdued 
 | Pip | Rendered from his Blender rig (`recipes/pip-blender.md`) |
 | Screens | Google Flow stills (`recipes/screens-flow.md`) |
 | Screen animation | Flow video loops (`recipes/screens-flow.md`, "An animated screen") |
-| Other characters | Open |
+| Other characters | Meshy model, rendered in Blender with Pip's look (`recipes/pip-blender.md`) |
 | Story | Story Room holds canon. The slice's lines live in a file in this repo. |
 | Input | Xbox controller first; keyboard fully supported |
 
 ## Open decisions
 This is the only list of open decisions. When one closes, it moves to `DECISIONS.md` and leaves this list.
-1. How other characters are made (Meshy plus Blender, or another route). Decided by the other-character milestone.
-2. The font.
-3. How often character lines redraw.
+1. The font.
+2. How often character lines redraw.

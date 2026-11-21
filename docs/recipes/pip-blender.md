@@ -32,6 +32,16 @@ The game handles running (L3 or Shift) and creeping (a gentle push, or holding C
 4. Rebuild with `BuildPipFrames.build()`. It makes `run_<direction>` and `creep_<direction>`, at 12 and 7 frames a second (`FPS` in `tools/build_pip_frames.gd`). The game switches to them on its own, and the stand-in and flash stop for any direction that has a real sheet.
 5. Run the marsh and check each gait in a few directions. If a loop's stride doesn't match how fast Pip slides, adjust `run_speed`/`creep_speed` on Pip (`scripts/pip.gd`) or the loop's frame rate.
 
+## Other characters (villagers)
+Villagers are Meshy rigged models rendered with Pip's look (DECISIONS 2026-11-20). The first is the mole tinker: `kept-assets/blender/villager_mole_trial.blend`, sheets in `kept-assets/sprites/_villager_mole/`.
+1. Open a copy of `pip_sketchtest.blend`, delete Pip, and import the Meshy `.glb` (Mixamo rig, several actions). Delete the stray Icosphere it brings.
+2. Give the mesh the toon material (Diffuse → Shader to RGB → constant ramp → multiply with the base colour → Emission) and link it into the `PipLA` collection, or Line Art draws no pencil lines.
+3. Scale the armature so the character's height relative to Pip is right (the mole: x3.37, about 1.25x Pip). Keep Pip's pixel density by growing the frame with the height: Pip is 320px at ortho 6, so a 1.25x character is 400px at ortho 7.5.
+4. Anchor on the rig's origin, not the bounding box: shift the camera so the world origin lands at the same fraction of the frame as Pip's (276/320 of the height, so (200, 345) in a 400px frame). Tails and leans push the bounding box around; the origin sits under the hips and stays put.
+5. Walk: sample the Mixamo `Walking` action at 8 evenly spaced times across its cycle (it walks on the spot and loops). Idle: Mixamo packs have no idle, so hold the first frame of a gesture action, clear the action, and add a small breathing sway on the spine, neck and shoulders over 8 frames.
+6. Render the five directions by turning the armature (0, 45, 90, 135, 180 degrees about Z), calling `bpy.context.view_layer.update()` after each turn or every direction renders the same. Save with `bpy.ops.render.render(write_still=True)` and `scene.render.filepath`; `render_viewport_to_path` writes to Blender's temp folder.
+7. Grain with `grain.py` as for Pip, but `make_grain(size=400)` for 400px frames, at 0.15. Sheets are `mole_<kind>_<direction>_sheet.png` (grained) beside a `_clean` copy.
+
 ## Gotchas
 - Through the Blender MCP, changes made by script don't mark the file as unsaved. Save explicitly.
 - Rendered frames come back as base64 up to about 2 MB per call, so render one direction per call.
