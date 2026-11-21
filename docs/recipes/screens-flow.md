@@ -69,7 +69,7 @@ Proven on the marsh and the lily pond, 2026-11-19 (M4). Flow's video models chan
 
 ## Collecting from Flow
 Mike sorts picks into two Flow library folders in the project: **Game images** (stills) and **For video** (stills to animate). Cowork then:
-1. Downloads each still at 1K (original size). Chrome's download location is `Pip FF7\preprocessing\`, with "Ask where to save" off: the Chrome extension can't drive a Save As window, and desktop control can only look at Chrome, not type in it. Flow adds a short hash to each name (`reedbed_v3_4ae1dc7b.jpg`).
+1. Downloads each still at 1K (original size). Chrome's download location is `Pip FF7\preprocessing\_inbox\` (never import from there: `delivery.md`, "Downloads"), with "Ask where to save" off: the Chrome extension can't drive a Save As window, and desktop control can only look at Chrome, not type in it. Flow adds a short hash to each name (`reedbed_v3_4ae1dc7b.jpg`).
 2. Sorts each file into `preprocessing/<name>/<name>_bg.jpg`, using the Flow title without the hash or any `_vN` round suffix.
 3. For each For video still, runs "An animated screen" above.
 

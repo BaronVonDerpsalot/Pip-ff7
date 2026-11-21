@@ -26,6 +26,9 @@ Then zip each one. For the web build, zip the *contents* of `site/` so `index.ht
 - Keep the page private: Draft (secret link) or Restricted (password). Christine only gets finished products (`DECISIONS.md`).
 - The Windows zip can go on the same page as a download.
 
+## Downloads
+`preprocessing/_inbox/` is unsorted browser downloads (Chrome saves there). Never import from it; only from named `preprocessing/<name>/` folders. Whoever uses a download moves it into its `<name>/` folder first.
+
 ## Gotchas
 - **Export to `index.html`, then zip it yourself** (2026-11-13, M3): exporting straight to a `.zip` path didn't make a zip. Godot wrote loose files and saved the HTML page under the `.zip` name.
 - **A browser doesn't see the pad until a button is pressed** (2026-11-13, M3, from Godot's web export docs). Press a pad button before using the stick. Button mapping can also differ between browsers, so if the pad misbehaves, try another browser or the Windows build.
