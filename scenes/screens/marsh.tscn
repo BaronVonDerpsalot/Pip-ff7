@@ -3,6 +3,8 @@
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/marsh_depth.png" id="depth_map"]
 [ext_resource type="Texture2D" uid="uid://cf60cr7m26hor" path="res://assets/screens/marsh/marsh_willow_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
+[ext_resource type="PackedScene" path="res://scenes/mole.tscn" id="mole_scene"]
+[ext_resource type="Script" path="res://scripts/depth_occluder.gd" id="depth_occ"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" uid="uid://jjj01s44urkd" path="res://scripts/screen_entry.gd" id="9_entry"]
 [ext_resource type="Texture2D" uid="uid://fijnfs0sek25" path="res://assets/screens/marsh/marsh_occ_layer1_1.png" id="occ_layer1_1"]
@@ -151,6 +153,9 @@ y_sort_enabled = true
 [node name="Pip" parent="World" unique_id=1983619796 instance=ExtResource("4_pip")]
 position = Vector2(1200, 985)
 
+[node name="Mole" parent="World" instance=ExtResource("mole_scene")]
+position = Vector2(1430, 970)
+
 [node name="Overhead" type="Node2D" parent="." unique_id=1122838171]
 metadata/layered = true
 
@@ -165,6 +170,13 @@ position = Vector2(397, 484)
 texture = ExtResource("occ_layer1_2")
 centered = false
 script = ExtResource("occ_script")
+
+[node name="DepthOcc_Mole" type="Sprite2D" parent="Overhead"]
+centered = false
+script = ExtResource("depth_occ")
+target = NodePath("World/Mole")
+frame_half_width = 200.0
+frame_above_feet = 345.0
 
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=404130654]
 color = Color(1, 0.2, 0.2, 0.3)

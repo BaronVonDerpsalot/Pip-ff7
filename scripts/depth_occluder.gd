@@ -13,9 +13,12 @@ extends Sprite2D
 @export_range(0.0, 8.0, 0.5) var grow := 3.0
 ## Debug: tint what covers him red.
 @export var show_mask := false
-
-const FRAME_HALF_WIDTH := 160.0  # Pip's frames are 320 wide
-const FRAME_ABOVE_FEET := 277.0  # and his feet sit 277 px below the top
+## Who it hides, from the screen: Pip by default. A villager gets an occluder of his own.
+@export var target := NodePath("World/Pip")
+## The target's frame: half its width, and how far its feet sit below its top, in frame pixels.
+## Pip's frames are 320 wide with his feet 277 px down; the mole's are 400 wide with his feet 345 px down.
+@export var frame_half_width := 160.0
+@export var frame_above_feet := 277.0
 
 var _pip: Node2D
 var _screen: Screen
@@ -26,7 +29,7 @@ var _mat: ShaderMaterial
 
 func _ready() -> void:
 	var screen: Node = owner if owner != null else get_parent().get_parent()
-	_pip = screen.get_node_or_null("World/Pip") as Node2D
+	_pip = screen.get_node_or_null(target) as Node2D
 	_screen = screen as Screen
 	if depth_map == null and _screen != null:
 		depth_map = _screen.depth_map  # the screen's own depth map, unless this node is given another
@@ -94,8 +97,8 @@ func _process(_delta: float) -> void:
 	var s := _pip.global_scale.x
 	_mat.set_shader_parameter("feet", feet)
 	_mat.set_shader_parameter("ground", _ground_at(feet, s))
-	_mat.set_shader_parameter("pip_rect", Vector4(feet.x - FRAME_HALF_WIDTH * s, feet.y - FRAME_ABOVE_FEET * s,
-			feet.x + FRAME_HALF_WIDTH * s, feet.y))
+	_mat.set_shader_parameter("pip_rect", Vector4(feet.x - frame_half_width * s, feet.y - frame_above_feet * s,
+			feet.x + frame_half_width * s, feet.y))
 
 
 ## Nearness of the ground at Pip's feet: the middle value of points along his feet, counting only points in

@@ -10,7 +10,9 @@ extends Node
 
 const RINGS := 4
 
-var _pip: Pip
+## Pip, or a villager: a Node2D with `screen`, `gait` and (optionally) `height_factor`.
+var _pip: Node2D
+var _screen: Screen
 var _sprite: AnimatedSprite2D
 var _copy: AnimatedSprite2D
 var _mat: ShaderMaterial
@@ -43,18 +45,20 @@ func _process(delta: float) -> void:
 		_mat.set_shader_parameter("region", Vector4(at.region.position.x / size.x, at.region.position.y / size.y,
 				at.region.end.x / size.x, at.region.end.y / size.y))
 	_mat.set_shader_parameter("feet", feet)
-	_mat.set_shader_parameter("pip_height", _pip.screen.height_at(feet.y))
+	var factor: Variant = _pip.get("height_factor")
+	_mat.set_shader_parameter("pip_height", _screen.height_at(feet.y) * (factor if factor != null else 1.0))
 	_mat.set_shader_parameter("tex_px_per_screen_px", 1.0 / maxf(s, 0.02))
 	_update_rings(delta, feet)
 
 
 func _setup() -> void:
 	_setup_done = true
-	_pip = get_parent() as Pip
+	_pip = get_parent() as Node2D
 	_sprite = _pip.get_node("Sprite")
-	if _pip.screen == null:
+	_screen = _pip.get("screen") as Screen
+	if _screen == null:
 		return
-	var plate := _pip.screen.get_node_or_null("Loop/SubViewport/Plate") as Sprite2D
+	var plate := _screen.get_node_or_null("Loop/SubViewport/Plate") as Sprite2D
 	if plate == null or not (plate.material is ShaderMaterial):
 		return
 	_water_mat = plate.material as ShaderMaterial
@@ -98,7 +102,7 @@ func _update_rings(delta: float, feet: Vector2) -> void:
 	for i in RINGS:
 		_rings[i].z += delta
 	var wet := _water_at(feet) > 0.5
-	var moving := _pip.gait != "idle"
+	var moving: bool = _pip.get("gait") != "idle"
 	_since_ring += delta
 	if wet and (not _was_wet or (moving and _since_ring >= ring_every)):
 		_rings[_next] = Vector4(feet.x, feet.y, 0.0, ring_strength)

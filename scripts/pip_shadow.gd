@@ -18,11 +18,11 @@ func _ready() -> void:
 	material = _mat
 
 
-## Pip finds his screen in his own _ready, after this one's; so the screen's settings are read on first use.
+## Pip (or a villager) finds his screen in his own _ready, after this one's; so the screen's settings are read on first use.
 func _setup() -> void:
 	_ready_done = true
-	var pip := get_parent() as Pip
-	_screen = pip.screen
+	# Pip, or a villager: anything with a `screen`.
+	_screen = get_parent().get("screen") as Screen
 	if _screen == null:
 		return
 	_mat.set_shader_parameter("strength", _screen.shadow_strength)

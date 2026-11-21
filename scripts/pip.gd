@@ -182,23 +182,31 @@ func _apply_depth_scale() -> void:
 ## Every screen gets one this way, with no per-screen step; Background stays loaded even
 ## where shader motion hides it.
 func _setup_light() -> void:
-	if screen == null:
+	_light = light_material(screen, light_strength, light_spread)
+	if _light == null:
 		return
-	var background := screen.get_node_or_null("Background") as Sprite2D
-	if background == null or background.texture == null:
-		return
-	var image := background.texture.get_image()
-	if image == null:
-		return
-	_light = ShaderMaterial.new()
-	_light.shader = preload("res://scripts/pip_light.gdshader")
-	_light.set_shader_parameter("light_map", ImageTexture.create_from_image(make_light_map(image)))
-	_light.set_shader_parameter("map_origin", background.global_position)
-	_light.set_shader_parameter("map_size", background.texture.get_size() * background.global_scale)
-	_light.set_shader_parameter("strength", light_strength)
-	_light.set_shader_parameter("spread", light_spread)
 	_light.set_shader_parameter("feet", global_position)
 	sprite.material = _light
+
+
+## The light shader with a light map made from a screen's painting (null if it has none). Villagers use it too.
+static func light_material(on: Screen, strength: float, spread: float) -> ShaderMaterial:
+	if on == null:
+		return null
+	var background := on.get_node_or_null("Background") as Sprite2D
+	if background == null or background.texture == null:
+		return null
+	var image := background.texture.get_image()
+	if image == null:
+		return null
+	var mat := ShaderMaterial.new()
+	mat.shader = preload("res://scripts/pip_light.gdshader")
+	mat.set_shader_parameter("light_map", ImageTexture.create_from_image(make_light_map(image)))
+	mat.set_shader_parameter("map_origin", background.global_position)
+	mat.set_shader_parameter("map_size", background.texture.get_size() * background.global_scale)
+	mat.set_shader_parameter("strength", strength)
+	mat.set_shader_parameter("spread", spread)
+	return mat
 
 
 ## A tiny, heavily blurred copy of a painting, divided by its average brightness so 1.0

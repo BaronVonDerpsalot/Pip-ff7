@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/villager.gd" id="1_villager"]
+[ext_resource type="SpriteFrames" path="res://assets/mole/mole_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://scripts/pip_shadow.gd" id="3_shadow"]
+[ext_resource type="Script" path="res://scripts/pip_reflection.gd" id="4_reflection"]
+
+[node name="Mole" type="Node2D"]
+script = ExtResource("1_villager")
+
+[node name="Shadow" type="AnimatedSprite2D" parent="."]
+script = ExtResource("3_shadow")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+offset = Vector2(0, -145)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle_down"
+
+[node name="Reflection" type="Node" parent="."]
+script = ExtResource("4_reflection")
