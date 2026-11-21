@@ -77,6 +77,12 @@ func height_at(y: float) -> float:
 	return lerpf(far_height, near_height, t)
 
 
+## Inside the walk area and not where a villager stands.
 func is_walkable(point: Vector2) -> bool:
-	var local := walk_area.to_local(to_global(point))
-	return Geometry2D.is_point_in_polygon(local, walk_area.polygon)
+	var global := to_global(point)
+	if not Geometry2D.is_point_in_polygon(walk_area.to_local(global), walk_area.polygon):
+		return false
+	for villager in get_tree().get_nodes_in_group(&"villagers"):
+		if villager.blocks(global):
+			return false
+	return true

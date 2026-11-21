@@ -41,6 +41,8 @@ var facing := "down"
 ## "idle", "creep", "walk" or "run".
 var gait := "idle"
 var running := false
+## True while a conversation is open: Pip stands still and ignores movement.
+var talking := false
 var screen: Screen
 var _flash: Tween
 var _gait_is_placeholder := false
@@ -57,12 +59,14 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("run_toggle"):
+	if event.is_action_pressed("run_toggle") and not talking:
 		running = not running
 
 
 func _physics_process(delta: float) -> void:
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if talking:
+		input = Vector2.ZERO
 	var push := minf(input.length(), 1.0)
 	var moving := push > 0.1
 	if not moving:
@@ -143,6 +147,16 @@ func arrive_at(point: Vector2, look: Vector2) -> void:
 	_apply_depth_scale()
 	if _light:
 		_light.set_shader_parameter("feet", global_position)
+
+
+## Turns Pip to face a point (in his parent's space), e.g. whoever he's talking to.
+## The screen offset is stretched back by vertical_factor, as his movement is squashed by it.
+func face_point(point: Vector2) -> void:
+	var to := point - position
+	to.y /= vertical_factor
+	if to.length() > 1.0:
+		_face(to)
+		sprite.play(gait + "_" + facing if sprite.sprite_frames.has_animation(gait + "_" + facing) else "idle_" + facing)
 
 
 func _flash_colour(colour: Color) -> void:

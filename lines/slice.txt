@@ -1,0 +1,13 @@
+# The slice's lines (BRIEF, "How it is made"). Game code reads them from here; never write lines in code.
+# Brainstorm, not canon, until the Story Room marks them canon.
+#
+# A line starting "== name" starts a conversation; the game asks for it by that name.
+# "Speaker: text" is a spoken line. A line in (brackets) is narration, with no speaker.
+# Blank lines and lines starting # are ignored.
+
+== mole_hypnotised
+Mole: ...the reeds hum. Can you hear them humming?
+(Pip waves a paw in front of the mole's goggles. He doesn't blink.)
+Mole: Mustn't go on. The humming says stay. Stay and listen.
+Mole: Stay... and listen...
+(Whatever has hold of him, talking won't break it.)

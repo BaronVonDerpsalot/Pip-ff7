@@ -2,7 +2,8 @@ class_name Villager
 extends Node2D
 ## A villager standing on a painted screen (the mole, for now). His position is where his feet touch the ground.
 ## Sized by the screen's depth numbers like Pip, lit by the same light map, and given Pip's shadow and
-## reflection (the Shadow and Reflection children reuse Pip's scripts). He idles, turning to face Pip.
+## reflection (the Shadow and Reflection children reuse Pip's scripts). He idles, turning to face Pip, and
+## when Pip is close and presses `talk`, plays his conversation from res://lines/slice.txt (DialogueBox).
 ## Hiding him behind reeds and posts is a DepthOcc under the screen's Overhead with `target` set to him.
 
 ## His height in a sprite frame, in pixels. The mole is 1.25x Pip (Pip's FRAME_HEIGHT 245 x 1.25).
@@ -13,6 +14,12 @@ extends Node2D
 @export_range(0.0, 1.0) var light_spread := 0.35
 ## Degrees past a direction's edge Pip has to move before the villager turns, so he doesn't flicker between two.
 @export var turn_margin := 10.0
+## The conversation (in res://lines/slice.txt) that plays when Pip talks to him.
+@export var conversation := "mole_hypnotised"
+## How close Pip's feet must be to talk, in Pip-heights along the ground.
+@export var talk_range := 1.1
+## How close Pip can walk to him, in Pip-heights along the ground: he stands in Pip's way.
+@export var block_radius := 0.6
 
 ## Directions with rendered sheets; the left-hand ones are mirrored (as Pip's).
 const SECTORS := ["right", "downright", "down", "downright", "right", "upright", "up", "upright"]
@@ -23,11 +30,13 @@ var gait := "idle"
 var screen: Screen
 var _sector := 2
 var _pip: Node2D
+var _box: DialogueBox
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
 
 func _ready() -> void:
+	add_to_group(&"villagers")
 	screen = _find_screen()
 	if screen != null:
 		_pip = screen.get_node_or_null("World/Pip") as Node2D
@@ -42,6 +51,46 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	_face_pip(false)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("talk") and not event.is_echo() and _box == null and in_talk_range():
+		get_viewport().set_input_as_handled()
+		_talk()
+
+
+## Whether a point (screen space) is too close to stand on: Screen.is_walkable asks every villager.
+func blocks(point: Vector2) -> bool:
+	if screen == null:
+		return false
+	var to := point - global_position
+	var vf: Variant = _pip.get("vertical_factor") if _pip != null else null
+	to.y /= vf if vf != null else 1.0
+	return to.length() < block_radius * screen.height_at(global_position.y)
+
+
+## Whether Pip is close enough to talk: ground distance between their feet, in Pip-heights.
+func in_talk_range() -> bool:
+	if _pip == null or screen == null or ScreenChanger.busy:
+		return false
+	var to := _pip.global_position - global_position
+	var vf: Variant = _pip.get("vertical_factor")
+	to.y /= vf if vf != null else 1.0
+	return to.length() <= talk_range * screen.height_at(global_position.y)
+
+
+func _talk() -> void:
+	# In the lower half of the screen the box would cover him and Pip, so it goes along the top.
+	_box = DialogueBox.open(get_tree(), conversation, global_position.y > 540.0)
+	if _box == null:
+		return
+	_face_pip(true)
+	_pip.set("talking", true)
+	if _pip.has_method("face_point"):
+		_pip.call("face_point", _pip.get_parent().to_local(global_position))
+	await _box.finished
+	_box = null
+	_pip.set("talking", false)
 
 
 ## Turns toward Pip. Up and down the screen is foreshortened, so the screen offset is stretched back
