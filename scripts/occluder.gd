@@ -12,6 +12,10 @@ extends Sprite2D
 ## the shape covers Pip only while his feet are above this line at his x, not above its own lowest pixels.
 @export var edge := PackedVector2Array()
 
+## Pixels below its `edge` line that still count as behind it. The edge is the walk area's own edge, so Pip
+## sliding along it has his feet within a pixel of the line; without this the shape flickered on and off.
+const EDGE_MARGIN := 6
+
 var _x0 := 0
 var _bottom := PackedInt32Array()  # bottom edge (screen y) per column, from _x0
 var _pip: Node2D = null
@@ -48,7 +52,7 @@ func _bottom_from_edge() -> void:
 	for i in _bottom.size():
 		var x := float(_x0 + i)
 		var f := clampf((x - a.x) / maxf(b.x - a.x, 1.0), 0.0, 1.0)
-		_bottom[i] = int(lerpf(a.y, b.y, f))
+		_bottom[i] = ceili(lerpf(a.y, b.y, f)) + EDGE_MARGIN
 
 
 func _read_bottom_edge() -> void:
