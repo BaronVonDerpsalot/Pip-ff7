@@ -1,19 +1,11 @@
 [gd_scene format=3 uid="uid://t0uwniw26db3"]
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
 [ext_resource type="Texture2D" path="res://assets/screens/stream/stream_depth.png" id="depth_map"]
+[ext_resource type="Script" path="res://scripts/depth_occluder.gd" id="depth_occ"]
 [ext_resource type="Texture2D" uid="uid://348wnrkiu6ex" path="res://assets/screens/stream/stream_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" uid="uid://jjj01s44urkd" path="res://scripts/screen_entry.gd" id="9_entry"]
-[ext_resource type="Texture2D" uid="uid://q6l08107r0vg" path="res://assets/screens/stream/stream_occ_layer1.png" id="occ_layer1"]
-[ext_resource type="Texture2D" uid="uid://dh0kufj5goqol" path="res://assets/screens/stream/stream_occ_layer2_1.png" id="occ_layer2_1"]
-[ext_resource type="Texture2D" uid="uid://634kmbcro65g" path="res://assets/screens/stream/stream_occ_layer2_2.png" id="occ_layer2_2"]
-[ext_resource type="Texture2D" uid="uid://cc1ys08mw5ghx" path="res://assets/screens/stream/stream_occ_layer2_3.png" id="occ_layer2_3"]
-[ext_resource type="Texture2D" uid="uid://bh35ly2bjtp4x" path="res://assets/screens/stream/stream_occ_layer2_4.png" id="occ_layer2_4"]
-[ext_resource type="Texture2D" uid="uid://42wokjf3r5hh" path="res://assets/screens/stream/stream_occ_layer2_5.png" id="occ_layer2_5"]
-[ext_resource type="Texture2D" uid="uid://ch7nnfwmnuo8e" path="res://assets/screens/stream/stream_occ_layer2_6.png" id="occ_layer2_6"]
-[ext_resource type="Texture2D" uid="uid://g0bkm1sfrv0m" path="res://assets/screens/stream/stream_occ_layer2_7.png" id="occ_layer2_7"]
-[ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
 [ext_resource type="Script" path="res://scripts/screen_motion.gd" id="motion_script"]
 [ext_resource type="Shader" path="res://scripts/motion_water.gdshader" id="motion_water"]
 [ext_resource type="Shader" path="res://scripts/motion_sway.gdshader" id="motion_sway"]
@@ -30,6 +22,11 @@
 [ext_resource type="Texture2D" path="res://assets/screens/stream/motion/sway_7.png" id="motion_sway_7"]
 [ext_resource type="Texture2D" path="res://assets/screens/stream/motion/sway_8.png" id="motion_sway_8"]
 [ext_resource type="Texture2D" path="res://assets/screens/stream/motion/sway_9.png" id="motion_sway_9"]
+[ext_resource type="Script" path="res://scripts/occluder.gd" id="occ_script"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_1.png" id="auto_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_2.png" id="auto_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_3.png" id="auto_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_4.png" id="auto_4"]
 
 [sub_resource type="ShaderMaterial" id="motion_water_mat"]
 shader = ExtResource("motion_water")
@@ -179,54 +176,33 @@ position = Vector2(1550, 960)
 [node name="Overhead" type="Node2D" parent="." unique_id=440063470]
 metadata/layered = true
 
-[node name="Occ_layer1" type="Sprite2D" parent="Overhead" unique_id=1247281622]
-position = Vector2(837, 532)
-texture = ExtResource("occ_layer1")
-centered = false
-script = ExtResource("occ_script")
-sort = false
-
-[node name="Occ_layer2_1" type="Sprite2D" parent="Overhead" unique_id=1534401751]
-position = Vector2(524, 261)
-texture = ExtResource("occ_layer2_1")
+[node name="Auto_1" type="Sprite2D" parent="Overhead"]
+position = Vector2(836, 530)
+texture = ExtResource("auto_1")
 centered = false
 script = ExtResource("occ_script")
 
-[node name="Occ_layer2_2" type="Sprite2D" parent="Overhead" unique_id=631892502]
-position = Vector2(837, 533)
-texture = ExtResource("occ_layer2_2")
+[node name="Auto_2" type="Sprite2D" parent="Overhead"]
+position = Vector2(1291, 504)
+texture = ExtResource("auto_2")
 centered = false
 script = ExtResource("occ_script")
 
-[node name="Occ_layer2_3" type="Sprite2D" parent="Overhead" unique_id=169713184]
-position = Vector2(1027, 623)
-texture = ExtResource("occ_layer2_3")
+[node name="Auto_3" type="Sprite2D" parent="Overhead"]
+position = Vector2(1024, 618)
+texture = ExtResource("auto_3")
 centered = false
 script = ExtResource("occ_script")
 
-[node name="Occ_layer2_4" type="Sprite2D" parent="Overhead" unique_id=1883634416]
-position = Vector2(1198, 842)
-texture = ExtResource("occ_layer2_4")
+[node name="Auto_4" type="Sprite2D" parent="Overhead"]
+position = Vector2(1026, 453)
+texture = ExtResource("auto_4")
 centered = false
 script = ExtResource("occ_script")
 
-[node name="Occ_layer2_5" type="Sprite2D" parent="Overhead" unique_id=1532668261]
-position = Vector2(1131, 862)
-texture = ExtResource("occ_layer2_5")
+[node name="DepthOcc" type="Sprite2D" parent="Overhead"]
 centered = false
-script = ExtResource("occ_script")
-
-[node name="Occ_layer2_6" type="Sprite2D" parent="Overhead" unique_id=532187943]
-position = Vector2(1296, 864)
-texture = ExtResource("occ_layer2_6")
-centered = false
-script = ExtResource("occ_script")
-
-[node name="Occ_layer2_7" type="Sprite2D" parent="Overhead" unique_id=1524107533]
-position = Vector2(1251, 1033)
-texture = ExtResource("occ_layer2_7")
-centered = false
-script = ExtResource("occ_script")
+script = ExtResource("depth_occ")
 
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=532830407]
 color = Color(1, 0.2, 0.2, 0.3)

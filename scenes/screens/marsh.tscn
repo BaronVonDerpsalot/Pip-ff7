@@ -22,6 +22,17 @@
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_5.png" id="motion_sway_5"]
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/fronds_6.png" id="motion_sway_6"]
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/motion/sway_1.png" id="motion_sway_7"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_1.png" id="auto_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_2.png" id="auto_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_3.png" id="auto_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_4.png" id="auto_4"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_5.png" id="auto_5"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_6.png" id="auto_6"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_7.png" id="auto_7"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_8.png" id="auto_8"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_9.png" id="auto_9"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_10.png" id="auto_10"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_auto_11.png" id="auto_11"]
 
 [sub_resource type="ShaderMaterial" id="motion_water_mat"]
 shader = ExtResource("motion_water")
@@ -160,16 +171,101 @@ position = Vector2(1430, 970)
 metadata/layered = true
 
 [node name="Occ_layer1_1" type="Sprite2D" parent="Overhead" unique_id=1536618821]
+visible = false
+process_mode = 4
 position = Vector2(614, 277)
 texture = ExtResource("occ_layer1_1")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Occ_layer1_2" type="Sprite2D" parent="Overhead" unique_id=2066961366]
+visible = false
+process_mode = 4
 position = Vector2(397, 484)
 texture = ExtResource("occ_layer1_2")
 centered = false
 script = ExtResource("occ_script")
+
+[node name="Auto_1" type="Sprite2D" parent="Overhead"]
+position = Vector2(785, 192)
+texture = ExtResource("auto_1")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(890, 280, 862, 319)
+
+[node name="Auto_2" type="Sprite2D" parent="Overhead"]
+position = Vector2(700, 369)
+texture = ExtResource("auto_2")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(862, 319, 786, 354)
+
+[node name="Auto_3" type="Sprite2D" parent="Overhead"]
+position = Vector2(610, 382)
+texture = ExtResource("auto_3")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(786, 354, 690, 396)
+
+[node name="Auto_4" type="Sprite2D" parent="Overhead"]
+position = Vector2(918, 866)
+texture = ExtResource("auto_4")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(1158, 1076, 1007, 945)
+
+[node name="Auto_5" type="Sprite2D" parent="Overhead"]
+position = Vector2(794, 767)
+texture = ExtResource("auto_5")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(1007, 945, 883, 839)
+
+[node name="Auto_6" type="Sprite2D" parent="Overhead"]
+position = Vector2(717, 685)
+texture = ExtResource("auto_6")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(883, 839, 806, 765)
+
+[node name="Auto_7" type="Sprite2D" parent="Overhead"]
+position = Vector2(659, 618)
+texture = ExtResource("auto_7")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(806, 765, 748, 695)
+
+[node name="Auto_8" type="Sprite2D" parent="Overhead"]
+position = Vector2(569, 590)
+texture = ExtResource("auto_8")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(748, 695, 658, 642)
+
+[node name="Auto_9" type="Sprite2D" parent="Overhead"]
+position = Vector2(491, 557)
+texture = ExtResource("auto_9")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(658, 642, 580, 575)
+
+[node name="Auto_10" type="Sprite2D" parent="Overhead"]
+position = Vector2(428, 483)
+texture = ExtResource("auto_10")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(580, 575, 513, 522)
+
+[node name="Auto_11" type="Sprite2D" parent="Overhead"]
+position = Vector2(413, 483)
+texture = ExtResource("auto_11")
+centered = false
+script = ExtResource("occ_script")
+edge = PackedVector2Array(513, 522, 465, 470)
+
+[node name="DepthOcc" type="Sprite2D" parent="Overhead"]
+centered = false
+script = ExtResource("depth_occ")
 
 [node name="DepthOcc_Mole" type="Sprite2D" parent="Overhead"]
 centered = false

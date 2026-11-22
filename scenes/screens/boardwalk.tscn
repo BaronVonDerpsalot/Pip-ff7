@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dv3iguq1miqs2"]
 [ext_resource type="Script" uid="uid://cde3qib3uf8rc" path="res://scripts/screen.gd" id="1_screen"]
 [ext_resource type="Texture2D" path="res://assets/screens/boardwalk/boardwalk_depth.png" id="depth_map"]
+[ext_resource type="Script" path="res://scripts/depth_occluder.gd" id="depth_occ"]
+[ext_resource type="Texture2D" uid="uid://cvjxwmmyovyel" path="res://assets/screens/boardwalk/boardwalk_occ_layer2.png" id="occ_layer2"]
+[ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
 [ext_resource type="Texture2D" uid="uid://bguv40sv7wsui" path="res://assets/screens/boardwalk/boardwalk_bg.jpg" id="2_bg"]
 [ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
 [ext_resource type="Script" uid="uid://bkjufts12mtxn" path="res://scripts/screen_exit.gd" id="8_exit"]
 [ext_resource type="Script" uid="uid://jjj01s44urkd" path="res://scripts/screen_entry.gd" id="9_entry"]
-[ext_resource type="Texture2D" uid="uid://dnrmxwj3yl0vd" path="res://assets/screens/boardwalk/boardwalk_occ_layer1.png" id="occ_layer1"]
-[ext_resource type="Texture2D" uid="uid://cvjxwmmyovyel" path="res://assets/screens/boardwalk/boardwalk_occ_layer2.png" id="occ_layer2"]
-[ext_resource type="Script" uid="uid://cf071nrlbloae" path="res://scripts/occluder.gd" id="occ_script"]
 [ext_resource type="Script" path="res://scripts/screen_motion.gd" id="motion_script"]
 [ext_resource type="Shader" path="res://scripts/motion_water.gdshader" id="motion_water"]
 [ext_resource type="Shader" path="res://scripts/motion_sway.gdshader" id="motion_sway"]
@@ -16,6 +16,10 @@
 [ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/sway_1.png" id="motion_sway_1"]
 [ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/sway_2.png" id="motion_sway_2"]
 [ext_resource type="Texture2D" path="res://assets/screens/boardwalk/motion/sway_3.png" id="motion_sway_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/auto/boardwalk_auto_1.png" id="auto_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/auto/boardwalk_auto_2.png" id="auto_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/auto/boardwalk_auto_3.png" id="auto_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/boardwalk/auto/boardwalk_auto_4.png" id="auto_4"]
 
 [sub_resource type="ShaderMaterial" id="motion_water_mat"]
 shader = ExtResource("motion_water")
@@ -90,22 +94,51 @@ position = Vector2(260, 930)
 [node name="Overhead" type="Node2D" parent="." unique_id=402184773]
 metadata/layered = true
 
-[node name="Occ_layer1" type="Sprite2D" parent="Overhead" unique_id=1291603777]
-position = Vector2(1261, 139)
-texture = ExtResource("occ_layer1")
-centered = false
-script = ExtResource("occ_script")
-
 [node name="Occ_layer2" type="Sprite2D" parent="Overhead" unique_id=377996890]
+visible = false
+process_mode = 4
 position = Vector2(801, 437)
 texture = ExtResource("occ_layer2")
 centered = false
 script = ExtResource("occ_script")
-sort = false
+
+[node name="Auto_1" type="Sprite2D" parent="Overhead"]
+position = Vector2(797, 626)
+texture = ExtResource("auto_1")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_2" type="Sprite2D" parent="Overhead"]
+position = Vector2(1139, 432)
+texture = ExtResource("auto_2")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_3" type="Sprite2D" parent="Overhead"]
+position = Vector2(973, 385)
+texture = ExtResource("auto_3")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_4" type="Sprite2D" parent="Overhead"]
+position = Vector2(575, 510)
+texture = ExtResource("auto_4")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="DepthOcc" type="Sprite2D" parent="Overhead"]
+centered = false
+script = ExtResource("depth_occ")
 
 [node name="WalkArea" type="Polygon2D" parent="." unique_id=925028882]
 color = Color(1, 0.2, 0.2, 0.3)
 polygon = PackedVector2Array(1282, 255, 1337, 237, 1400, 310, 1300, 390, 1210, 460, 1130, 525, 980, 610, 850, 700, 738, 786, 647, 894, 495, 1011, 330, 1080, 0, 1080, 10, 850, 170, 790, 420, 760, 560, 690, 680, 600, 860, 510, 1090, 420, 1335, 303)
+
+[node name="Gaps" type="Node2D" parent="."]
+
+[node name="PlankGap" type="Polygon2D" parent="Gaps"]
+color = Color(0.2, 0.4, 1, 0.35)
+polygon = PackedVector2Array(835, 573, 870, 552, 910, 535, 950, 549, 1018, 577, 1000, 592, 950, 621, 910, 612, 870, 601, 836, 594)
 
 [node name="Exits" type="Node2D" parent="." unique_id=1171492577]
 

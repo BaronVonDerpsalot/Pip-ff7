@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnrmxwj3yl0vd"
-path="res://.godot/imported/boardwalk_occ_layer1.png-181762b6aecd2781e5b60b0502ba87d9.ctex"
+uid="uid://dvt7y3i86dlho"
+path="res://.godot/imported/marsh_auto_8.png-d8c27e52057b2cf1f27795834c0e4344.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/screens/boardwalk/boardwalk_occ_layer1.png"
-dest_files=["res://.godot/imported/boardwalk_occ_layer1.png-181762b6aecd2781e5b60b0502ba87d9.ctex"]
+source_file="res://assets/screens/marsh/auto/marsh_auto_8.png"
+dest_files=["res://.godot/imported/marsh_auto_8.png-d8c27e52057b2cf1f27795834c0e4344.ctex"]
 
 [params]
 

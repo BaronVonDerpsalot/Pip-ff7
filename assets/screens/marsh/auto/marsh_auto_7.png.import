@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dh0kufj5goqol"
-path="res://.godot/imported/stream_occ_layer2_1.png-23cc191480ad7ed4b7dacdfd33c7ab24.ctex"
+uid="uid://w2ws57h6h3v1"
+path="res://.godot/imported/marsh_auto_7.png-6ae8700df554c444118093d67b0715ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/screens/stream/stream_occ_layer2_1.png"
-dest_files=["res://.godot/imported/stream_occ_layer2_1.png-23cc191480ad7ed4b7dacdfd33c7ab24.ctex"]
+source_file="res://assets/screens/marsh/auto/marsh_auto_7.png"
+dest_files=["res://.godot/imported/marsh_auto_7.png-6ae8700df554c444118093d67b0715ef.ctex"]
 
 [params]
 

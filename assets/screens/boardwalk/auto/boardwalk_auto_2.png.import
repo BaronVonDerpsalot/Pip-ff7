@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cc1ys08mw5ghx"
-path="res://.godot/imported/stream_occ_layer2_3.png-259dea6da4778775a0b74c9097cfe573.ctex"
+uid="uid://xvbtnhpyc84v"
+path="res://.godot/imported/boardwalk_auto_2.png-86427bf692f205e02149d270ded79a4c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/screens/stream/stream_occ_layer2_3.png"
-dest_files=["res://.godot/imported/stream_occ_layer2_3.png-259dea6da4778775a0b74c9097cfe573.ctex"]
+source_file="res://assets/screens/boardwalk/auto/boardwalk_auto_2.png"
+dest_files=["res://.godot/imported/boardwalk_auto_2.png-86427bf692f205e02149d270ded79a4c.ctex"]
 
 [params]
 

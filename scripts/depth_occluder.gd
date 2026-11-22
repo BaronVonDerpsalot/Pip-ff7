@@ -25,6 +25,10 @@ var _screen: Screen
 var _depth: Image  # the depth map on the CPU, to read the ground at Pip's feet
 var _loop: Node
 var _mat: ShaderMaterial
+## Gaps in what Pip walks on (the screen's Gaps node: Polygon2D shapes in screen space), such as a missing
+## plank he can step over. The ground is never read inside them: it's filled in from the walk surface
+## behind and in front.
+var _gaps: Array[PackedVector2Array] = []
 
 
 func _ready() -> void:
@@ -37,7 +41,13 @@ func _ready() -> void:
 	if _depth.is_compressed():
 		_depth.decompress()
 	_loop = screen.get_node_or_null("Loop")
-	var bg := screen.get_node_or_null("Background") as Sprite2D
+	var gaps := screen.get_node_or_null("Gaps")
+	if gaps != null:
+		gaps.visible = false
+		for g in gaps.get_children():
+			if g is Polygon2D:
+				_gaps.append((g as Polygon2D).global_transform * (g as Polygon2D).polygon)
+	var bg :=screen.get_node_or_null("Background") as Sprite2D
 	if texture == null and bg != null:
 		texture = bg.texture
 	centered = false
@@ -103,16 +113,65 @@ func _process(_delta: float) -> void:
 
 ## Nearness of the ground at Pip's feet: the middle value of points along his feet, counting only points in
 ## the walk area, so a post or reed he stands behind (outside it) is never taken for the ground he's on.
+## Ground gets nearer row by row toward the camera, so a row farther than the walk area just behind him,
+## with nearer ground in front, is a gap seen through (water between planks): the ground is lifted to the
+## nearest row behind him. On ordinary ground this changes nothing.
+## If every point at his feet is in a marked gap (Gaps node), the ground is blended from the nearest rows of
+## walk surface behind and in front, by how far he is between them.
 func _ground_at(feet: Vector2, s: float) -> float:
+	var g := _row_at(feet.x, feet.y + 2.0, s)
+	var behind := -1.0
+	var ahead := -1.0
+	var first_behind := NAN
+	var first_ahead := NAN
+	var d_behind := 0.0
+	var d_ahead := 0.0
+	var dy := 4.0
+	while dy < GAP_REACH * s:
+		var b := _row_at(feet.x, feet.y + 2.0 - dy, s)
+		var a := _row_at(feet.x, feet.y + 2.0 + dy, s)
+		if not is_nan(b):
+			behind = maxf(behind, b)
+			if is_nan(first_behind):
+				first_behind = b
+				d_behind = dy
+		if not is_nan(a):
+			ahead = maxf(ahead, a)
+			if is_nan(first_ahead):
+				first_ahead = a
+				d_ahead = dy
+		dy += 4.0
+	if is_nan(g):
+		if not is_nan(first_behind) and not is_nan(first_ahead):
+			return lerpf(first_behind, first_ahead, d_behind / (d_behind + d_ahead))
+		return _nearness(feet)
+	if behind >= 0.0 and ahead >= 0.0:
+		g = maxf(g, minf(behind, ahead))
+	return g
+
+
+## How far (frame pixels) behind and in front of Pip's feet the gap check looks.
+const GAP_REACH := 80.0
+
+
+## The middle nearness of walk-area points (outside any gap) along a row through Pip's feet, or NAN if none.
+func _row_at(x: float, y: float, s: float) -> float:
 	var values: Array[float] = []
 	for k in range(-7, 8):
-		var p := feet + Vector2(k * 10.0 * s, 2.0)
-		if _screen == null or _screen.is_walkable(p):
+		var p := Vector2(x + k * 10.0 * s, y)
+		if (_screen == null or _screen.is_walkable(p)) and not _in_gap(p):
 			values.append(_nearness(p))
 	if values.is_empty():
-		return _nearness(feet)
+		return NAN
 	values.sort()
 	return values[values.size() >> 1]
+
+
+func _in_gap(p: Vector2) -> bool:
+	for poly in _gaps:
+		if Geometry2D.is_point_in_polygon(p, poly):
+			return true
+	return false
 
 
 func _nearness(p: Vector2) -> float:

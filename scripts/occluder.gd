@@ -8,6 +8,9 @@ extends Sprite2D
 ## on a still screen it draws its own pixels, cut from the painting.
 
 @export var sort := true
+## Screen points of the line this shape stands behind, for bank shapes from tools/depth/auto_occ.py: with it,
+## the shape covers Pip only while his feet are above this line at his x, not above its own lowest pixels.
+@export var edge := PackedVector2Array()
 
 var _x0 := 0
 var _bottom := PackedInt32Array()  # bottom edge (screen y) per column, from _x0
@@ -20,7 +23,9 @@ func _ready() -> void:
 	var screen: Node = owner if owner != null else get_parent().get_parent()
 	_pip = screen.get_node_or_null("World/Pip") as Node2D
 	_loop = screen.get_node_or_null("Loop")
-	if sort:
+	if sort and edge.size() >= 2:
+		_bottom_from_edge()
+	elif sort:
 		_read_bottom_edge()
 	if _loop != null:
 		_mat = ShaderMaterial.new()
@@ -28,6 +33,22 @@ func _ready() -> void:
 		var size := Vector2(texture.get_width(), texture.get_height())
 		_mat.set_shader_parameter("rect", Vector4(global_position.x, global_position.y, size.x, size.y))
 		material = _mat
+
+
+## The bottom edge per column from the `edge` line, held level past its ends.
+func _bottom_from_edge() -> void:
+	var a := edge[0]
+	var b := edge[edge.size() - 1]
+	if a.x > b.x:
+		var t := a
+		a = b
+		b = t
+	_x0 = int(global_position.x)
+	_bottom.resize(texture.get_width())
+	for i in _bottom.size():
+		var x := float(_x0 + i)
+		var f := clampf((x - a.x) / maxf(b.x - a.x, 1.0), 0.0, 1.0)
+		_bottom[i] = int(lerpf(a.y, b.y, f))
 
 
 func _read_bottom_edge() -> void:
