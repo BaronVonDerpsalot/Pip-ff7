@@ -6,6 +6,7 @@ The engine is Godot 4.7, scripted in GDScript. It is newer than most examples on
 
 ## Engine rules
 - Layout: `scenes/` (screens in `scenes/screens/`), `scripts/`, `assets/` (art by subject, e.g. `assets/screens/marsh/`, `assets/pip/`), `tools/` (scripts we run by hand, not used by the game). Builds go to `../builds/`, outside git (`docs/recipes/delivery.md`).
+- Next to the repo, outside git: `../kept-assets/`, `../builds/`, `../preprocessing/` and `../segment-env/`. What each holds and how it's used is in the recipe that names it. Bring into `assets/` only what the game needs.
 - Change project settings and input actions only in the Godot editor or with Ziva's `update_project_setting`. Never edit `project.godot` by hand.
 - Game code reads the input actions (`move_left`, `move_right`, `move_up`, `move_down`), never raw keys or buttons, so the pad and keyboard stay equal.
 - Typed GDScript: declare types (`var speed := 1.5`, `func f(x: int) -> void`).
