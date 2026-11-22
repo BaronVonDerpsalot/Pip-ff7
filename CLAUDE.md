@@ -46,6 +46,12 @@ If you are about to write a fact that already lives somewhere, link to it instea
 ## Done means
 You ran it, looked at the result, and said on the card what you saw. For game work that means running the scene (Ziva's `run_scene`, with inputs if it needs walking) and looking at the screenshot, not just checking the code parses. For anything a person has to judge by eye or by feel, the card goes to them instead of being ticked.
 
+## Commits
+- Pull before you start. Commit and push when a card's work is done, before ticking it.
+- One outcome per commit, and the message says the outcome. A DECISIONS line goes in with the doc it changes, never with unrelated work.
+- Stage files by name after checking `git status`. Never `git add -A` or `git add .`.
+- Nothing is left uncommitted at the end of a session: commit it, or say on the card what's left and why.
+
 ## Never
 - Commit `.blend` files, raw Flow output or secrets.
 - Generate Pip. He comes from the Blender rig. The one exception is a cinematic too complex to stage in-engine, which Flow may make (DECISIONS, 2026-11-21).

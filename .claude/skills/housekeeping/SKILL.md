@@ -27,4 +27,4 @@ Go through every item. For each, note **OK** or **a finding** with the evidence 
 ## Report
 Show one list grouped as **Fix now** (small, clearly right), **Needs a yes** (scope, decisions, deletions, anything visible to Mark), and **Park** (for later milestones). Each item: what's wrong, the evidence, the proposed change.
 
-Then make only what's approved. Re-run anything you changed (a scene, a tool) and look at the result. Don't commit unless asked. Leave one comment on the closing milestone's ◆ card listing what changed, signed `— <agent> (<person>)`.
+Then make only what's approved. Re-run anything you changed (a scene, a tool) and look at the result. Commit the approved fixes as their own commit. Leave one comment on the closing milestone's ◆ card listing what changed, signed `— <agent> (<person>)`.

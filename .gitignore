@@ -5,3 +5,6 @@
 # Ziva (per-machine Godot AI editor plugin, ~58 MB of binaries; each person installs it themselves)
 addons/ziva_agent/
 .ziva/
+
+# Per-person Claude settings
+.claude/settings.local.json
