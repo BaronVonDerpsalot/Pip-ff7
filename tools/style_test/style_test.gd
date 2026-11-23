@@ -2,13 +2,15 @@ extends Screen
 ## Style test bench (not part of the game): Pip walks the paths of trial paintings so their look can be
 ## judged with him in front. Run tools/style_test/style_test.tscn.
 ##
-## Drop images (PNG, JPG or WebP, ideally 16:9) into Pip FF7/kept-assets/style-tests/, outside git.
+## Drop images (PNG, JPG or WebP, ideally 16:9) into Pip FF7/kept-assets/style-tests/, outside git, or into
+## a subfolder of it for a round of tests (the label shows which); names must be unique across folders.
 ## Tab flips to the next one, Shift+Tab back. F shows the walk area.
 ##
 ## Each image can have files of its own in style-tests/bench/, with the image's name:
 ##   <name>.jpg        the painting at 1920x1080 (otherwise the original is stretched to fit)
-##   <name>.json       {"walk": [x, y, ...], "start": [x, y], "far_y", "far_height", "near_y", "near_height"}
-##                     in 1920x1080 pixels: where Pip can walk, where he starts, and his size (Screen)
+##   <name>.json       {"walk": [x, y, ...], "start": [x, y], "far_y", "far_height", "near_y", "near_height",
+##                     "gaps"?: [[x, y, ...], ...]} in 1920x1080 pixels: where Pip can walk, where he starts,
+##                     his size (Screen), and holes in what he walks on (the Gaps node, depth_occluder.gd)
 ##   <name>_depth.png  depth map of <name>.jpg (tools/depth/depth.py), so nearer things hide him
 ##   <name>_shapes/    hide-Pip shapes as PNGs cut from <name>.jpg, listed in manifest.json (see _add_shapes)
 ## Without a json he can walk anywhere; without a depth map nothing hides him.
@@ -27,10 +29,15 @@ var _note := ""
 ## Runs before Pip's and the occluder's _ready, which read the painting, depth map and depth numbers.
 func _enter_tree() -> void:
 	var dir := ProjectSettings.globalize_path("res://").path_join(FOLDER).simplify_path()
-	for file in DirAccess.get_files_at(dir):
-		if file.get_extension().to_lower() in ["png", "jpg", "jpeg", "webp"]:
-			_files.append(dir.path_join(file))
-	_files.sort()
+	# The folder and each subfolder but bench/ (one round of tests each); contact sheets are skipped.
+	for sub in [""] + Array(DirAccess.get_directories_at(dir)):
+		if sub == "bench":
+			continue
+		var files: Array = Array(DirAccess.get_files_at(dir.path_join(sub)))
+		files.sort()
+		for file: String in files:
+			if file.get_extension().to_lower() in ["png", "jpg", "jpeg", "webp"] and not "contact_sheet" in file:
+				_files.append(dir.path_join(sub).path_join(file))
 	if _files.is_empty():
 		_note = "No images yet. Put some in %s, then run this again." % dir
 		_drop_occluder()
@@ -59,6 +66,18 @@ func _enter_tree() -> void:
 			points.append(Vector2(walk[i], walk[i + 1]))
 		($WalkArea as Polygon2D).polygon = points
 		($World/Pip as Node2D).position = Vector2(data.start[0], data.start[1])
+		# Holes in what Pip walks on, for the depth occluder (a Gaps node, as on a screen).
+		if data.has("gaps") and not (data.gaps as Array).is_empty():
+			var gaps := Node2D.new()
+			gaps.name = "Gaps"
+			for g: Array in data.gaps:
+				var shape := Polygon2D.new()
+				var gp := PackedVector2Array()
+				for i in range(0, g.size(), 2):
+					gp.append(Vector2(g[i], g[i + 1]))
+				shape.polygon = gp
+				gaps.add_child(shape)
+			add_child(gaps)
 		extras.append("path")
 	var shapes := _add_shapes(bench.path_join(stem + "_shapes"))
 	if shapes > 0:
@@ -69,6 +88,9 @@ func _enter_tree() -> void:
 		extras.append("depth")
 	else:
 		_drop_occluder()
+	var folder := _files[_index].get_base_dir().get_file()
+	if folder != "style-tests":
+		stem = folder + "/" + stem
 	_note = "%d/%d  %s  [%s]   (Tab: next, Shift+Tab: back, F: walk area)" % [
 			_index + 1, _files.size(), stem, ", ".join(extras) if extras else "no path or depth"]
 
@@ -90,7 +112,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_tree().reload_current_scene.call_deferred()
 
 
-## Hide-Pip shapes from <dir>/manifest.json ([{"file", "x", "y", "sort"?}], files beside it), each a sprite
+## Hide-Pip shapes from <dir>/manifest.json ([{"file", "x", "y", "sort"?, "edge"?: [ax, ay, bx, by]}], files beside it), each a sprite
 ## with the game's own occluder (scripts/occluder.gd: the bottom-edge rule, or always over with sort false).
 func _add_shapes(dir: String) -> int:
 	var manifest := dir.path_join("manifest.json")
@@ -106,6 +128,9 @@ func _add_shapes(dir: String) -> int:
 		sprite.position = Vector2(entry.x, entry.y)
 		sprite.set_script(preload("res://scripts/occluder.gd"))
 		sprite.set("sort", entry.get("sort", true))
+		if entry.has("edge"):
+			var e: Array = entry.edge
+			sprite.set("edge", PackedVector2Array([Vector2(e[0], e[1]), Vector2(e[2], e[3])]))
 		overhead.add_child(sprite)
 		overhead.move_child(sprite, 0)  # under the depth occluder, like Auto_ sprites on a screen
 	return entries.size()
