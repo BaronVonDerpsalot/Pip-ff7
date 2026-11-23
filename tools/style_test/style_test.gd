@@ -10,6 +10,7 @@ extends Screen
 ##   <name>.json       {"walk": [x, y, ...], "start": [x, y], "far_y", "far_height", "near_y", "near_height"}
 ##                     in 1920x1080 pixels: where Pip can walk, where he starts, and his size (Screen)
 ##   <name>_depth.png  depth map of <name>.jpg (tools/depth/depth.py), so nearer things hide him
+##   <name>_shapes/    hide-Pip shapes as PNGs cut from <name>.jpg, listed in manifest.json (see _add_shapes)
 ## Without a json he can walk anywhere; without a depth map nothing hides him.
 
 const FOLDER := "../kept-assets/style-tests"
@@ -59,6 +60,9 @@ func _enter_tree() -> void:
 		($WalkArea as Polygon2D).polygon = points
 		($World/Pip as Node2D).position = Vector2(data.start[0], data.start[1])
 		extras.append("path")
+	var shapes := _add_shapes(bench.path_join(stem + "_shapes"))
+	if shapes > 0:
+		extras.append("%d shapes" % shapes)
 	var depth_path := bench.path_join(stem + "_depth.png")
 	if FileAccess.file_exists(depth_path):
 		depth_map = ImageTexture.create_from_image(Image.load_from_file(depth_path))
@@ -84,6 +88,27 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_focus_next"):
 		_index += 1
 		get_tree().reload_current_scene.call_deferred()
+
+
+## Hide-Pip shapes from <dir>/manifest.json ([{"file", "x", "y", "sort"?}], files beside it), each a sprite
+## with the game's own occluder (scripts/occluder.gd: the bottom-edge rule, or always over with sort false).
+func _add_shapes(dir: String) -> int:
+	var manifest := dir.path_join("manifest.json")
+	if not FileAccess.file_exists(manifest):
+		return 0
+	var overhead := $Overhead
+	var entries: Array = JSON.parse_string(FileAccess.get_file_as_string(manifest))
+	for entry: Dictionary in entries:
+		var sprite := Sprite2D.new()
+		sprite.name = "Shape_" + String(entry.file).get_basename()
+		sprite.texture = ImageTexture.create_from_image(Image.load_from_file(dir.path_join(entry.file)))
+		sprite.centered = false
+		sprite.position = Vector2(entry.x, entry.y)
+		sprite.set_script(preload("res://scripts/occluder.gd"))
+		sprite.set("sort", entry.get("sort", true))
+		overhead.add_child(sprite)
+		overhead.move_child(sprite, 0)  # under the depth occluder, like Auto_ sprites on a screen
+	return entries.size()
 
 
 func _drop_occluder() -> void:
