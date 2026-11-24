@@ -1,0 +1,283 @@
+<title>Pip Style Browser</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: slim filter bar, a wall of paintings (one scene at a time, so styles compare like for like), a viewer with the rating panel beside it. */
+:root{--bg:#f3f4f0;--panel:#fbfcf9;--fg:#1f2621;--dim:#5d675f;--line:#d5dad2;--accent:#2f6f5e;--accent-fg:#fff;--fav:#a4580a;--shade:rgba(20,26,22,.08);
+--display:"Bricolage Grotesque",Georgia,serif;--body:Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171c19;--panel:#1f2622;--fg:#e6ebe5;--dim:#98a49b;--line:#343d37;--accent:#79c2ab;--accent-fg:#10211b;--fav:#f0ac5c;--shade:rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171c19;--panel:#1f2622;--fg:#e6ebe5;--dim:#98a49b;--line:#343d37;--accent:#79c2ab;--accent-fg:#10211b;--fav:#f0ac5c;--shade:rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--body)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px;max-width:1800px;margin:0 auto}
+h1{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
+p{margin:0}.dim{color:var(--dim)}
+.head{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline;margin-bottom:14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+button,select,input,textarea{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+button{cursor:pointer}button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px}
+label.f{display:inline-flex;gap:6px;align-items:center;color:var(--dim);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:18px 16px;margin-top:14px}
+.card{min-width:0}
+.thumb{display:block;width:100%;padding:0;border:0;border-radius:4px;overflow:hidden;position:relative;background:var(--shade);aspect-ratio:16/9}
+.thumb>img:first-child{width:100%;height:100%;object-fit:fill;display:block}
+.meta{display:flex;gap:8px;align-items:baseline;justify-content:space-between;padding:6px 2px 0}
+.meta b{font-weight:600}
+#vctl{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+button.star{border:0;background:none;padding:0 4px;font-size:20px;line-height:1;color:var(--dim)}
+button.star[aria-pressed="true"]{background:none;color:var(--fav)}
+.tags{font-size:12.5px;color:var(--dim);padding:0 2px;display:flex;flex-wrap:wrap;gap:2px 10px}
+.pill{color:var(--accent);font-weight:500}
+.v{position:fixed;inset:0;background:var(--bg);z-index:20;display:grid;grid-template-columns:minmax(0,1fr) 340px;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.v[hidden]{display:none}
+.left{position:relative;min-width:0;min-height:0;background:#0d100e;padding-left:env(safe-area-inset-left,0px)}
+.v .stage{position:relative;overflow:auto;display:flex;width:100%;height:100%}
+.over{position:absolute;display:flex;gap:6px;top:8px;right:8px}
+.over button{background:rgba(20,26,22,.72);color:#eef2ec;border-color:rgba(255,255,255,.25);min-width:40px;min-height:36px;font-size:13px}
+.v:not(.wide) .over .nav{display:none}
+.v.wide{grid-template-columns:minmax(0,1fr)}
+.v.wide .side{display:none}
+.v.wide .left{padding-right:env(safe-area-inset-right,0px)}
+.v.wide .over{right:calc(8px + env(safe-area-inset-right,0px))}
+.frame{position:relative;margin:auto;flex:none;overflow:hidden}
+.frame img.pic{display:block;width:100%;height:100%}
+.pip{position:absolute;max-width:none;touch-action:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.frame .pip{cursor:grab}.frame .pip:active{cursor:grabbing}
+.thumb .pip{pointer-events:none}
+.side{overflow:auto;padding:14px max(16px,env(safe-area-inset-right,0px)) 20px 16px;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:14px}
+.side h2{font:700 22px/1.2 var(--display);margin:0}
+.side h3{font:600 13px/1.3 var(--body);color:var(--dim);margin:0 0 4px}
+.side textarea{width:100%;min-height:90px;resize:vertical;background:var(--bg)}
+code{font:12.5px/1.5 ui-monospace,Consolas,monospace;display:block;background:var(--bg);border-radius:4px;padding:8px;white-space:pre-wrap;overflow-wrap:anywhere}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.note{font-size:13px;color:var(--dim)}
+#status{font-size:13px;color:var(--dim)}
+#copybox{width:100%;min-height:120px;margin-top:8px}
+/* Phone upright: painting on top, panel below. Phone sideways: painting 66%, panel 33%, or painting alone when the panel is hidden. */
+@media (max-width:900px) and (orientation:portrait){.v{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.v:not(.wide) .left{aspect-ratio:16/9;max-width:100%}.v.wide{grid-template-rows:minmax(0,1fr)}.side{border-left:0;border-top:1px solid var(--line);padding-left:max(16px,env(safe-area-inset-left,0px))}}
+@media (max-height:560px) and (orientation:landscape){.v:not(.wide){grid-template-columns:minmax(0,2fr) minmax(0,1fr)}.side{font-size:13px;gap:10px;padding-top:8px;padding-left:10px;padding-right:max(10px,env(safe-area-inset-right,0px))}.side h2{font-size:17px}.side button{padding:5px 8px}.side button.star{padding:0 4px}.side .note{font-size:12px}.side textarea{min-height:60px;font-size:16px}}
+@media (max-width:700px),(max-height:560px){#filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}#filters>*{flex:none}}
+</style>
+<div class="wrap">
+ <div class="head"><h1>Pip Style Browser</h1><p class="dim" id="count"></p><span id="status" role="status"></span></div>
+ <div class="bar"><span class="seg" id="scenes" role="group" aria-label="Scene"></span>
+  <button id="pipAll" aria-pressed="true">Pip in front</button>
+  <button id="copy">Copy my picks as text</button></div>
+ <div class="bar" id="filters"></div>
+ <textarea id="copybox" hidden readonly aria-label="Picks as text"></textarea>
+ <div class="grid" id="grid"></div>
+</div>
+<div class="v" id="viewer" hidden>
+ <div class="left"><div class="stage" id="stage"><div class="frame" id="frame"></div></div>
+  <div class="over"><button class="nav" id="oprev" aria-label="Previous style">←</button><button class="nav" id="onext" aria-label="Next style">→</button><button class="nav" id="oclose">Close</button><button id="vpanel" aria-expanded="true">Hide panel</button></div></div>
+ <aside class="side">
+  <div class="row"><button id="prev" aria-label="Previous style">←</button><button id="next" aria-label="Next style">→</button><button id="close">Close</button><span class="note">Arrow keys, Esc</span></div>
+  <div class="row"><h2 id="vname"></h2><button class="star" id="vstar" aria-label="Favourite">★</button></div>
+  <div class="tags" id="vtags"></div>
+  <div><h3>Scene</h3><div class="seg" id="vscenes" role="group" aria-label="Scene"></div></div>
+  <div><h3>Size</h3><div class="seg" id="vsize" role="group" aria-label="Size"></div></div>
+  <div class="row"><button id="vpip" aria-pressed="true">Pip in front</button><button id="vpose">Turn Pip</button><button id="vctl">Hold for current look</button></div>
+  <p class="note">Drag Pip to move him. He scales with distance as in the game, but isn't lit by the scene here.</p>
+  <div><h3>Like it?</h3><div class="seg" id="rlike" role="group" aria-label="Like it"></div></div>
+  <div><h3>Reads at small size?</h3><div class="seg" id="rsmall" role="group" aria-label="Reads at small size"></div></div>
+  <div><h3><label for="vcomment">Comment</label></h3><textarea id="vcomment" placeholder="What works, what doesn't"></textarea><p class="note" id="vsaved"></p></div>
+  <div><h3>Prompt snippet</h3><code id="vprompt"></code></div>
+ </aside>
+</div>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(() => {
+const D = JSON.parse(document.getElementById('data').textContent), $ = id => document.getElementById(id);
+const byId = Object.fromEntries(D.styles.map(s => [s.id, s])), have = new Set(D.have);
+const S = { scene: D.scenes[0].id, pip: true, filters: {}, q: '', fav: false, unrated: false, open: null, size: 'fit', pose: 0, pos: {}, wide: false };
+try { const s = JSON.parse(localStorage.getItem('pipstyle') || '{}'); if (D.scenes.some(x => x.id === s.scene)) S.scene = s.scene; S.wide = !!s.wide; } catch (e) {}
+const keep = () => { try { localStorage.setItem('pipstyle', JSON.stringify({ scene: S.scene, wide: S.wide })); } catch (e) {} };
+let picks = {}, db = null, saveTimer = null;
+const el = (t, p = {}, ...k) => { const e = document.createElement(t); for (const [a, b] of Object.entries(p)) a === 'class' ? e.className = b : e[a] = b; e.append(...k); return e; };
+const src = (style, scene) => have.has(style + '__' + scene) ? `img/${style}__${scene}.webp` : null;
+const pick = id => picks[id] || {};
+const pressed = (b, on) => b.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+// Pip, sized by the game's own rule: his height runs from far_height at far_y to near_height at near_y (1920x1080).
+const pipHeight = (sc, y) => sc.far_height + (sc.near_height - sc.far_height) * (y - sc.far_y) / (sc.near_y - sc.far_y);
+function addPip(frame, scId, scale, drag) {
+  const sc = D.scenes.find(s => s.id === scId), img = el('img', { class: 'pip', alt: 'Pip', draggable: false });
+  const pos = S.pos[scId] || (S.pos[scId] = sc.pip.slice());
+  const place = () => { const k = Math.max(20, pipHeight(sc, pos[1])) / 245 * scale;
+    img.src = D.poses[S.pose]; img.style.width = img.style.height = 320 * k + 'px';
+    img.style.left = pos[0] * scale - 160 * k + 'px'; img.style.top = pos[1] * scale - 277 * k + 'px'; };
+  place(); frame.append(img);
+  if (!drag) return;
+  let from = null;
+  img.onpointerdown = e => { from = [e.clientX, e.clientY, pos[0], pos[1]]; img.setPointerCapture(e.pointerId); e.preventDefault(); };
+  img.onpointermove = e => { if (!from) return;
+    pos[0] = Math.min(1920, Math.max(0, from[2] + (e.clientX - from[0]) / scale));
+    pos[1] = Math.min(1078, Math.max(sc.far_y, from[3] + (e.clientY - from[1]) / scale)); place(); };
+  img.onpointerup = img.onpointercancel = () => { from = null; };
+}
+
+// Saving: one document per style, picks/<style id>, one write at a time.
+const busy = {};
+async function save(id, patch) {
+  picks[id] = { ...pick(id), ...patch };
+  if (!db) { $('status').textContent = 'Not connected: changes stay on this screen only.'; return; }
+  if (busy[id]) { busy[id].again = true; return; }
+  busy[id] = { again: false };
+  do {
+    busy[id].again = false;
+    try {
+      await db.doc('picks/' + id).set({ ...picks[id], at: new Date().toISOString() });
+      $('status').textContent = 'Saved';
+      if (S.open === id) $('vsaved').textContent = 'Saved';
+    } catch (e) { $('status').textContent = 'Not saved: ' + (e && e.code || 'error'); }
+  } while (busy[id].again);
+  delete busy[id];
+}
+async function connect() {
+  db = window.claude ? await window.claude.use('db') : null;
+  if (!db) { $('status').textContent = 'Picks are not saved in this view.'; return; }
+  $('status').textContent = 'Loading your picks…';
+  const timer = setTimeout(() => { $('status').textContent = "Can't reach your saved picks yet."; }, 10000);
+  db.collection('picks').onSnapshot(snap => {
+    if (!snap.metadata.fromCache) { clearTimeout(timer); if (/Loading|reach/.test($('status').textContent)) $('status').textContent = ''; }
+    const next = {};
+    for (const d of snap.docs) next[d.id] = d.data();
+    for (const id of Object.keys(busy)) next[id] = picks[id];
+    picks = next;
+    if (S.open) drawPanel(); else drawGrid();
+  }, e => { clearTimeout(timer); $('status').textContent = 'Picks unavailable: ' + e.code; });
+}
+
+const traitKeys = ['linework', 'shading', 'texture', 'palette', 'influence'];
+function shown() {
+  return D.styles.filter(s => {
+    for (const k of traitKeys) if (S.filters[k] && s.traits[k] !== S.filters[k]) return false;
+    if (S.filters.group && s.group !== S.filters.group) return false;
+    const p = pick(s.id);
+    if (S.fav && !p.fav) return false;
+    if (S.unrated && p.like) return false;
+    return !S.q || (s.label + ' ' + s.prompt + ' ' + (p.comment || '')).toLowerCase().includes(S.q);
+  });
+}
+function drawFilters() {
+  const bar = $('filters');
+  for (const k of ['group', ...traitKeys]) {
+    const vals = [...new Set(D.styles.map(s => k === 'group' ? s.group : s.traits[k]))].sort();
+    const sel = el('select', { id: 'f_' + k }, el('option', { value: '', textContent: 'Any' }), ...vals.map(v => el('option', { value: v, textContent: v })));
+    sel.onchange = () => { S.filters[k] = sel.value; drawGrid(); };
+    bar.append(el('label', { class: 'f' }, k[0].toUpperCase() + k.slice(1), sel));
+  }
+  const q = el('input', { id: 'f_q', type: 'search', placeholder: 'Search', ariaLabel: 'Search styles' });
+  q.oninput = () => { S.q = q.value.toLowerCase().trim(); drawGrid(); };
+  const fav = el('button', { textContent: 'Favourites' }), un = el('button', { textContent: 'Not yet rated' });
+  fav.onclick = () => { S.fav = !S.fav; pressed(fav, S.fav); drawGrid(); };
+  un.onclick = () => { S.unrated = !S.unrated; pressed(un, S.unrated); drawGrid(); };
+  pressed(fav, false); pressed(un, false); bar.append(q, fav, un);
+}
+function segs(box, items, current, set) {
+  box.textContent = '';
+  for (const [v, label] of items) {
+    const b = el('button', { textContent: label });
+    pressed(b, current === v); b.onclick = () => set(current === v ? null : v); box.append(b);
+  }
+}
+const LIKE = [['no', 'No'], ['maybe', 'Maybe'], ['yes', 'Yes'], ['love', 'Love it']], SMALL = [['no', 'No'], ['ok', 'Just about'], ['yes', 'Yes']];
+const nameOf = (list, v) => (list.find(x => x[0] === v) || [])[1];
+const sceneSegs = (box, after) => segs(box, D.scenes.map(s => [s.id, s.label]), S.scene, v => { if (v) { S.scene = v; keep(); after(); } });
+function drawGrid() {
+  sceneSegs($('scenes'), drawGrid);
+  const list = shown(), g = $('grid');
+  g.textContent = '';
+  const favs = D.styles.filter(s => pick(s.id).fav).length, rated = D.styles.filter(s => pick(s.id).like).length;
+  $('count').textContent = `${list.length} of ${D.styles.length} styles · ${rated} rated · ${favs} favourites`;
+  for (const s of list) {
+    const u = src(s.id, S.scene), b = el('button', { class: 'thumb', ariaLabel: 'Open ' + s.label });
+    b.append(u ? el('img', { src: u, alt: '', loading: 'lazy' }) : el('span', { class: 'note', textContent: 'No sample' }));
+    b.onclick = () => openStyle(s.id);
+    const p = pick(s.id), t = el('div', { class: 'tags' });
+    if (p.like) t.append(el('span', { class: 'pill', textContent: nameOf(LIKE, p.like) }));
+    if (p.small) t.append(el('span', { class: 'pill', textContent: 'Small: ' + nameOf(SMALL, p.small) }));
+    if (p.comment) t.append(el('span', { class: 'pill', textContent: 'Commented' }));
+    t.append(...traitKeys.map(k => el('span', { textContent: s.traits[k] })));
+    const star = el('button', { class: 'star', textContent: '★', ariaLabel: 'Favourite ' + s.label });
+    pressed(star, !!p.fav);
+    star.onclick = () => { save(s.id, { fav: !pick(s.id).fav }); drawGrid(); };
+    g.append(el('div', { class: 'card' }, b, el('div', { class: 'meta' }, el('b', { textContent: s.label }), star), t));
+    if (u && S.pip) addPip(b, S.scene, b.clientWidth / 1920, false);
+  }
+  if (!list.length) g.append(el('p', { class: 'dim', textContent: 'No styles match these filters.' }));
+}
+function openStyle(id) {
+  flush(); S.open = id; $('viewer').hidden = false; document.body.style.overflow = 'hidden';
+  draw(); drawPanel(true);
+}
+function closeViewer() { flush(); S.open = null; $('viewer').hidden = true; document.body.style.overflow = ''; drawGrid(); }
+function step(d) {
+  const l = shown(), i = l.findIndex(s => s.id === S.open);
+  if (l.length) openStyle(l[(i + d + l.length) % l.length].id);
+}
+function draw(styleId) {
+  const id = styleId || S.open, u = src(id, S.scene), st = $('stage'), f = $('frame');
+  f.textContent = '';
+  const w = st.clientWidth, h = st.clientHeight;
+  const k = S.size === 'game' ? 1 : S.size === 'small' ? Math.min(480, w) / 1920 : Math.min(w / 1920, h / 1080);
+  f.style.width = 1920 * k + 'px'; f.style.height = 1080 * k + 'px';
+  f.append(u ? el('img', { class: 'pic', src: u, alt: byId[id].label }) : el('p', { class: 'note', textContent: 'No sample for this scene.' }));
+  if (u && S.pip) addPip(f, S.scene, k, true);
+}
+function drawPanel(fresh) {
+  const s = byId[S.open], p = pick(s.id);
+  $('vname').textContent = s.label; pressed($('vstar'), !!p.fav);
+  $('vtags').textContent = '';
+  $('vtags').append(el('span', { class: 'pill', textContent: s.group }), ...traitKeys.map(k => el('span', { textContent: s.traits[k] })));
+  sceneSegs($('vscenes'), () => { draw(); drawPanel(); });
+  segs($('vsize'), [['fit', 'Fit'], ['game', 'In-game (1920×1080)'], ['small', 'Small (480 wide)']], S.size, v => { if (v) { S.size = v; draw(); drawPanel(); } });
+  segs($('rlike'), LIKE, p.like, v => { save(s.id, { like: v }); drawPanel(); });
+  segs($('rsmall'), SMALL, p.small, v => { save(s.id, { small: v }); drawPanel(); });
+  if (fresh || (document.activeElement !== $('vcomment') && !saveTimer)) $('vcomment').value = p.comment || '';
+  $('vprompt').textContent = s.prompt;
+  if (fresh) $('vsaved').textContent = '';
+  pressed($('vpip'), S.pip);
+}
+function flush() {
+  if (!saveTimer) return;
+  clearTimeout(saveTimer); saveTimer = null;
+  if (S.open) save(S.open, { comment: $('vcomment').value });
+}
+$('vcomment').oninput = () => { $('vsaved').textContent = ''; clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700); };
+$('vcomment').onblur = flush;
+$('vstar').onclick = () => { save(S.open, { fav: !pick(S.open).fav }); drawPanel(); };
+$('prev').onclick = $('oprev').onclick = () => step(-1); $('next').onclick = $('onext').onclick = () => step(1); $('close').onclick = $('oclose').onclick = closeViewer;
+function setWide(on) {
+  S.wide = on; $('viewer').classList.toggle('wide', on);
+  $('vpanel').textContent = on ? 'Show panel' : 'Hide panel'; $('vpanel').setAttribute('aria-expanded', String(!on));
+  if (S.open) draw();
+}
+$('vpanel').onclick = () => { setWide(!S.wide); keep(); };
+$('vctl').oncontextmenu = e => e.preventDefault();
+setWide(S.wide);
+$('pipAll').onclick = $('vpip').onclick = () => { S.pip = !S.pip; pressed($('pipAll'), S.pip); if (S.open) { draw(); drawPanel(); } else drawGrid(); };
+$('vpose').onclick = () => { S.pose = (S.pose + 1) % D.poses.length; draw(); };
+$('vctl').onpointerdown = e => { $('vctl').setPointerCapture(e.pointerId); draw('miyazaki_control'); };
+$('vctl').onpointerup = $('vctl').onpointercancel = () => draw();
+addEventListener('keydown', e => {
+  if (!S.open || /TEXTAREA|INPUT|SELECT/.test(e.target.tagName)) return;
+  if (e.key === 'ArrowRight') step(1);
+  if (e.key === 'ArrowLeft') step(-1);
+  if (e.key === 'Escape') closeViewer();
+});
+let lastWidth = innerWidth;
+addEventListener('resize', () => { if (S.open) draw(); else if (innerWidth !== lastWidth) drawGrid(); lastWidth = innerWidth; });
+$('copy').onclick = async () => {
+  const lines = D.styles.map(s => [s, pick(s.id)]).filter(([, p]) => p.fav || p.like || p.small || p.comment)
+    .map(([s, p]) => `${p.fav ? '★ ' : ''}${s.label} (${s.id}): like ${p.like || '-'}, reads small ${p.small || '-'}${p.comment ? '\n   ' + p.comment.replace(/\n/g, ' ') : ''}`);
+  const text = lines.length ? lines.join('\n') : 'No picks yet.';
+  try { await navigator.clipboard.writeText(text); $('status').textContent = 'Copied'; }
+  catch (e) { const b = $('copybox'); b.hidden = false; b.value = text; b.select(); $('status').textContent = 'Select and copy the text below.'; }
+};
+drawFilters(); drawGrid(); connect();
+})();
+</script>

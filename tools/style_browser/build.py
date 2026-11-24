@@ -1,0 +1,65 @@
+"""Build the style browser page (an artifact) from prompts.json and a folder or zip of samples.
+
+  ../segment-env/venv/Scripts/python.exe tools/style_browser/build.py <samples folder or zip> <out folder>
+
+Samples are ComfyUI's output files (tools/style_browser/comfy_queue.js): <style>__<scene>_<counter>_.png, the newest
+counter of each kept. Writes <out>/index.html, <out>/img/<style>__<scene>.webp and <out>/pip_<n>.png (Pip's idle
+frames). Publish index.html with img/ and the pip files beside it, declaring the db capability. The person's picks
+are in the artifact's database, picks/<style id>: {fav, like: no|maybe|yes|love, small: no|ok|yes, comment}.
+"""
+import io
+import json
+import os
+import re
+import sys
+import zipfile
+
+from PIL import Image
+
+# Where Pip stands (feet, 1920x1080) and his size, from each screen's scene file. The reedbed has no scene yet, so it
+# has the Screen defaults and a spot on its path.
+SCREEN = {
+    "boardwalk": dict(label="Boardwalk (easy)", pip=[590, 790], far_y=250, far_height=70, near_y=1075, near_height=270),
+    "marsh": dict(label="Marsh (medium)", pip=[1200, 985], far_y=265, far_height=50, near_y=1075, near_height=260),
+    "stream": dict(label="Stream (hard)", pip=[1400, 800], far_y=330, far_height=60, near_y=1075, near_height=270),
+    "reedbed": dict(label="Reedbed (hardest)", pip=[680, 800], far_y=215, far_height=72, near_y=1075, near_height=253),
+}
+POSES = ["pip_idle_downright_sheet.png", "pip_idle_down_sheet.png", "pip_idle_right_sheet.png"]
+NAME = re.compile(r"(?:^|/)([a-z0-9_]+?)__([a-z0-9]+)_(\d+)_\.png$")
+
+
+def main() -> None:
+    src, out = sys.argv[1], sys.argv[2]
+    data = json.load(open("tools/style_browser/prompts.json", encoding="utf8"))
+    os.makedirs(f"{out}/img", exist_ok=True)
+    if zipfile.is_zipfile(src):
+        z = zipfile.ZipFile(src)
+        items = [(n, (lambda n=n: z.read(n))) for n in z.namelist()]
+    else:
+        items = [(os.path.join(r, f).replace("\\", "/"), (lambda p=os.path.join(r, f): open(p, "rb").read()))
+                 for r, _, fs in os.walk(src) for f in fs]
+    newest = {}
+    for name, load in items:
+        m = NAME.search(name)
+        if m:
+            key, n = f"{m[1]}__{m[2]}", int(m[3])
+            if key not in newest or n > newest[key][0]:
+                newest[key] = (n, load)
+    wanted = {f"{s['id']}__{c['id']}" for s in data["styles"] for c in data["scenes"]}
+    have = sorted(wanted & set(newest))
+    for key in have:
+        image = Image.open(io.BytesIO(newest[key][1]())).convert("RGB")
+        image.save(f"{out}/img/{key}.webp", quality=86, method=6)
+    poses = []
+    for i, sheet in enumerate(POSES):
+        Image.open(f"assets/pip/{sheet}").crop((0, 0, 320, 320)).save(f"{out}/pip_{i}.png")
+        poses.append(f"pip_{i}.png")
+    page = {"styles": data["styles"], "have": have, "poses": poses,
+            "scenes": [{"id": c["id"], **SCREEN[c["id"]]} for c in data["scenes"]]}
+    html = open("tools/style_browser/page.html", encoding="utf8").read()
+    html = html.replace("__DATA__", json.dumps(page).replace("<", "\\u003c"))
+    open(f"{out}/index.html", "w", encoding="utf8", newline="\n").write(html)
+    print(f"{len(have)} of {len(wanted)} samples; missing: {sorted(wanted - set(have))[:12]}")
+
+
+main()

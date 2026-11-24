@@ -1,12 +1,13 @@
 {
- "about": "Style browser grid: every scene x every style = 100 images. Prompt = style.prompt + ', ' + scene.content + ', ' + shared_suffix. Method: DECISIONS 2026-11-24. Settings are starting points.",
+ "about": "Style browser grid: every scene x every style = 100 images. Prompt = style.prompt + ', ' + scene.content + ', ' + shared_suffix. Method: DECISIONS 2026-11-24. Settings are what round 1 ran with (2026-11-24).",
  "shared_suffix": "high angle view looking down at about 45 degrees, thin band of distant marsh and sky at the top, warm low sunset light, a few small red and white mushrooms, occasional puddles, no people, no text",
  "negative": "photo, photorealistic, 3d render, people, person, text, watermark, signature, frame, border",
  "settings": {
   "model": "SDXL base 1.0: sdxl/sd_xl_base_1.0_0.9vae.safetensors on MimicPC (no refiner: it pushes detail towards photo)",
-  "controlnet": "SDXL depth ControlNet, strength ~0.6, end ~0.8 (too strong flattens the style)",
+  "controlnet": "xinsir depth: SDXL/controlnet-depth-sdxl-1.0/diffusion_pytorch_model.safetensors in models/controlnet on MimicPC (from ComfyUI-Manager), strength 0.6, end 0.8 (too strong flattens the style)",
   "size": "1344x768",
-  "steps": 30,
+  "steps": 24,
+  "sampler": "dpmpp_2m karras",
   "cfg": 6,
   "seed": "one fixed seed per scene, same for every style"
  },
