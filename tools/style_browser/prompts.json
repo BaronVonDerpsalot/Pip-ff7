@@ -13,27 +13,31 @@
  "scenes": [
   {
    "id": "boardwalk",
+   "seed": 4101,
    "segment": "easy",
    "depth": "assets/screens/boardwalk/boardwalk_depth.png",
    "content": "an old broken wooden boardwalk on posts crossing marsh water, dense tall reeds and cattails behind, a large still puddle reflecting the sky, muddy ground"
   },
   {
    "id": "marsh",
+   "seed": 4102,
    "segment": "medium",
    "depth": "assets/screens/marsh/marsh_depth.png",
    "content": "a winding muddy path between low mossy grassy banks, shallow pools of still water, cattails in the foreground, a large weeping willow with exposed roots on the right"
   },
   {
    "id": "stream",
+   "seed": 4103,
    "segment": "hard",
    "depth": "assets/screens/stream/stream_depth.png",
    "content": "a small rickety wooden footbridge over a narrow stream, tall cattails and reeds framing both sides, a grassy path"
   },
   {
    "id": "reedbed",
+   "seed": 4104,
    "segment": "hardest",
-   "depth": "TODO: made from preprocessing/reedbed/ still (see board)",
-   "content": "a narrow path through a dense reedbed, tall overlapping reeds and cattails on all sides, glimpses of water (check against the still)"
+   "depth": "tools/style_browser/reedbed_depth.png",
+   "content": "a winding rutted muddy path with puddles and low mossy tufts through a dense reedbed, tall overlapping reeds and cattails on both sides, a still lily-pad pond in the reeds on the right, open reed marsh stretching to the horizon"
   }
  ],
  "styles": [
