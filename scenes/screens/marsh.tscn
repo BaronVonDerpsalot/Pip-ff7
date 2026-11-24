@@ -44,8 +44,6 @@
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_20.png" id="auto_bank_20"]
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_21.png" id="auto_bank_21"]
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_22.png" id="auto_bank_22"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_23.png" id="auto_bank_23"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_24.png" id="auto_bank_24"]
 
 [sub_resource type="ShaderMaterial" id="motion_water_mat"]
 shader = ExtResource("motion_water")
@@ -224,122 +222,110 @@ centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_5" type="Sprite2D" parent="Overhead"]
-position = Vector2(907, 326)
+position = Vector2(1403, 415)
 texture = ExtResource("auto_bank_5")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_6" type="Sprite2D" parent="Overhead"]
-position = Vector2(916, 366)
+position = Vector2(1354, 416)
 texture = ExtResource("auto_bank_6")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_7" type="Sprite2D" parent="Overhead"]
-position = Vector2(1403, 415)
+position = Vector2(1366, 429)
 texture = ExtResource("auto_bank_7")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_8" type="Sprite2D" parent="Overhead"]
-position = Vector2(1354, 416)
+position = Vector2(1722, 454)
 texture = ExtResource("auto_bank_8")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_9" type="Sprite2D" parent="Overhead"]
-position = Vector2(1366, 429)
+position = Vector2(745, 476)
 texture = ExtResource("auto_bank_9")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_10" type="Sprite2D" parent="Overhead"]
-position = Vector2(1722, 454)
+position = Vector2(1086, 522)
 texture = ExtResource("auto_bank_10")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_11" type="Sprite2D" parent="Overhead"]
-position = Vector2(745, 476)
+position = Vector2(1343, 550)
 texture = ExtResource("auto_bank_11")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_12" type="Sprite2D" parent="Overhead"]
-position = Vector2(1086, 522)
+position = Vector2(1203, 557)
 texture = ExtResource("auto_bank_12")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_13" type="Sprite2D" parent="Overhead"]
-position = Vector2(1355, 558)
+position = Vector2(1483, 570)
 texture = ExtResource("auto_bank_13")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_14" type="Sprite2D" parent="Overhead"]
-position = Vector2(1209, 560)
+position = Vector2(1210, 577)
 texture = ExtResource("auto_bank_14")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_15" type="Sprite2D" parent="Overhead"]
-position = Vector2(1495, 582)
+position = Vector2(1099, 585)
 texture = ExtResource("auto_bank_15")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_16" type="Sprite2D" parent="Overhead"]
-position = Vector2(1217, 587)
+position = Vector2(1317, 595)
 texture = ExtResource("auto_bank_16")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_17" type="Sprite2D" parent="Overhead"]
-position = Vector2(1111, 593)
+position = Vector2(1703, 613)
 texture = ExtResource("auto_bank_17")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_18" type="Sprite2D" parent="Overhead"]
-position = Vector2(1329, 607)
+position = Vector2(1657, 663)
 texture = ExtResource("auto_bank_18")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_19" type="Sprite2D" parent="Overhead"]
-position = Vector2(1715, 625)
+position = Vector2(805, 329)
 texture = ExtResource("auto_bank_19")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_20" type="Sprite2D" parent="Overhead"]
-position = Vector2(1669, 675)
+position = Vector2(722, 344)
 texture = ExtResource("auto_bank_20")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_21" type="Sprite2D" parent="Overhead"]
-position = Vector2(806, 333)
+position = Vector2(614, 380)
 texture = ExtResource("auto_bank_21")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_22" type="Sprite2D" parent="Overhead"]
-position = Vector2(730, 346)
+position = Vector2(465, 481)
 texture = ExtResource("auto_bank_22")
-centered = false
-script = ExtResource("occ_script")
-
-[node name="Auto_bank_23" type="Sprite2D" parent="Overhead"]
-position = Vector2(619, 380)
-texture = ExtResource("auto_bank_23")
-centered = false
-script = ExtResource("occ_script")
-
-[node name="Auto_bank_24" type="Sprite2D" parent="Overhead"]
-position = Vector2(465, 483)
-texture = ExtResource("auto_bank_24")
 centered = false
 script = ExtResource("occ_script")
 

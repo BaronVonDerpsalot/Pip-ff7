@@ -1,7 +1,10 @@
 """Put shapes from a text-prompt mask (SAM 3 on ComfyUI, tools/depth/comfy/<screen>/) into a screen as Auto_ sprites
 on the bottom-edge rule (scripts/occluder.gd), beside whatever Auto_ sprites are already there.
 
-  ../segment-env/venv/Scripts/python.exe tools/depth/mask_shapes.py <screen> <kind> <mask.png> [--banks] [--clear]
+  ../segment-env/venv/Scripts/python.exe tools/depth/mask_shapes.py <screen> <kind> <mask.png>[,<mask.png>...] [--banks] [--clear]
+
+Several masks, comma-separated, are joined first: e.g. SAM 3's mask plus a hand-marked part it missed
+(tools/depth/comfy/marsh/marsh_bank_hand_mask.png, the raised mossy top of the bank by the bend, 2026-11-24).
 
 <kind> names the set (reeds, bank, ...): sprites go to assets/screens/<screen>/auto/<screen>_<kind>_<k>.png and
 nodes Auto_<kind>_<k> under Overhead, just above DepthOcc. A rerun replaces that kind only. --clear also removes
@@ -26,12 +29,14 @@ import cut_banks  # noqa: E402
 MIN_PX = 64
 
 
-def pieces(screen: str, mask_path: str, banks: bool, tscn: str) -> list:
-    m = np.array(Image.open(mask_path).convert("L")) >= 128
+def pieces(mask_path: str, banks: bool, tscn: str, painting: str) -> list:
+    m = np.zeros((cut_banks.H, cut_banks.W), bool)
+    for p in mask_path.split(","):
+        m |= np.array(Image.open(p).convert("L")) >= 128
     if not banks:
         n, lab = cv2.connectedComponents(m.astype(np.uint8))
         return [lab == i for i in range(1, n) if (lab == i).sum() >= MIN_PX]
-    return cut_banks.cut(m, cut_banks.walk_polygon(tscn))[0]
+    return cut_banks.cut(cut_banks.grow_ink(m, painting), cut_banks.walk_polygon(tscn))[0]
 
 
 def main() -> None:
@@ -47,10 +52,10 @@ def main() -> None:
     asset_dir = f"assets/screens/{screen}/auto"
     os.makedirs(asset_dir, exist_ok=True)
     for f in os.listdir(asset_dir):
-        if f.startswith(f"{screen}_{kind}_"):
+        if f.startswith(f"{screen}_{kind}_") and f.endswith(".png"):  # .import files keep their uids
             os.remove(os.path.join(asset_dir, f))
 
-    shapes = pieces(screen, mask_path, banks, tscn)
+    shapes = pieces(mask_path, banks, tscn, painting)
     entries = []
     for k, mk in enumerate(shapes, 1):
         ys, xs = np.where(mk)

@@ -6,6 +6,7 @@ using the screen's walk area. Scoring material for now: it writes label files fo
 Why: SAM 3 finds the banks well, but merges each bank with whatever lies below it, into shapes that reach the
 bottom of the screen. On the bottom-edge rule (scripts/occluder.gd) such a shape hides Pip almost anywhere.
 
+First the mask grows up to 12 px into dark ink (grow_ink), to take in the bank's outline.
 Rules, per column of the painting:
   behind  a bank pixel outside the walk area with walk area anywhere below it. Pip on that lower path is in front
           of it. This covers a wedge of bank in the crook of a bend: in front of the upper path, behind the lower.
@@ -20,7 +21,8 @@ Writes <out>_labels.png (16-bit, piece ids from 1), <out>_bottoms.npy (one botto
 <out>_preview.jpg (behind blue, front green, walk edge white). Score with
   LABELS=<out>_labels.png python ../kept-assets/depth-trials/score_mix.py <gt dir> <screen> <depth.png>
 
-Marsh, 2026-11-24 (DA V2 Large depth): main bank 66.9% of Affinity, Pip hidden wrongly 0.09%. Illustrator's Depth
+Marsh, 2026-11-24 (DA V2 Large depth): main bank 79.7% of Affinity, Pip hidden wrongly 0.13% (66.9% / 0.09%
+before growing into the ink). Illustrator's Depth
 banks (non-commercial licence): 71.6% / 0.12%. The raw mask: 67% / 3.3%.
 """
 import os
@@ -76,6 +78,17 @@ def bottom_line(mk: np.ndarray) -> np.ndarray:
     return b
 
 
+def grow_ink(m: np.ndarray, painting: str, px: int = 12, dark: int = 55) -> np.ndarray:
+    """Grow the mask up to px pixels, stepping only through pixels darker than `dark` (0-255 grey). SAM 3 stops
+    just inside a bank's inked outline, and along the path that outline is the lip that cuts Pip's legs
+    (2026-11-24: marsh main bank 66.9% -> 79.7% of Affinity, Pip hidden wrongly 0.09% -> 0.13%)."""
+    g = np.array(Image.open(painting).convert("L")) < dark
+    m = m.copy()
+    for _ in range(px):
+        m |= cv2.dilate(m.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool) & g
+    return m
+
+
 def cut(m: np.ndarray, poly: np.ndarray) -> tuple:
     """The mask's pieces (boolean arrays, 64 px or more) and their kinds ("behind" or "front"), and the walk area."""
     walk = np.zeros((H, W), np.uint8)
@@ -106,7 +119,7 @@ def cut(m: np.ndarray, poly: np.ndarray) -> tuple:
 def main() -> None:
     tscn_path, mask_path, out, painting = sys.argv[1:5]
     poly = walk_polygon(open(tscn_path, encoding="utf-8").read())
-    m = np.array(Image.open(mask_path).convert("L")) >= 128
+    m = grow_ink(np.array(Image.open(mask_path).convert("L")) >= 128, painting)
     pieces, kinds, walk = cut(m, poly)
     labels = np.zeros((H, W), np.int32)
     bottoms = []
