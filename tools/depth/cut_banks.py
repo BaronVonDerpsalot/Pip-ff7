@@ -89,8 +89,10 @@ def grow_ink(m: np.ndarray, painting: str, px: int = 12, dark: int = 55) -> np.n
     return m
 
 
-def cut(m: np.ndarray, poly: np.ndarray) -> tuple:
-    """The mask's pieces (boolean arrays, 64 px or more) and their kinds ("behind" or "front"), and the walk area."""
+def cut(m: np.ndarray, poly: np.ndarray, raised: np.ndarray | None = None) -> tuple:
+    """The mask's pieces (boolean arrays, 64 px or more) and their kinds ("behind" or "front"), and the walk area.
+    `raised`: bank a person has marked as raised. Inside the walk area too it follows the column rule (behind if
+    there's walk area below it), instead of the lip rule, so Pip standing in it is hidden by it."""
     walk = np.zeros((H, W), np.uint8)
     cv2.fillPoly(walk, [poly.round().astype(np.int32)], 1)
     walk = walk.astype(bool)
@@ -102,9 +104,11 @@ def cut(m: np.ndarray, poly: np.ndarray) -> tuple:
             continue
         walk_below = np.r_[(np.flip(np.cumsum(np.flip(w))) > 0)[1:], False]
         outside = m[:, x] & ~w
+        if raised is not None:
+            outside |= raised[:, x]
         behind[outside & walk_below, x] = True
         front[outside & ~walk_below, x] = True
-    front |= m & walk & facing_lip(poly, walk)
+    front |= m & walk & facing_lip(poly, walk) & ~behind
     pieces, kinds = [], []
     for kind, cls in (("behind", behind), ("front", front)):
         n, lab = cv2.connectedComponents(cls.astype(np.uint8))

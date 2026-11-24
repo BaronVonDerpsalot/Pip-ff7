@@ -42,8 +42,6 @@
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_18.png" id="auto_bank_18"]
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_19.png" id="auto_bank_19"]
 [ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_20.png" id="auto_bank_20"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_21.png" id="auto_bank_21"]
-[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_22.png" id="auto_bank_22"]
 
 [sub_resource type="ShaderMaterial" id="motion_water_mat"]
 shader = ExtResource("motion_water")
@@ -216,7 +214,7 @@ centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_4" type="Sprite2D" parent="Overhead"]
-position = Vector2(631, 320)
+position = Vector2(606, 320)
 texture = ExtResource("auto_bank_4")
 centered = false
 script = ExtResource("occ_script")
@@ -306,26 +304,14 @@ centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_19" type="Sprite2D" parent="Overhead"]
-position = Vector2(805, 329)
+position = Vector2(614, 380)
 texture = ExtResource("auto_bank_19")
 centered = false
 script = ExtResource("occ_script")
 
 [node name="Auto_bank_20" type="Sprite2D" parent="Overhead"]
-position = Vector2(722, 344)
-texture = ExtResource("auto_bank_20")
-centered = false
-script = ExtResource("occ_script")
-
-[node name="Auto_bank_21" type="Sprite2D" parent="Overhead"]
-position = Vector2(614, 380)
-texture = ExtResource("auto_bank_21")
-centered = false
-script = ExtResource("occ_script")
-
-[node name="Auto_bank_22" type="Sprite2D" parent="Overhead"]
 position = Vector2(465, 481)
-texture = ExtResource("auto_bank_22")
+texture = ExtResource("auto_bank_20")
 centered = false
 script = ExtResource("occ_script")
 

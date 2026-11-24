@@ -1,10 +1,12 @@
 """Put shapes from a text-prompt mask (SAM 3 on ComfyUI, tools/depth/comfy/<screen>/) into a screen as Auto_ sprites
 on the bottom-edge rule (scripts/occluder.gd), beside whatever Auto_ sprites are already there.
 
-  ../segment-env/venv/Scripts/python.exe tools/depth/mask_shapes.py <screen> <kind> <mask.png>[,<mask.png>...] [--banks] [--clear]
+  ../segment-env/venv/Scripts/python.exe tools/depth/mask_shapes.py <screen> <kind> <mask.png>[,<mask.png>...]
+      [--banks [--raised=<mask.png>]] [--clear]
 
-Several masks, comma-separated, are joined first: e.g. SAM 3's mask plus a hand-marked part it missed
-(tools/depth/comfy/marsh/marsh_bank_hand_mask.png, the raised mossy top of the bank by the bend, 2026-11-24).
+Several masks, comma-separated, are joined first. --raised adds bank a person has marked as raised that SAM 3
+missed (tools/depth/comfy/marsh/marsh_bank_hand_mask.png, the mossy bank by the bend, 2026-11-24): it counts
+inside the walk area too, so Pip standing in it is hidden by it.
 
 <kind> names the set (reeds, bank, ...): sprites go to assets/screens/<screen>/auto/<screen>_<kind>_<k>.png and
 nodes Auto_<kind>_<k> under Overhead, just above DepthOcc. A rerun replaces that kind only. --clear also removes
@@ -29,20 +31,29 @@ import cut_banks  # noqa: E402
 MIN_PX = 64
 
 
-def pieces(mask_path: str, banks: bool, tscn: str, painting: str) -> list:
+def load(paths: str) -> np.ndarray:
     m = np.zeros((cut_banks.H, cut_banks.W), bool)
-    for p in mask_path.split(","):
+    for p in paths.split(","):
         m |= np.array(Image.open(p).convert("L")) >= 128
+    return m
+
+
+def pieces(mask_path: str, banks: bool, tscn: str, painting: str, raised_path: str | None) -> list:
+    m = load(mask_path)
     if not banks:
         n, lab = cv2.connectedComponents(m.astype(np.uint8))
         return [lab == i for i in range(1, n) if (lab == i).sum() >= MIN_PX]
-    return cut_banks.cut(cut_banks.grow_ink(m, painting), cut_banks.walk_polygon(tscn))[0]
+    raised = load(raised_path) if raised_path else None
+    if raised is not None:
+        m |= raised
+    return cut_banks.cut(cut_banks.grow_ink(m, painting), cut_banks.walk_polygon(tscn), raised)[0]
 
 
 def main() -> None:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     screen, kind, mask_path = args
     banks, clear = "--banks" in sys.argv, "--clear" in sys.argv
+    raised_path = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--raised=")), None)
     scene_path = f"scenes/screens/{screen}.tscn"
     tscn = open(scene_path, encoding="utf-8").read()
     bg = re.search(rf'path="res://(assets/screens/{screen}/[^"]+_bg\.jpg)"', tscn)
@@ -55,7 +66,7 @@ def main() -> None:
         if f.startswith(f"{screen}_{kind}_") and f.endswith(".png"):  # .import files keep their uids
             os.remove(os.path.join(asset_dir, f))
 
-    shapes = pieces(mask_path, banks, tscn, painting)
+    shapes = pieces(mask_path, banks, tscn, painting, raised_path)
     entries = []
     for k, mk in enumerate(shapes, 1):
         ys, xs = np.where(mk)
