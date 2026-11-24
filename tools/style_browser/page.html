@@ -26,7 +26,7 @@ label.f{display:inline-flex;gap:6px;align-items:center;color:var(--dim);font-siz
 .thumb>img:first-child{width:100%;height:100%;object-fit:fill;display:block}
 .meta{display:flex;gap:8px;align-items:baseline;justify-content:space-between;padding:6px 2px 0}
 .meta b{font-weight:600}
-#vctl{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.hold{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 button.star{border:0;background:none;padding:0 4px;font-size:20px;line-height:1;color:var(--dim)}
 button.star[aria-pressed="true"]{background:none;color:var(--fav)}
 .tags{font-size:12.5px;color:var(--dim);padding:0 2px;display:flex;flex-wrap:wrap;gap:2px 10px}
@@ -38,6 +38,7 @@ button.star[aria-pressed="true"]{background:none;color:var(--fav)}
 .over{position:absolute;display:flex;gap:6px;top:8px;right:8px}
 .over button{background:rgba(20,26,22,.72);color:#eef2ec;border-color:rgba(255,255,255,.25);min-width:40px;min-height:36px;font-size:13px}
 .v:not(.wide) .over .nav{display:none}
+.over button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
 .v.wide{grid-template-columns:minmax(0,1fr)}
 .v.wide .side{display:none}
 .v.wide .left{padding-right:env(safe-area-inset-right,0px)}
@@ -47,6 +48,15 @@ button.star[aria-pressed="true"]{background:none;color:var(--fav)}
 .pip{position:absolute;max-width:none;touch-action:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
 .frame .pip{cursor:grab}.frame .pip:active{cursor:grabbing}
 .thumb .pip{pointer-events:none}
+.frame img.cmp{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.split{position:absolute;top:0;bottom:0;width:32px;margin-left:-16px;cursor:ew-resize;touch-action:none;z-index:3}
+.split::before{content:"";position:absolute;left:15px;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 4px rgba(0,0,0,.7)}
+.split::after{content:"↔";position:absolute;left:0;top:50%;width:32px;height:32px;margin-top:-16px;border-radius:50%;background:#fff;color:#1f2621;font:600 16px/32px var(--body);text-align:center;box-shadow:0 1px 5px rgba(0,0,0,.6)}
+.split:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.split[hidden]{display:none}
+.lab{position:absolute;bottom:8px;max-width:46%;padding:2px 8px;border-radius:4px;background:rgba(20,26,22,.72);color:#eef2ec;font-size:12.5px;pointer-events:none;z-index:2}
+.lab.l{left:8px}.lab.r{right:8px}.lab[hidden]{display:none}
+#vcmp{max-width:100%;width:100%}
 .side{overflow:auto;padding:14px max(16px,env(safe-area-inset-right,0px)) 20px 16px;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:14px}
 .side h2{font:700 22px/1.2 var(--display);margin:0}
 .side h3{font:600 13px/1.3 var(--body);color:var(--dim);margin:0 0 4px}
@@ -66,20 +76,25 @@ code{font:12.5px/1.5 ui-monospace,Consolas,monospace;display:block;background:va
  <div class="bar"><span class="seg" id="scenes" role="group" aria-label="Scene"></span>
   <button id="pipAll" aria-pressed="true">Pip in front</button>
   <button id="copy">Copy my picks as text</button></div>
+ <div class="bar" id="setbar" hidden><label class="f">Model</label><span class="seg" id="sets" role="group" aria-label="Model"></span></div>
  <div class="bar" id="filters"></div>
  <textarea id="copybox" hidden readonly aria-label="Picks as text"></textarea>
  <div class="grid" id="grid"></div>
 </div>
 <div class="v" id="viewer" hidden>
  <div class="left"><div class="stage" id="stage"><div class="frame" id="frame"></div></div>
-  <div class="over"><button class="nav" id="oprev" aria-label="Previous style">←</button><button class="nav" id="onext" aria-label="Next style">→</button><button class="nav" id="oclose">Close</button><button id="vpanel" aria-expanded="true">Hide panel</button></div></div>
+  <div class="over"><button class="nav" id="oprev" aria-label="Previous style">←</button><button class="nav" id="onext" aria-label="Next style">→</button><button class="nav" id="oslide" aria-pressed="false">Slider</button><button class="nav hold" id="ohold">Hold</button><button class="nav" id="oclose">Close</button><button id="vpanel" aria-expanded="true">Hide panel</button></div></div>
  <aside class="side">
-  <div class="row"><button id="prev" aria-label="Previous style">←</button><button id="next" aria-label="Next style">→</button><button id="close">Close</button><span class="note">Arrow keys, Esc</span></div>
+  <div class="row"><button id="prev" aria-label="Previous style">←</button><button id="next" aria-label="Next style">→</button><button id="close">Close</button><span class="note">Arrow keys, C to compare, Esc</span></div>
   <div class="row"><h2 id="vname"></h2><button class="star" id="vstar" aria-label="Favourite">★</button></div>
   <div class="tags" id="vtags"></div>
   <div><h3>Scene</h3><div class="seg" id="vscenes" role="group" aria-label="Scene"></div></div>
+  <div id="vsetbox" hidden><h3>Model</h3><div class="seg" id="vsets" role="group" aria-label="Model"></div></div>
   <div><h3>Size</h3><div class="seg" id="vsize" role="group" aria-label="Size"></div></div>
-  <div class="row"><button id="vpip" aria-pressed="true">Pip in front</button><button id="vpose">Turn Pip</button><button id="vctl">Hold for current look</button></div>
+  <div class="row"><button id="vpip" aria-pressed="true">Pip in front</button><button id="vpose">Turn Pip</button></div>
+  <div><h3><label for="vcmp">Compare with</label></h3><select id="vcmp"></select>
+   <div class="row" style="margin-top:6px"><button id="vslide" aria-pressed="false">Slider</button><button class="hold" id="vhold">Hold to compare</button></div>
+   <p class="note" id="vcmpnote"></p></div>
   <p class="note">Drag Pip to move him. He scales with distance as in the game, but isn't lit by the scene here.</p>
   <div><h3>Like it?</h3><div class="seg" id="rlike" role="group" aria-label="Like it"></div></div>
   <div><h3>Reads at small size?</h3><div class="seg" id="rsmall" role="group" aria-label="Reads at small size"></div></div>
@@ -91,13 +106,21 @@ code{font:12.5px/1.5 ui-monospace,Consolas,monospace;display:block;background:va
 <script>
 (() => {
 const D = JSON.parse(document.getElementById('data').textContent), $ = id => document.getElementById(id);
-const byId = Object.fromEntries(D.styles.map(s => [s.id, s])), have = new Set(D.have);
-const S = { scene: D.scenes[0].id, pip: true, filters: {}, q: '', fav: false, unrated: false, open: null, size: 'fit', pose: 0, pos: {}, wide: false };
-try { const s = JSON.parse(localStorage.getItem('pipstyle') || '{}'); if (D.scenes.some(x => x.id === s.scene)) S.scene = s.scene; S.wide = !!s.wide; } catch (e) {}
-const keep = () => { try { localStorage.setItem('pipstyle', JSON.stringify({ scene: S.scene, wide: S.wide })); } catch (e) {} };
+const byId = Object.fromEntries(D.styles.map(s => [s.id, s])), sets = Object.fromEntries(D.sets.map(x => [x.id, { ...x, have: new Set(x.have) }]));
+const S = { scene: D.scenes[0].id, pip: true, filters: {}, q: '', fav: false, unrated: false, open: null, size: 'fit', pose: 0, pos: {}, wide: false, set: D.sets[0].id, cmp: 'game', slide: false, at: 50 };
+// What a style can be compared with: 'game' (our painting), 'set:<id>' (the same style from another model), 'style:<id>' (another style).
+function cmpOk(v) { const [k, id] = String(v).split(':'); return k === 'game' || (k === 'set' && !!sets[id]) || (k === 'style' && !!byId[id]); }
+try { const s = JSON.parse(localStorage.getItem('pipstyle') || '{}'); if (D.scenes.some(x => x.id === s.scene)) S.scene = s.scene; S.wide = !!s.wide; S.slide = !!s.slide; if (sets[s.set]) S.set = s.set; if (cmpOk(s.cmp)) S.cmp = s.cmp; } catch (e) {}
+const keep = () => { try { localStorage.setItem('pipstyle', JSON.stringify({ scene: S.scene, wide: S.wide, set: S.set, cmp: S.cmp, slide: S.slide })); } catch (e) {} };
 let picks = {}, db = null, saveTimer = null;
 const el = (t, p = {}, ...k) => { const e = document.createElement(t); for (const [a, b] of Object.entries(p)) a === 'class' ? e.className = b : e[a] = b; e.append(...k); return e; };
-const src = (style, scene) => have.has(style + '__' + scene) ? `img/${style}__${scene}.webp` : null;
+const src = (style, scene, set = S.set) => sets[set].have.has(style + '__' + scene) ? `${sets[set].dir}/${style}__${scene}.webp` : null;
+function compared() {
+  const [k, id] = S.cmp.split(':'), sc = D.scenes.find(x => x.id === S.scene);
+  if (k === 'game') return { u: sc.painting, label: sc.painting_label };
+  if (k === 'set') return id === S.set ? { u: null, same: true } : { u: src(S.open, S.scene, id), label: sets[id].label };
+  return id === S.open ? { u: null, same: true } : { u: src(id, S.scene), label: byId[id].label };
+}
 const pick = id => picks[id] || {};
 const pressed = (b, on) => b.setAttribute('aria-pressed', on ? 'true' : 'false');
 
@@ -187,7 +210,9 @@ function segs(box, items, current, set) {
 const LIKE = [['no', 'No'], ['maybe', 'Maybe'], ['yes', 'Yes'], ['love', 'Love it']], SMALL = [['no', 'No'], ['ok', 'Just about'], ['yes', 'Yes']];
 const nameOf = (list, v) => (list.find(x => x[0] === v) || [])[1];
 const sceneSegs = (box, after) => segs(box, D.scenes.map(s => [s.id, s.label]), S.scene, v => { if (v) { S.scene = v; keep(); after(); } });
+const setSegs = (box, after) => segs(box, D.sets.map(x => [x.id, x.label]), S.set, v => { if (v) { S.set = v; keep(); after(); } });
 function drawGrid() {
+  $('setbar').hidden = D.sets.length < 2; setSegs($('sets'), drawGrid);
   sceneSegs($('scenes'), drawGrid);
   const list = shown(), g = $('grid');
   g.textContent = '';
@@ -214,19 +239,62 @@ function openStyle(id) {
   flush(); S.open = id; $('viewer').hidden = false; document.body.style.overflow = 'hidden';
   draw(); drawPanel(true);
 }
-function closeViewer() { flush(); S.open = null; $('viewer').hidden = true; document.body.style.overflow = ''; drawGrid(); }
+function closeViewer() { flush(); hold(false); S.open = null; $('viewer').hidden = true; document.body.style.overflow = ''; drawGrid(); }
 function step(d) {
   const l = shown(), i = l.findIndex(s => s.id === S.open);
   if (l.length) openStyle(l[(i + d + l.length) % l.length].id);
 }
-function draw(styleId) {
-  const id = styleId || S.open, u = src(id, S.scene), st = $('stage'), f = $('frame');
+function draw() {
+  const id = S.open, u = src(id, S.scene), st = $('stage'), f = $('frame'), c = compared();
   f.textContent = '';
   const w = st.clientWidth, h = st.clientHeight;
   const k = S.size === 'game' ? 1 : S.size === 'small' ? Math.min(480, w) / 1920 : Math.min(w / 1920, h / 1080);
   f.style.width = 1920 * k + 'px'; f.style.height = 1080 * k + 'px';
-  f.append(u ? el('img', { class: 'pic', src: u, alt: byId[id].label }) : el('p', { class: 'note', textContent: 'No sample for this scene.' }));
+  f.append(u ? el('img', { class: 'pic', src: u, alt: byId[id].label, draggable: false }) : el('p', { class: 'note', textContent: 'No sample for this scene.' }));
+  cmp = null;
+  if (c.u) {
+    // The comparison lies over the style, cut to the left of the line: all of it while held, none when the slider is off.
+    cmp = { img: el('img', { class: 'cmp', src: c.u, alt: c.label, draggable: false }), bar: el('div', { class: 'split', tabIndex: 0 }),
+      l: el('span', { class: 'lab l', textContent: c.label }), r: el('span', { class: 'lab r', textContent: byId[id].label + (D.sets.length > 1 ? ', ' + sets[S.set].label : '') }) };
+    cmp.bar.setAttribute('role', 'slider'); cmp.bar.setAttribute('aria-label', 'Compare: left is ' + c.label); cmp.bar.setAttribute('aria-valuemin', '0'); cmp.bar.setAttribute('aria-valuemax', '100');
+    f.append(cmp.img, cmp.l, cmp.r);
+  }
   if (u && S.pip) addPip(f, S.scene, k, true);
+  if (cmp) {
+    let on = false;
+    const to = e => { const r = f.getBoundingClientRect(); S.at = Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)); cut(); };
+    cmp.bar.onpointerdown = e => { on = true; cmp.bar.setPointerCapture(e.pointerId); cmp.bar.focus({ preventScroll: true }); e.preventDefault(); };
+    cmp.bar.onpointermove = e => { if (on) to(e); };
+    cmp.bar.onpointerup = cmp.bar.onpointercancel = () => { on = false; };
+    cmp.bar.onkeydown = e => {
+      const d = { ArrowLeft: -2, ArrowRight: 2, PageDown: -10, PageUp: 10, Home: -100, End: 100 }[e.key];
+      if (!d) return;
+      e.preventDefault(); e.stopPropagation(); S.at = Math.min(100, Math.max(0, S.at + d)); cut();
+    };
+    f.append(cmp.bar);
+  }
+  cut();
+}
+let cmp = null, held = false;
+function cut() {
+  if (!cmp) return;
+  const x = held ? 100 : S.slide ? S.at : 0;
+  cmp.img.style.clipPath = `inset(0 ${100 - x}% 0 0)`;
+  cmp.img.style.visibility = x > 0 ? 'visible' : 'hidden';
+  cmp.bar.hidden = held || !S.slide; cmp.bar.style.left = S.at + '%'; cmp.bar.setAttribute('aria-valuenow', String(Math.round(S.at)));
+  cmp.l.hidden = !(held || S.slide); cmp.r.hidden = held || !S.slide;
+}
+function hold(on) { if (held !== on) { held = on; cut(); } }
+function drawCompare() {
+  const sel = $('vcmp'), c = compared(), opt = (v, t) => el('option', { value: v, textContent: t });
+  sel.textContent = '';
+  sel.append(opt('game', 'Our painting of this scene'));
+  if (D.sets.length > 1) sel.append(el('optgroup', { label: 'Same style, other model' }, ...D.sets.map(x => opt('set:' + x.id, x.label))));
+  sel.append(el('optgroup', { label: 'Another style' }, ...D.styles.map(x => opt('style:' + x.id, x.label))));
+  sel.value = S.cmp;
+  for (const id of ['vslide', 'oslide']) { pressed($(id), S.slide && !!c.u); $(id).disabled = !c.u; }
+  for (const id of ['vhold', 'ohold']) $(id).disabled = !c.u;
+  $('vcmpnote').textContent = c.same ? "That's the one you're viewing." : !c.u ? 'No sample to compare for this scene.' : S.slide ? `Left of the line: ${c.label}. Drag the line.` : 'Hold the button or the C key to flick to it.';
 }
 function drawPanel(fresh) {
   const s = byId[S.open], p = pick(s.id);
@@ -241,6 +309,8 @@ function drawPanel(fresh) {
   $('vprompt').textContent = s.prompt;
   if (fresh) $('vsaved').textContent = '';
   pressed($('vpip'), S.pip);
+  $('vsetbox').hidden = D.sets.length < 2; setSegs($('vsets'), () => { draw(); drawPanel(); });
+  drawCompare();
 }
 function flush() {
   if (!saveTimer) return;
@@ -257,14 +327,24 @@ function setWide(on) {
   if (S.open) draw();
 }
 $('vpanel').onclick = () => { setWide(!S.wide); keep(); };
-$('vctl').oncontextmenu = e => e.preventDefault();
 setWide(S.wide);
 $('pipAll').onclick = $('vpip').onclick = () => { S.pip = !S.pip; pressed($('pipAll'), S.pip); if (S.open) { draw(); drawPanel(); } else drawGrid(); };
 $('vpose').onclick = () => { S.pose = (S.pose + 1) % D.poses.length; draw(); };
-$('vctl').onpointerdown = e => { $('vctl').setPointerCapture(e.pointerId); draw('miyazaki_control'); };
-$('vctl').onpointerup = $('vctl').onpointercancel = () => draw();
+$('vcmp').onchange = () => { S.cmp = $('vcmp').value; keep(); draw(); drawCompare(); };
+$('vslide').onclick = $('oslide').onclick = () => { S.slide = !S.slide; keep(); cut(); drawCompare(); };
+for (const id of ['vhold', 'ohold']) {
+  const b = $(id);
+  b.oncontextmenu = e => e.preventDefault();
+  b.onpointerdown = e => { b.setPointerCapture(e.pointerId); hold(true); };
+  b.onpointerup = b.onpointercancel = b.onlostpointercapture = () => hold(false);
+  b.onkeydown = e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); hold(true); } };
+  b.onkeyup = b.onblur = () => hold(false);
+}
+addEventListener('keyup', e => { if (e.key === 'c' || e.key === 'C') hold(false); });
+addEventListener('blur', () => hold(false));
 addEventListener('keydown', e => {
   if (!S.open || /TEXTAREA|INPUT|SELECT/.test(e.target.tagName)) return;
+  if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey && !e.metaKey) hold(true);
   if (e.key === 'ArrowRight') step(1);
   if (e.key === 'ArrowLeft') step(-1);
   if (e.key === 'Escape') closeViewer();

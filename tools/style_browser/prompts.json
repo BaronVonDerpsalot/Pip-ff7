@@ -45,7 +45,7 @@
   {
    "id": "miyazaki_control",
    "group": "core",
-   "label": "Current look (control)",
+   "label": "Miyazaki prompt (control)",
    "prompt": "Hayao Miyazaki style, Studio Ghibli background painting, hand-painted animated film background, slightly subdued colours, clean outlines",
    "traits": {
     "linework": "thin outline",
