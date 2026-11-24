@@ -3,7 +3,7 @@
  "shared_suffix": "high angle view looking down at about 45 degrees, thin band of distant marsh and sky at the top, warm low sunset light, a few small red and white mushrooms, occasional puddles, no people, no text",
  "negative": "photo, photorealistic, 3d render, people, person, text, watermark, signature, frame, border",
  "settings": {
-  "model": "SDXL base 1.0",
+  "model": "SDXL base 1.0: sdxl/sd_xl_base_1.0_0.9vae.safetensors on MimicPC (no refiner: it pushes detail towards photo)",
   "controlnet": "SDXL depth ControlNet, strength ~0.6, end ~0.8 (too strong flattens the style)",
   "size": "1344x768",
   "steps": 30,
