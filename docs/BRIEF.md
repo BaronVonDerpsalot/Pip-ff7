@@ -1,6 +1,6 @@
 # Pip FF7 — Brief
 
-Changes only when Mike or Mark has said yes. Status is on the board, decisions are in `DECISIONS.md`, how-tos are in `recipes/`. None of that is repeated here.
+Changes only when Mike has said yes. Status is on the board, decisions are in `DECISIONS.md`, how-tos are in `recipes/`. None of that is repeated here.
 
 ## What this is
 A short game for Christine starring Pip, the chibi creature she and Mike created. It follows the birthday game (Part 1, which is canon). Pip walks through hand-painted screens shown from fixed cameras, in the manner of FF7's backgrounds. Purely personal.
@@ -10,10 +10,10 @@ A short game for Christine starring Pip, the chibi creature she and Mike created
 2. One milestone at a time, plus at most one side track that never gates it. Everything else waits in a Later section or the Parking lot.
 3. Playing something decides things. Documents don't.
 4. Nothing is built "for later games" until the slice ships.
-5. Christine only ever gets finished products. Mike and Mark play everything before that; nothing in progress goes to her.
+5. Christine only ever gets finished products. Mike plays everything before that; nothing in progress goes to her.
 
 ## The slice
-The slice is done when Mike or Mark plays this from start to end, on the pad, on final art:
+The slice is done when Mike plays this from start to end, on the pad, on final art:
 1. Pip arrives in Monarch's Wallow and walks through about three connected marsh screens.
 2. Pip walks, runs, creeps and idles in eight directions (five rendered, three mirrored).
 3. At least one screen has an animated loop.

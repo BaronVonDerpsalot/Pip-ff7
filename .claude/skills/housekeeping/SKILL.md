@@ -5,7 +5,7 @@ description: Whole-project check-up for Pip FF7, run when a milestone closes (be
 
 # Housekeeping
 
-A slow look across the whole project, between milestones. `/reflect` looks back at one session; this looks at everything. Propose, then change only what Mike or Mark approves.
+A slow look across the whole project, between milestones. `/reflect` looks back at one session; this looks at everything. Propose, then change only what Mike approves.
 
 Read first: `CLAUDE.md`, `README.md`, `docs/BRIEF.md`, `docs/DECISIONS.md`, every file in `docs/recipes/`, the board (active and next milestone, Parking lot), and a file listing of the repo and of the workspace folder around it.
 
@@ -18,13 +18,13 @@ Go through every item. For each, note **OK** or **a finding** with the evidence 
 4. **Open decisions.** Is each open decision in the brief still open? Did a closed milestone decide one without it moving to `DECISIONS.md`?
 5. **One home per fact.** Is any fact, file, asset or name in two places (a doc repeating another, assets both in `kept-assets/` and the repo, status written into a file)? Is the project called the same thing everywhere?
 6. **Rebuildable.** Is anything in the repo that was made by hand or by a one-off script, which someone will need to make again (generated resources, cut-outs, packed sheets)? Is there a tool or recipe step for it?
-7. **Fresh clone.** Following only the README, could Mark clone, open and run the game? Anything missing from git that the game needs (ignored files, addons, absolute paths)? Check `.gitignore` and `git status`.
+7. **Fresh clone.** Following only the README, could Mike clone, open and run the game on another machine? Anything missing from git that the game needs (ignored files, addons, absolute paths)? Check `.gitignore` and `git status`.
 8. **Leftovers.** Throwaway folders, test scenes, backups, files marked to delete, unused assets, empty folders. List them; only remove with a yes (prefer the Recycle Bin over permanent deletion).
 9. **Board hygiene.** Are the section labels right ((DONE) / (ACTIVE))? Any open cards in a closed milestone? Does every finished card have a comment saying what was done and seen?
-10. **Look ahead.** Read the next milestone's "Done when". What will it need that is cheap to prepare or decide now and expensive later (tooling, storage like Git LFS, an open decision, an asset)? Put each as one line in the Parking lot, or as a question for Mike or Mark. Don't start the work.
+10. **Look ahead.** Read the next milestone's "Done when". What will it need that is cheap to prepare or decide now and expensive later (tooling, storage like Git LFS, an open decision, an asset)? Put each as one line in the Parking lot, or as a question for Mike. Don't start the work.
 11. **Gotchas still true.** Skim each recipe's Gotchas. Any that the build or later work has made wrong or pointless?
 
 ## Report
-Show one list grouped as **Fix now** (small, clearly right), **Needs a yes** (scope, decisions, deletions, anything visible to Mark), and **Park** (for later milestones). Each item: what's wrong, the evidence, the proposed change.
+Show one list grouped as **Fix now** (small, clearly right), **Needs a yes** (scope, decisions, deletions, anything visible on the board), and **Park** (for later milestones). Each item: what's wrong, the evidence, the proposed change.
 
 Then make only what's approved. Re-run anything you changed (a scene, a tool) and look at the result. Commit the approved fixes as their own commit. Leave one comment on the closing milestone's ◆ card listing what changed, signed `— <agent> (<person>)`.

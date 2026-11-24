@@ -13,7 +13,7 @@ The engine is Godot 4.7, scripted in GDScript. It is newer than most examples on
 - How a screen is built: `docs/recipes/screens-flow.md`. Godot and Ziva gotchas: `docs/recipes/godot.md`.
 
 ## Who works here
-Mike works on this from two accounts, Mike and Mark (DECISIONS, 2026-11-20). Each account has its own Claude Project and agents, and their chats and memories are not shared. A yes from either account counts, and "Mike or Mark" anywhere in the docs means Mike. The repo and the board are the only things both accounts see, so a decision counts only once it is in `docs/DECISIONS.md`, and work counts only once it is on the board. Anything that matters goes there, never only into a chat or a memory.
+Mike works on this from two Claude accounts (DECISIONS, 2026-11-20). Each account has its own Claude Project and agents, and their chats and memories are not shared. A yes from either account is Mike's yes. Older comments and log lines that say Mark mean Mike. The repo and the board are the only things both accounts see, so a decision counts only once it is in `docs/DECISIONS.md`, and work counts only once it is on the board. Anything that matters goes there, never only into a chat or a memory.
 
 The Planning agent (each account's claude.ai Project) also follows `docs/planning.md`.
 
@@ -23,7 +23,7 @@ The Planning agent (each account's claude.ai Project) also follows `docs/plannin
 3. The recipe in `docs/recipes/` for whatever you are about to touch.
 
 ## One home per fact
-- Scope: `docs/BRIEF.md`. Changes only when Mike or Mark has said yes.
+- Scope: `docs/BRIEF.md`. Changes only when Mike has said yes.
 - Decisions: `docs/DECISIONS.md`. Append one dated line; never rewrite.
 - How-to and gotchas: `docs/recipes/`. At the end of a session, run `/reflect` to turn the session's snags and wins into gotchas there.
 - Status: the board, and nowhere else. Don't write status into any file.
@@ -32,13 +32,13 @@ If you are about to write a fact that already lives somewhere, link to it instea
 ## The board
 - Sections run in order: the milestones (M0 to M7), then a Side track, the Later sections (Creatures and world, Combat, Minigames, Look and polish, Tools), then the Parking lot. Each milestone's ◆ card holds its "Done when", which Mike can check by looking or playing, and the milestones it needs.
 - One milestone is active at a time, marked (ACTIVE) in its section name. Cards exist only for the active milestone and the active side track. Work only on those cards.
-- A card is one outcome. Its owner is its prefix: [Mike] [Mark] [Planning] [Code] [Cowork]. Say what it's blocked by in its description.
+- A card is one outcome. Its owner is its prefix: [Mike] [Planning] [Code] [Cowork]. Say what it's blocked by in its description.
 - Before starting a card, check nobody has claimed it, then comment `Claimed — <agent> (<person>)`. Never start without the claim: the other person's agents can't see your chat. When done, comment what you did and what you saw, then tick it.
-- Blocked on a person: comment the question and change the card's prefix to [Mike] or [Mark].
+- Blocked on a person: comment the question and change the card's prefix to [Mike].
 - Work outside the slice: one line in the nearest Later section, with no ◆, "Done when" or order, and don't develop it. Unsorted ideas and small things the active milestone might want: one line in the Parking lot. Then carry on.
 - One side track may run beside the active milestone: a named piece of work Mike pulls from a Later section, with its own ◆ and "Done when". It never gates a milestone or the slice. Pulling work in needs Mike's yes and a `DECISIONS.md` line. A Later section becomes a milestone only after the slice ships.
-- A milestone (◆) card is ticked only when Mike or Mark has said they've seen its "Done when". Before it's ticked, run `/housekeeping`. Once it's ticked, move (ACTIVE) to the next milestone whose needs are all ticked, and create its cards.
-- Sign every comment with the agent and the person it is working for, e.g. `— Code (Mark)`, `— Planning (Mike)`.
+- A milestone (◆) card is ticked only when Mike has said he's seen its "Done when". Before it's ticked, run `/housekeeping`. Once it's ticked, move (ACTIVE) to the next milestone whose needs are all ticked, and create its cards.
+- Sign every comment with the agent, e.g. `— Code`, `— Planning`. No account name: commits carry a `Claude-Session:` link, which opens only from the account that made them.
 
 ## Staying on course
 - Asked for something outside the active milestone and the side track: say so once and ask whether to file it in a Later section, pull it into the side track, or swap the milestone. Then do what Mike chooses.

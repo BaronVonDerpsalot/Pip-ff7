@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: End-of-session review for Pip FF7. Looks back over this session for what went wrong, what cost time and what worked unexpectedly well, turns each into a dated gotcha, proposes where it belongs in docs/recipes/, prunes gotchas the session proved stale, flags docs the session showed to be out of date, and writes only what Mike or Mark approves. Use when the user says /reflect, "reflect", "what did we learn", "wrap up the session", or asks to capture gotchas or lessons.
+description: End-of-session review for Pip FF7. Looks back over this session for what went wrong, what cost time and what worked unexpectedly well, turns each into a dated gotcha, proposes where it belongs in docs/recipes/, prunes gotchas the session proved stale, flags docs the session showed to be out of date, and writes only what Mike approves. Use when the user says /reflect, "reflect", "what did we learn", "wrap up the session", or asks to capture gotchas or lessons.
 ---
 
 # Reflect
