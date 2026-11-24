@@ -52,6 +52,9 @@ def pieces(mask_path: str, banks: bool, tscn: str, painting: str, raised_path: s
 def main() -> None:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     screen, kind, mask_path = args
+    missing = [p for p in mask_path.split(",") if not os.path.exists(p)]
+    if missing:
+        sys.exit(f"{screen}: no {', '.join(missing)}; nothing changed (that prompt wasn't run for this screen)")
     banks, clear = "--banks" in sys.argv, "--clear" in sys.argv
     raised_path = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--raised=")), None)
     scene_path = f"scenes/screens/{screen}.tscn"
