@@ -27,6 +27,15 @@
 [ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_2.png" id="auto_2"]
 [ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_3.png" id="auto_3"]
 [ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_auto_4.png" id="auto_4"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_1.png" id="auto_reeds_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_2.png" id="auto_reeds_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_3.png" id="auto_reeds_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_4.png" id="auto_reeds_4"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_5.png" id="auto_reeds_5"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_6.png" id="auto_reeds_6"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_7.png" id="auto_reeds_7"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_8.png" id="auto_reeds_8"]
+[ext_resource type="Texture2D" path="res://assets/screens/stream/auto/stream_reeds_9.png" id="auto_reeds_9"]
 
 [sub_resource type="ShaderMaterial" id="motion_water_mat"]
 shader = ExtResource("motion_water")
@@ -197,6 +206,60 @@ script = ExtResource("occ_script")
 [node name="Auto_4" type="Sprite2D" parent="Overhead"]
 position = Vector2(1026, 453)
 texture = ExtResource("auto_4")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_1" type="Sprite2D" parent="Overhead"]
+position = Vector2(1412, 27)
+texture = ExtResource("auto_reeds_1")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_2" type="Sprite2D" parent="Overhead"]
+position = Vector2(277, 34)
+texture = ExtResource("auto_reeds_2")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_3" type="Sprite2D" parent="Overhead"]
+position = Vector2(534, 49)
+texture = ExtResource("auto_reeds_3")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_4" type="Sprite2D" parent="Overhead"]
+position = Vector2(0, 54)
+texture = ExtResource("auto_reeds_4")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_5" type="Sprite2D" parent="Overhead"]
+position = Vector2(785, 112)
+texture = ExtResource("auto_reeds_5")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_6" type="Sprite2D" parent="Overhead"]
+position = Vector2(535, 118)
+texture = ExtResource("auto_reeds_6")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_7" type="Sprite2D" parent="Overhead"]
+position = Vector2(549, 571)
+texture = ExtResource("auto_reeds_7")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_8" type="Sprite2D" parent="Overhead"]
+position = Vector2(595, 793)
+texture = ExtResource("auto_reeds_8")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_reeds_9" type="Sprite2D" parent="Overhead"]
+position = Vector2(1280, 863)
+texture = ExtResource("auto_reeds_9")
 centered = false
 script = ExtResource("occ_script")
 

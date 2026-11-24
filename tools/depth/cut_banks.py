@@ -76,14 +76,11 @@ def bottom_line(mk: np.ndarray) -> np.ndarray:
     return b
 
 
-def main() -> None:
-    tscn_path, mask_path, out, painting = sys.argv[1:5]
-    poly = walk_polygon(open(tscn_path, encoding="utf-8").read())
+def cut(m: np.ndarray, poly: np.ndarray) -> tuple:
+    """The mask's pieces (boolean arrays, 64 px or more) and their kinds ("behind" or "front"), and the walk area."""
     walk = np.zeros((H, W), np.uint8)
     cv2.fillPoly(walk, [poly.round().astype(np.int32)], 1)
     walk = walk.astype(bool)
-    m = np.array(Image.open(mask_path).convert("L")) >= 128
-
     behind = np.zeros_like(m)
     front = np.zeros_like(m)
     for x in range(W):
@@ -95,18 +92,27 @@ def main() -> None:
         behind[outside & walk_below, x] = True
         front[outside & ~walk_below, x] = True
     front |= m & walk & facing_lip(poly, walk)
-
-    labels = np.zeros((H, W), np.int32)
-    bottoms, kinds = [], []
+    pieces, kinds = [], []
     for kind, cls in (("behind", behind), ("front", front)):
         n, lab = cv2.connectedComponents(cls.astype(np.uint8))
         for i in range(1, n):
             mk = lab == i
-            if mk.sum() < MIN_PX:
-                continue
-            labels[mk] = len(bottoms) + 1
-            bottoms.append(bottom_line(mk))
-            kinds.append(kind)
+            if mk.sum() >= MIN_PX:
+                pieces.append(mk)
+                kinds.append(kind)
+    return pieces, kinds, walk
+
+
+def main() -> None:
+    tscn_path, mask_path, out, painting = sys.argv[1:5]
+    poly = walk_polygon(open(tscn_path, encoding="utf-8").read())
+    m = np.array(Image.open(mask_path).convert("L")) >= 128
+    pieces, kinds, walk = cut(m, poly)
+    labels = np.zeros((H, W), np.int32)
+    bottoms = []
+    for i, mk in enumerate(pieces, 1):
+        labels[mk] = i
+        bottoms.append(bottom_line(mk))
     Image.fromarray(labels.astype(np.uint16)).save(out + "_labels.png")
     np.save(out + "_bottoms.npy", np.array(bottoms))
 
