@@ -3,6 +3,7 @@ extends Sprite2D
 ## One piece of a layer sent from Affinity (tools/layers_to_game.gd puts these under Overhead as Occ_ sprites).
 ## sort = true: it covers Pip only while his feet are above its bottom edge at his x, so he goes behind it
 ## from above and in front of it from below. Its edge is read from its own pixels; nothing is set by hand.
+## It draws only inside Pip's frame, so a big shape switched on by Pip doesn't cover the mole beside it.
 ## sort = false (layers named "Over..."): it always covers him, for things that hang, like willow fronds.
 ## On a screen with a Loop node (video or shader motion) it draws the Loop's pixels through its own shape, so it moves with it;
 ## on a still screen it draws its own pixels, cut from the painting.
@@ -31,11 +32,12 @@ func _ready() -> void:
 		_bottom_from_edge()
 	elif sort:
 		_read_bottom_edge()
-	if _loop != null:
+	if _loop != null or sort:
 		_mat = ShaderMaterial.new()
 		_mat.shader = preload("res://scripts/occluder_video.gdshader")
 		var size := Vector2(texture.get_width(), texture.get_height())
 		_mat.set_shader_parameter("rect", Vector4(global_position.x, global_position.y, size.x, size.y))
+		_mat.set_shader_parameter("clip_to_pip", sort)
 		material = _mat
 
 
@@ -85,7 +87,7 @@ func _read_bottom_edge() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _mat != null and not _mat.get_shader_parameter("has_video"):
+	if _mat != null and _loop != null and not _mat.get_shader_parameter("has_video"):
 		var t: Texture2D = _loop.call("get_video_texture")
 		if t != null:
 			_mat.set_shader_parameter("video", t)
@@ -93,3 +95,9 @@ func _process(_delta: float) -> void:
 	if sort and _pip != null and not _bottom.is_empty():
 		var i := clampi(int(_pip.global_position.x) - _x0, 0, _bottom.size() - 1)
 		visible = _pip.global_position.y < _bottom[i]
+		if visible and _mat != null:
+			# Pip's frame (320 wide, feet 277 px down), so the shape covers only him, not the mole beside him.
+			var feet := _pip.global_position
+			var s := _pip.global_scale.x
+			_mat.set_shader_parameter("pip_rect", Vector4(feet.x - 160.0 * s, feet.y - 277.0 * s,
+					feet.x + 160.0 * s, feet.y + 4.0 * s))
