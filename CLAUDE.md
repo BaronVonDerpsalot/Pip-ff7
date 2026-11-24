@@ -55,5 +55,5 @@ You ran it, looked at the result, and said on the card what you saw. For game wo
 
 ## Never
 - Commit `.blend` files, raw Flow output or secrets.
-- Generate Pip. He comes from the Blender rig. The one exception is a cinematic too complex to stage in-engine, which Flow may make (DECISIONS, 2026-11-21).
+- Generate Pip. He comes from the Blender rig. The one exception is a cinematic too complex to stage in-engine, which Flow, or ComfyUI with a Pip LoRA, may make (DECISIONS, 2026-11-21 and 2026-11-24).
 - Build ahead of the active milestone, or build tooling for later games.

@@ -1,6 +1,6 @@
 # Recipe: Pip from Blender
 
-Pip is never generated. Every frame comes from his rig. The one exception: Flow may make Pip in a cinematic too complex to stage in-engine (DECISIONS, 2026-11-21); anything the engine can do with his rig sprites still uses them. Rig details (bones, axes, weights): `pip-rig.md`.
+Pip is never generated. Every frame comes from his rig. The one exception: Flow, or ComfyUI with a Pip LoRA, may make Pip in a cinematic too complex to stage in-engine (DECISIONS, 2026-11-21 and 2026-11-24); anything the engine can do with his rig sprites still uses them. Rig details (bones, axes, weights): `pip-rig.md`.
 
 ## Files (kept out of git)
 On Mike's PC in `Pip FF7/kept-assets/blender/`:
