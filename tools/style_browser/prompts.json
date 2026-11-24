@@ -1,0 +1,391 @@
+{
+ "about": "Style browser grid: every scene x every style = 100 images. Prompt = style.prompt + ', ' + scene.content + ', ' + shared_suffix. Method: DECISIONS 2026-11-24. Settings are starting points.",
+ "shared_suffix": "high angle view looking down at about 45 degrees, thin band of distant marsh and sky at the top, warm low sunset light, a few small red and white mushrooms, occasional puddles, no people, no text",
+ "negative": "photo, photorealistic, 3d render, people, person, text, watermark, signature, frame, border",
+ "settings": {
+  "model": "SDXL base 1.0",
+  "controlnet": "SDXL depth ControlNet, strength ~0.6, end ~0.8 (too strong flattens the style)",
+  "size": "1344x768",
+  "steps": 30,
+  "cfg": 6,
+  "seed": "one fixed seed per scene, same for every style"
+ },
+ "scenes": [
+  {
+   "id": "boardwalk",
+   "segment": "easy",
+   "depth": "assets/screens/boardwalk/boardwalk_depth.png",
+   "content": "an old broken wooden boardwalk on posts crossing marsh water, dense tall reeds and cattails behind, a large still puddle reflecting the sky, muddy ground"
+  },
+  {
+   "id": "marsh",
+   "segment": "medium",
+   "depth": "assets/screens/marsh/marsh_depth.png",
+   "content": "a winding muddy path between low mossy grassy banks, shallow pools of still water, cattails in the foreground, a large weeping willow with exposed roots on the right"
+  },
+  {
+   "id": "stream",
+   "segment": "hard",
+   "depth": "assets/screens/stream/stream_depth.png",
+   "content": "a small rickety wooden footbridge over a narrow stream, tall cattails and reeds framing both sides, a grassy path"
+  },
+  {
+   "id": "reedbed",
+   "segment": "hardest",
+   "depth": "TODO: made from preprocessing/reedbed/ still (see board)",
+   "content": "a narrow path through a dense reedbed, tall overlapping reeds and cattails on all sides, glimpses of water (check against the still)"
+  }
+ ],
+ "styles": [
+  {
+   "id": "miyazaki_control",
+   "group": "core",
+   "label": "Current look (control)",
+   "prompt": "Hayao Miyazaki style, Studio Ghibli background painting, hand-painted animated film background, slightly subdued colours, clean outlines",
+   "traits": {
+    "linework": "thin outline",
+    "shading": "painterly",
+    "texture": "paint",
+    "palette": "muted",
+    "influence": "anime film"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "kazuo_oga",
+   "group": "core",
+   "label": "Ghibli background painter",
+   "prompt": "background art by Kazuo Oga, lush hand-painted poster colour background, detailed soft foliage, natural light",
+   "traits": {
+    "linework": "none",
+    "shading": "painterly",
+    "texture": "paint",
+    "palette": "natural",
+    "influence": "anime film"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "gouache_film",
+   "group": "core",
+   "label": "Gouache film background",
+   "prompt": "gouache painting, flat opaque gouache layers, animated film background, soft edges, muted earthy palette",
+   "traits": {
+    "linework": "none",
+    "shading": "soft",
+    "texture": "gouache",
+    "palette": "muted",
+    "influence": "animated film"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "watercolour_ink",
+   "group": "core",
+   "label": "Watercolour and ink",
+   "prompt": "loose watercolour with fine pen and ink linework, wet-in-wet washes, visible paper texture, muted palette",
+   "traits": {
+    "linework": "thin ink",
+    "shading": "soft",
+    "texture": "watercolour",
+    "palette": "muted",
+    "influence": "illustration"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "watercolour_soft",
+   "group": "core",
+   "label": "Soft watercolour, no lines",
+   "prompt": "soft watercolour illustration, no outlines, granulating pigment, cold-press paper texture, subdued colours",
+   "traits": {
+    "linework": "none",
+    "shading": "soft",
+    "texture": "watercolour",
+    "palette": "muted",
+    "influence": "illustration"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "beatrix_potter",
+   "group": "core",
+   "label": "Beatrix Potter",
+   "prompt": "in the style of Beatrix Potter, delicate watercolour and fine ink, English countryside storybook, gentle muted colours",
+   "traits": {
+    "linework": "thin ink",
+    "shading": "soft",
+    "texture": "watercolour",
+    "palette": "muted",
+    "influence": "storybook"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "arthur_rackham",
+   "group": "core",
+   "label": "Arthur Rackham",
+   "prompt": "in the style of Arthur Rackham, sepia ink linework with muted watercolour washes, gnarled organic forms, Edwardian fairy-tale illustration",
+   "traits": {
+    "linework": "bold ink",
+    "shading": "soft",
+    "texture": "watercolour",
+    "palette": "sepia",
+    "influence": "storybook"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "john_bauer",
+   "group": "core",
+   "label": "John Bauer",
+   "prompt": "in the style of John Bauer, Swedish fairy-tale illustration, dark mossy tones, soft muted watercolour, mysterious mood",
+   "traits": {
+    "linework": "thin",
+    "shading": "soft",
+    "texture": "watercolour",
+    "palette": "dark muted",
+    "influence": "storybook"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "tove_jansson",
+   "group": "core",
+   "label": "Tove Jansson",
+   "prompt": "in the style of Tove Jansson, Moomin storybook illustration, soft pen hatching, gentle muted colours",
+   "traits": {
+    "linework": "hatched ink",
+    "shading": "hatching",
+    "texture": "ink",
+    "palette": "muted",
+    "influence": "storybook"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "eyvind_earle",
+   "group": "core",
+   "label": "Eyvind Earle",
+   "prompt": "in the style of Eyvind Earle, stylised flat shapes, layered silhouettes, decorative stylised grass and trees, rich muted colour",
+   "traits": {
+    "linework": "none",
+    "shading": "flat",
+    "texture": "clean",
+    "palette": "rich muted",
+    "influence": "animated film"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "shaun_tan",
+   "group": "core",
+   "label": "Shaun Tan",
+   "prompt": "in the style of Shaun Tan, painterly picture book, oil and acrylic, muted melancholic palette, quiet mood",
+   "traits": {
+    "linework": "none",
+    "shading": "painterly",
+    "texture": "oil",
+    "palette": "muted",
+    "influence": "picture book"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "sumi_e_colour",
+   "group": "core",
+   "label": "Ink wash with colour",
+   "prompt": "Japanese ink wash painting, sumi-e brushwork with light colour washes, soft brush edges, misty, minimal",
+   "traits": {
+    "linework": "brush",
+    "shading": "soft",
+    "texture": "ink wash",
+    "palette": "very muted",
+    "influence": "East Asian"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "jon_klassen",
+   "group": "core",
+   "label": "Jon Klassen",
+   "prompt": "in the style of Jon Klassen, muted digital gouache picture book, simple shapes, subtle texture, earthy palette, quiet mood",
+   "traits": {
+    "linework": "none",
+    "shading": "flat",
+    "texture": "gouache",
+    "palette": "earthy",
+    "influence": "picture book"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "cartoon_saloon",
+   "group": "core",
+   "label": "Cartoon Saloon",
+   "prompt": "in the style of Cartoon Saloon and Song of the Sea, flat layered shapes, textured watercolour, stylised Celtic forms, 2D animated film background",
+   "traits": {
+    "linework": "thin outline",
+    "shading": "flat",
+    "texture": "watercolour",
+    "palette": "muted",
+    "influence": "animated film"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "hiroshi_yoshida",
+   "group": "neighbour",
+   "label": "Woodblock (Hiroshi Yoshida)",
+   "prompt": "in the style of Hiroshi Yoshida, shin-hanga woodblock print, flat colour areas, fine key lines, soft gradations",
+   "traits": {
+    "linework": "thin key line",
+    "shading": "flat",
+    "texture": "print",
+    "palette": "muted",
+    "influence": "Japanese print"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "soft_pastel",
+   "group": "neighbour",
+   "label": "Soft pastel",
+   "prompt": "soft pastel drawing, chalky texture, toned paper, blended edges",
+   "traits": {
+    "linework": "none",
+    "shading": "soft",
+    "texture": "pastel",
+    "palette": "soft",
+    "influence": "fine art"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "ligne_claire",
+   "group": "neighbour",
+   "label": "Bande dessinée (ligne claire)",
+   "prompt": "European bande dessinée, ligne claire, in the style of Hergé, clean uniform black outlines, flat colours",
+   "traits": {
+    "linework": "bold uniform",
+    "shading": "flat",
+    "texture": "clean",
+    "palette": "flat colour",
+    "influence": "comic"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "concept_art",
+   "group": "neighbour",
+   "label": "Painterly concept art",
+   "prompt": "painterly video game concept art, loose digital brushstrokes, atmospheric matte painting",
+   "traits": {
+    "linework": "none",
+    "shading": "painterly",
+    "texture": "digital paint",
+    "palette": "atmospheric",
+    "influence": "games"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "coloured_pencil",
+   "group": "neighbour",
+   "label": "Coloured pencil",
+   "prompt": "coloured pencil illustration, visible pencil strokes, paper grain, muted palette",
+   "traits": {
+    "linework": "pencil",
+    "shading": "hatching",
+    "texture": "pencil",
+    "palette": "muted",
+    "influence": "illustration"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "linocut",
+   "group": "neighbour",
+   "label": "Linocut",
+   "prompt": "linocut print, bold carved lines, limited three-colour palette, paper texture",
+   "traits": {
+    "linework": "bold carved",
+    "shading": "flat",
+    "texture": "print",
+    "palette": "limited",
+    "influence": "print"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "travel_poster",
+   "group": "neighbour",
+   "label": "Mid-century poster",
+   "prompt": "muted mid-century travel poster, flat screen-printed shapes, limited palette, fine grain",
+   "traits": {
+    "linework": "none",
+    "shading": "flat",
+    "texture": "screen print",
+    "palette": "limited",
+    "influence": "poster"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "pixel_art",
+   "group": "outlier",
+   "label": "Pixel art",
+   "prompt": "16-bit pixel art, SNES era game background, limited palette, dithering",
+   "traits": {
+    "linework": "pixel",
+    "shading": "flat",
+    "texture": "pixel",
+    "palette": "limited",
+    "influence": "retro games"
+   },
+   "negative_extra": "smooth gradients, painting"
+  },
+  {
+   "id": "cut_paper",
+   "group": "outlier",
+   "label": "Cut paper",
+   "prompt": "layered cut paper collage, paper craft diorama, soft shadows between layers",
+   "traits": {
+    "linework": "none",
+    "shading": "flat",
+    "texture": "paper",
+    "palette": "soft",
+    "influence": "craft"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "mike_mignola",
+   "group": "outlier",
+   "label": "Heavy-shadow comic",
+   "prompt": "in the style of Mike Mignola, heavy black shadows, graphic comic art, flat colours",
+   "traits": {
+    "linework": "bold",
+    "shading": "flat",
+    "texture": "clean",
+    "palette": "dark",
+    "influence": "comic"
+   },
+   "negative_extra": ""
+  },
+  {
+   "id": "stained_glass",
+   "group": "outlier",
+   "label": "Stained glass",
+   "prompt": "stained glass window, thick lead lines, jewel colours, glass texture",
+   "traits": {
+    "linework": "bold lead",
+    "shading": "flat",
+    "texture": "glass",
+    "palette": "jewel",
+    "influence": "decorative"
+   },
+   "negative_extra": ""
+  }
+ ]
+}
