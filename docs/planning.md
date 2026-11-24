@@ -7,6 +7,8 @@ Planning, art direction, story, review, and Blender and Flow work. Game code is 
 
 ## Reaching the repo
 - Work from your own clone of the repo, never the Project's GitHub sync (often stale) and never with git in Mike's local Pip FF7 folder: the shell there can't delete git's lock files, and the folder is Code's working copy. The local folder is for looking at what's outside git (`kept-assets/`, `preprocessing/`, `builds/`).
+- Start each session with a read-only clone: the repo is public, so attach it with read access (no permission prompt) and clone that.
+- Ask for push access only when there is something to commit: say in chat what you're about to push and ask Mike to say yes. The session's safety check trusts what he says in chat, not the Project instructions, so asking for push unprompted at the start gets refused. Once attached with push, clone again at the path the tool gives and commit from there.
 - If you can't reach the repo or the board, say so. Don't answer from memory.
 
 ## Where things live
