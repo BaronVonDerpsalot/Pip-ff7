@@ -19,7 +19,7 @@ Only include what actually happened and was confirmed (you saw the error, the fi
 Drop anything that is:
 - a one-off typo or slip with no lesson in it;
 - already written in a recipe, `CLAUDE.md` or `DECISIONS.md` (link to it instead if it needs reinforcing);
-- a decision rather than a gotcha (a decision goes to `DECISIONS.md`, and only with a yes from Mike or Mark);
+- a decision rather than a gotcha (a decision goes to `DECISIONS.md`, and only with a yes from Mike);
 - status ("M1 is done"), which belongs on the board.
 
 ## 3. Write each one in this shape
@@ -60,7 +60,7 @@ List anything this session showed to be out of step, and only what the session a
 - the same fact, file or asset now living in two places;
 - something made by hand this session that someone will need to remake.
 
-For each, propose the fix. Anything that changes scope or a decision needs a yes from Mike or Mark and goes to `DECISIONS.md`.
+For each, propose the fix. Anything that changes scope or a decision needs a yes from Mike and goes to `DECISIONS.md`.
 
 ## 7. Ask, then write
 Show the user one list, grouped by file:
@@ -69,4 +69,4 @@ Show the user one list, grouped by file:
 - **Wins** worth keeping, placed the same way.
 - **Drift fixes**, each with what it changes.
 
-Ask which to keep. Write only the approved ones, exactly as approved. Don't commit unless asked. If the board is in use, leave a one-line comment on the session's card naming the files you changed, signed `— <agent> (<person>)`.
+Ask which to keep. Write only the approved ones, exactly as approved. Don't commit unless asked. If the board is in use, leave a one-line comment on the session's card naming the files you changed, signed `— <agent>`.
