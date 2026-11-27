@@ -33,7 +33,7 @@ If you are about to write a fact that already lives somewhere, link to it instea
 - Sections run in order: the milestones (M0 to M7), then a Side track, the Later sections (Creatures and world, Combat, Minigames, Look and polish, Tools), then the Parking lot. Each milestone's ◆ card holds its "Done when", which Mike can check by looking or playing, and the milestones it needs.
 - One milestone is active at a time, marked (ACTIVE) in its section name. Cards exist only for the active milestone and the active side track. Work only on those cards.
 - A card is one outcome. Its owner is its prefix: [Mike] [Planning] [Code] [Cowork]. Say what it's blocked by in its description.
-- Before starting a card, check nobody has claimed it, then comment `Claimed — <agent> (<person>)`. Never start without the claim: the other person's agents can't see your chat. When done, comment what you did and what you saw, then tick it.
+- Before starting a card, check nobody has claimed it, then comment `Claimed — <agent>`. Never start without the claim: the other account's agents can't see your chat. When done, comment what you did and what you saw, then tick it.
 - Blocked on a person: comment the question and change the card's prefix to [Mike].
 - Work outside the slice: one line in the nearest Later section, with no ◆, "Done when" or order, and don't develop it. Unsorted ideas and small things the active milestone might want: one line in the Parking lot. Then carry on.
 - One side track may run beside the active milestone: a named piece of work Mike pulls from a Later section, with its own ◆ and "Done when". It never gates a milestone or the slice. Pulling work in needs Mike's yes and a `DECISIONS.md` line. A Later section becomes a milestone only after the slice ships.
