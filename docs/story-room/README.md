@@ -7,10 +7,11 @@ Read in this order:
 2. `visual-specs-plan.md`: the agreement with the game project on visual specs, world lore, NPC hooks and the asset manifest.
 3. `claims.md`, `specs.md`, `hooks-shots.md`, `shot-routes.md`: what was built from that agreement.
 4. `handover.md`: the hand-over pack for working on the story from the other account, and the return-file format.
+5. `twin.md`: how the other account runs its own copy of the app from a pack and sends changes back, and how the import works.
 
 Where Story Room material lives in the repo:
 - Build notes: here.
 - Story exports (briefs, full story, handover packs): `docs/story/`.
 - Return files from the other account: `docs/story/returns/`.
 
-The page's own source isn't in the repo yet.
+The page's own source is `tools/story_room/index.html`.

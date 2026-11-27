@@ -9,8 +9,9 @@ Mike works from two accounts. When the account that owns the Story Room is out o
 1. One "Hand over" sheet: presets, live size meter, section chips, advanced options folded away. Built.
 2. Handover pack: START-HERE, story brief, optional full story, data.json (+ schema in START-HERE), RETURN.md. Zip or one .md file. Built.
 7. Agent oath: START-HERE asks the agent to repeat the three house rules back before touching anything. Built.
-3. Fingerprint on every handover, three-way conflict card on import (yours / theirs / original). The fingerprint and per-field `from` values are in place; the import isn't built yet.
-4. Swipe-to-review import on the phone: one card per change, canon and ids untouchable, accepted changes go into `claude_changes` so they can be undone. Not built yet.
+3. Fingerprint on every handover, three-way conflict card on import (yours / theirs / original). Built 27 Nov: see twin.md.
+4. Swipe-to-review import on the phone: one card per change, canon and ids untouchable, accepted changes go into `claude_changes` so they can be undone. Built 27 Nov: see twin.md.
+4b. A twin of the app on the other account, loaded from a pack, that writes its own return file. Built 27 Nov (Mike chose it over working from files): see twin.md. Packs now carry the app itself as `app/index.html`.
 5. "Since last handover" export (only what changed). Later.
 6. Android share sheet straight into the Claude app (test whether the in-app webview accepts it; fall back to a download). Later.
 

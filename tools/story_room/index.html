@@ -563,6 +563,39 @@ h3.exph{font-size:16px;margin:22px 0 4px}
 .hoadv{border-top:1px solid var(--line);margin-top:6px}
 .hoentry{display:flex;gap:12px;align-items:center;justify-content:space-between;border-color:var(--accent);margin:4px 0 14px}
 .hoentry .btn{flex:none}
+.twinbar{border-color:var(--accent);background:var(--surface)}
+.twinbar code{font-size:12px}
+.twincard{border-color:var(--accent)}
+.imsum{margin-bottom:10px}
+.imcounts{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.imlist{gap:10px}
+.imcard{transition:transform .15s ease;touch-action:pan-y}
+.imcard.st-accept{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok) inset}
+.imcard.st-reject{opacity:.55}
+.imcard.blocked{opacity:.75;border-style:dashed}
+.imhead{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.imop{font:700 12px var(--body);text-transform:uppercase;letter-spacing:.06em;padding:1px 8px;border-radius:6px;background:var(--sunk);color:var(--ink)}
+.imop-create{color:var(--ok)}
+.imop-delete{color:var(--danger)}
+.imop-note{color:var(--accent)}
+.imtitle{font-weight:700;overflow-wrap:anywhere}
+.imwhy{margin:4px 0 0}
+.imrow{border-top:1px solid var(--line);padding:8px 0 2px;margin-top:8px}
+.imrow.dim{opacity:.6}
+.imrow.clash{border-top-color:var(--maybe)}
+.imk{font:600 13px var(--mono);color:var(--muted);margin-bottom:4px}
+.imv{font-size:14px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;border-radius:8px;padding:6px 9px;background:var(--sunk)}
+.imv code{font:12px var(--mono);white-space:pre-wrap}
+.imv.old{text-decoration:line-through;text-decoration-color:var(--danger);color:var(--muted);margin-bottom:4px}
+.imv.new{border-left:3px solid var(--ok)}
+.im3{display:grid;gap:6px;margin:6px 0 8px}
+.iml{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:2px}
+.imwarn{color:var(--maybe)}
+p.imwarn{margin:2px 0 6px}
+.imbtns{margin:10px 0 2px;align-items:center}
+.imbar{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 66px);z-index:5;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 -6px 16px rgba(10,6,20,.10)}
+.imdet summary{cursor:pointer;padding:6px 0}
+@media (min-width:700px){ .im3{grid-template-columns:1fr 1fr 1fr} }
 @media (min-width:700px){ .sfield{grid-template-columns:150px 1fr;gap:12px} }
 </style>
 </head>
@@ -966,6 +999,7 @@ async function boot(){
   S.db=db;
   if(!(await setupSharing(db))) return;
   migratePitches();
+  twinBoot(db);
   const slowTimer=setTimeout(()=>{ S.slow=true; render(); },10000);
   for(const t of Object.keys(COL)){
     db.collection(COL[t]).onSnapshot(snap=>{
@@ -1051,8 +1085,9 @@ function render(fromData){
   else if(r==="specs") html+=viewSpecs();
   else if(r.startsWith("spec-")) html+=viewSpec(fromHash(r.slice(5)));
   else if(r==="specnew"||r.startsWith("specedit-")) html+=viewSpecEdit();
+  else if(r==="import") html+=viewImport();
   else html+=viewInbox();
-  v.innerHTML=html;
+  v.innerHTML=twinBannerHtml()+html;
   restoreInputs(v,keep);
   if(r==="search") renderSearchResults();
   if(r==="new"||r.startsWith("edit-")) wireEditor();
@@ -1699,6 +1734,7 @@ function viewMore(){
   ${christineMoreHtml()}
   ${specsMoreHtml()}
   ${exportHtml()}
+  ${imRoomHtml()}
   <h2>Games</h2>
   <div class="list">${gamesSorted().map(([id,g])=>`<div class="card row"><span class="glyph">▣</span><span class="main"><span class="title">${esc(g.name)}</span><span class="meta"><code class="id">${id}</code><span class="tag">${Object.values(S.beats).filter(b=>b.game===id).length} beats · ${Object.values(S.entries).filter(e=>e.game===id).length} entries</span></span>${g.note?`<span class="snip">${esc(g.note)}</span>`:""}</span>${id!=="series"?`<button class="btn ${g.released?"gold":""}" style="flex:none;min-height:34px;font-size:13px" data-act="game-release" data-id="${id}" aria-pressed="${!!g.released}">${g.released?"Released ✓":"Mark released"}</button>`:""}</div>`).join("")}</div>
   <div class="capture" style="margin-top:10px"><input type="text" id="newgame" placeholder="Add a game, e.g. Pip 3"><button class="btn" data-act="addgame">Add</button></div>
@@ -2276,6 +2312,323 @@ document.addEventListener("input",ev=>{
   hoNoteT=setTimeout(()=>{ try{ const p=hoBuild(); const m=$("#ho-meter"), f=$("#ho-files"); if(m) m.innerHTML=hoMeterHtml(p); if(f) f.innerHTML=hoFilesHtml(p); }catch(e){} },500);
 },true);
 document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&$("#overlay .hosheet")) hoClose(); });
+
+/* ---------- bring changes back (import) and twin mode ----------
+   Import, in any room: a story_room_return_v1 file (from an agent on the other account, or from a twin)
+   becomes one card per change at #import. Clean changes start accepted; clashes with what's here now
+   (the file's "from" no longer matches) are shown as was / yours / theirs and wait for a pick; canon,
+   ids and deletes from agents are locked. Applying is one claude_changes entry, so it all undoes at once.
+   Twin: a copy of this app on the other account. "Load a handover" fills an EMPTY room from a pack's
+   data.json and keeps those records in twin_base; "Send changes back" diffs the room against twin_base
+   and writes the return file. A twin never touches Christine's shared view.
+   Own listeners on [data-im] and the #im-file input, registered in the capture phase. */
+const TWIN_COL="twin", TWIN_BASE_COL="twin_base";
+const IM_TYPES=["games","entries","beats","scenes","loose","inbox"];
+const IM_VOLATILE=new Set(["updated","created","edited_by"]);
+const IM_WORD={games:"game",entries:"entry",beats:"beat",scenes:"scene",loose:"loose end",inbox:"inbox note"};
+function imStable(v){ return JSON.stringify(v===undefined?null:v,(k,x)=>x&&typeof x==="object"&&!Array.isArray(x)?Object.keys(x).sort().reduce((o,kk)=>{ o[kk]=x[kk]; return o; },{}):x); }
+const imSame=(a,b)=>imStable(a)===imStable(b);
+function imStrip(r){ const o={...(r||{})}; delete o.id; IM_VOLATILE.forEach(k=>delete o[k]); return o; }
+function imRoomEmpty(){ return ["entries","beats","scenes","loose"].every(t=>!Object.keys(S[t]||{}).length); }
+function imTitle(type,r){ return titleOf(type,r)||(r&&(r.name||r.title||r.text))||""; }
+
+function twinBoot(db){
+  if(S.mode!=="owner"||S.preview) return;
+  db.collection(TWIN_COL).onSnapshot(snap=>{ const m={}; snap.docs.forEach(d=>{ m[d.id]=d.data(); }); S.twin=m.meta||null; S.twinLoaded=true; scheduleRender(); }, ()=>{ S.twinLoaded=true; });
+}
+function imGetAll(col){
+  return new Promise((res,rej)=>{
+    const c=S.db.collection(col);
+    if(typeof c.get==="function"){ c.get().then(s=>res(s.docs.map(d=>[d.id,d.data()]))).catch(rej); return; }
+    let done=false, un=null;
+    un=c.onSnapshot(s=>{ if(done) return; done=true; res(s.docs.map(d=>[d.id,d.data()])); setTimeout(()=>{ if(typeof un==="function") un(); },0); }, e=>{ if(!done){ done=true; rej(e); } });
+  });
+}
+async function imPool(items,n,fn){ let i=0; const run=async()=>{ while(i<items.length){ const x=items[i++]; await fn(x); } }; await Promise.all(Array.from({length:Math.min(n,items.length)},run)); }
+
+/* ----- reading files: a handover zip, a data.json, a one-file .md pack, or a return file ----- */
+async function imUnzip(buf){
+  const u8=new Uint8Array(buf), dv=new DataView(buf), dec=new TextDecoder(), out={};
+  let e=u8.length-22; while(e>=0&&dv.getUint32(e,true)!==0x06054b50) e--;
+  if(e<0) throw new Error("That isn’t a zip file.");
+  const n=dv.getUint16(e+10,true); let c=dv.getUint32(e+16,true);
+  for(let i=0;i<n;i++){
+    if(dv.getUint32(c,true)!==0x02014b50) throw new Error("That zip is damaged.");
+    const method=dv.getUint16(c+10,true), csize=dv.getUint32(c+20,true), nlen=dv.getUint16(c+28,true), xlen=dv.getUint16(c+30,true), clen=dv.getUint16(c+32,true), off=dv.getUint32(c+42,true);
+    const name=dec.decode(u8.subarray(c+46,c+46+nlen));
+    c+=46+nlen+xlen+clen;
+    if(name.endsWith("/")||/\.html$/i.test(name)) continue;
+    const start=off+30+dv.getUint16(off+26,true)+dv.getUint16(off+28,true);
+    const raw=u8.subarray(start,start+csize);
+    let data;
+    if(method===0) data=raw;
+    else if(method===8&&typeof DecompressionStream==="function") data=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+    else continue;
+    out[name]=dec.decode(data);
+  }
+  return out;
+}
+async function imReadFile(file){
+  if(/\.zip$/i.test(file.name)){
+    const z=await imUnzip(await file.arrayBuffer());
+    const k=Object.keys(z).find(x=>/story-return[^/]*\.json$/i.test(x))||Object.keys(z).find(x=>/(^|\/)data\.json$/i.test(x));
+    if(!k) throw new Error("There’s no data.json or return file in that zip.");
+    return imParseText(z[k]);
+  }
+  return imParseText(await file.text());
+}
+function imParseText(t){
+  t=String(t||"").trim(); if(!t) throw new Error("That’s empty.");
+  const fm=t.match(/<<<<< FILE: data\.json >>>>>\s*([\s\S]*?)(?=\n<<<<< |$)/); if(fm) t=fm[1].trim();
+  const tries=[t]; const cb=t.match(/```(?:json)?\s*([\s\S]*?)```/); if(cb) tries.push(cb[1]); const a=t.indexOf("{"), b=t.lastIndexOf("}"); if(a>=0&&b>a) tries.push(t.slice(a,b+1));
+  let j=null; for(const x of tries){ try{ j=JSON.parse(x); break; }catch(e){} }
+  if(!j||typeof j!=="object") throw new Error("Couldn’t read that as a handover or a return file.");
+  if(j.format==="story_room_return_v1") return {kind:"return",data:j};
+  if(j.schema==="story_room_v1"&&Array.isArray(j.entries)) return {kind:"pack",data:j};
+  throw new Error("That’s JSON, but it isn’t a handover’s data.json or a return file.");
+}
+
+/* ----- import: one card per change ----- */
+function imBuild(ret){
+  const src=ret.source==="twin"?"twin":"agent";
+  const cards=(Array.isArray(ret.changes)?ret.changes:[]).map((c,i)=>{
+    c=c||{};
+    const type=IM_TYPES.includes(c.type)?c.type:null, id=String(c.id||"").trim();
+    const card={i,op:String(c.op||""),type,id,why:String(c.why||"").slice(0,400),src,lock:"",fields:[],pick:{},state:""};
+    const cur=type&&id?S[type][id]:null;
+    if(card.op==="note"){ card.text=String(c.text||"").trim(); card.about=String(c.about||"").trim(); if(!card.text) card.lock="An empty note."; }
+    else if(!type) card.lock="It names a kind of record the Story Room doesn’t have (“"+String(c.type||"")+"”).";
+    else if(card.op==="update"){
+      card.title=imTitle(type,cur);
+      if(!cur) card.lock=S.aliases[id]?"That id was renamed to "+S.aliases[id].to+" here, so this change needs doing by hand.":"There’s no "+IM_WORD[type]+" called "+id+" here any more.";
+      else {
+        card.canon=cur.status==="canon";
+        if(src==="agent"&&card.canon) card.lock="It’s canon, and only you change canon. If you want this, make the change yourself.";
+        for(const [k,v] of Object.entries(c.fields&&typeof c.fields==="object"?c.fields:{})){
+          if(!v||typeof v!=="object"||!("to" in v)||IM_VOLATILE.has(k)) continue;
+          const row={k,from:v.from===undefined?null:v.from,to:v.to===undefined?null:v.to,mine:cur[k]===undefined?null:cur[k]};
+          row.same=imSame(row.mine,row.to); row.conflict=!row.same&&!imSame(row.mine,row.from);
+          if(k==="id") row.locked="Ids never change.";
+          else if(k==="status"&&row.to==="canon"&&src==="agent") row.locked="Agents can’t make anything canon.";
+          card.fields.push(row);
+        }
+        if(!card.fields.length) card.lock=card.lock||"It doesn’t change anything.";
+        else if(card.fields.every(r=>r.same||r.locked)) card.already=card.fields.some(r=>r.same)&&!card.fields.some(r=>!r.same&&!r.locked);
+        if(card.fields.length&&card.fields.every(r=>r.locked)) card.lock=card.lock||card.fields[0].locked;
+      }
+    }
+    else if(card.op==="create"){
+      const d=c.data&&typeof c.data==="object"?imStrip(c.data):{};
+      if(src==="agent"&&d.status==="canon"){ d.status="brainstorm"; card.demoted=true; }
+      if(!d.status&&type!=="inbox") d.status="brainstorm";
+      card.data=d; card.title=imTitle(type,d)||id;
+      if(!/^[a-z0-9_]+$/.test(id)) card.lock="“"+id+"” isn’t a usable id (lower case, digits and underscores).";
+      else if(cur){ if(imSame(imStrip(cur),d)) card.already=true; else card.lock="The id "+id+" is already used here by something different."; }
+      else if(find(id)) card.lock="The id "+id+" is already used here by another kind of record.";
+    }
+    else if(card.op==="delete"){
+      card.title=imTitle(type,cur||c.from);
+      if(src!=="twin") card.lock="Agents can’t delete. Delete it yourself if you agree.";
+      else if(!cur) card.already=true;
+      else { card.canon=cur.status==="canon"; card.conflict=!!c.from&&!imSame(imStrip(cur),imStrip(c.from)); }
+    }
+    else card.lock="It asks for a kind of change the Story Room doesn’t know (“"+card.op+"”).";
+    card.clash=!!card.conflict||card.fields.some(r=>r.conflict&&!r.locked);
+    card.state=card.lock||card.already?"":card.clash?"":"accept";
+    return card;
+  });
+  let fresh=null; try{ fresh=typeof hoFingerprint==="function"?hoFingerprint()===ret.fingerprint:null; }catch(e){}
+  return {ret,src,cards,fresh,done:null};
+}
+function imValHtml(v){
+  if(v===null||v===undefined||v==="") return `<span class="muted">(empty)</span>`;
+  if(typeof v==="string") return esc(v.length>1200?v.slice(0,1200)+"…":v);
+  const s=JSON.stringify(v); return `<code>${esc(s.length>600?s.slice(0,600)+"…":s)}</code>`;
+}
+function imCardHtml(c){
+  const opWord={update:"Change",create:"New",delete:"Delete",note:"Note"}[c.op]||"Change";
+  const blocked=!!c.lock||!!c.already;
+  const head=`<div class="imhead"><span class="imop imop-${esc(c.op)}">${opWord}</span>${c.type?`<span class="tag">${esc(IM_WORD[c.type]||c.type)}</span>`:""}${c.canon?`<span class="st canon">canon</span>`:""}<span class="imtitle">${esc(c.op==="note"?(c.about?"about "+(imTitle(find(c.about)?.type,find(c.about)?.rec)||c.about):"for you"):(c.title||c.id))}</span>${c.id&&c.op!=="note"?`<code class="id">${esc(c.id)}</code>`:""}</div>`;
+  let body="";
+  if(c.op==="note") body=`<div class="prose small">${renderText(c.text)}</div><p class="small muted">Accept puts it in your inbox.</p>`;
+  if(c.op==="update") body=c.fields.map(r=>{
+    const lab=`<div class="imk">${esc(r.k)}${r.locked?` <span class="warn">${esc(r.locked)}</span>`:r.same?` <span class="muted small">already like this</span>`:""}</div>`;
+    if(r.locked||r.same) return `<div class="imrow dim">${lab}</div>`;
+    if(r.conflict){ const p=c.pick[r.k]||"yours";
+      return `<div class="imrow clash">${lab}<p class="small imwarn">You’ve changed this here since the handover.</p>
+        <div class="im3"><div><span class="iml">Was</span><div class="imv">${imValHtml(r.from)}</div></div><div><span class="iml">Yours now</span><div class="imv">${imValHtml(r.mine)}</div></div><div><span class="iml">${c.src==="twin"?"From the twin":"Theirs"}</span><div class="imv">${imValHtml(r.to)}</div></div></div>
+        <div class="seg"><button type="button" data-im="pick" data-i="${c.i}" data-k="${esc(r.k)}" data-v="yours" aria-pressed="${p==="yours"}">Keep yours</button><button type="button" data-im="pick" data-i="${c.i}" data-k="${esc(r.k)}" data-v="theirs" aria-pressed="${p==="theirs"}">Take theirs</button></div></div>`; }
+    return `<div class="imrow">${lab}<div class="imv old">${imValHtml(r.mine)}</div><div class="imv new">${imValHtml(r.to)}</div></div>`;
+  }).join("");
+  if(c.op==="create"){ const d=c.data||{}; body=`<div class="imrow"><div class="imv new">${d.body||d.text?`${imValHtml(d.body||d.text)}`:`<span class="muted">(no notes)</span>`}</div>${d.status?`<div class="small muted" style="margin-top:4px">${esc(d.status)}${d.game?" · "+esc(gameName(d.game)):""}${c.demoted?" · asked for canon, comes in as brainstorm":""}</div>`:""}</div>`; }
+  if(c.op==="delete") body=c.conflict?`<p class="small imwarn">You’ve changed it here since the handover. Deleting throws that away too.</p>`:"";
+  const why=c.why?`<p class="small muted imwhy">${esc(c.why)}</p>`:"";
+  const foot=blocked?`<p class="small ${c.lock?"warn":"muted"}">${esc(c.lock||"Already like this here. Nothing to do.")}</p>`
+    :`<div class="btnrow imbtns"><button type="button" class="btn ${c.state==="accept"?"primary":""}" data-im="state" data-i="${c.i}" data-v="accept" aria-pressed="${c.state==="accept"}">Accept</button><button type="button" class="btn ${c.state==="reject"?"danger":""}" data-im="state" data-i="${c.i}" data-v="reject" aria-pressed="${c.state==="reject"}">Reject</button>${c.clash&&!c.state?`<span class="small imwarn">Look at this one</span>`:""}</div>`;
+  return `<div class="card imcard ${blocked?"blocked":""} st-${c.state||"open"}" data-imcard="${c.i}">${head}${why}${body}${foot}</div>`;
+}
+function imCounts(){ const C=S.im.cards; const live=C.filter(c=>!c.lock&&!c.already);
+  return {accept:live.filter(c=>c.state==="accept").length, reject:live.filter(c=>c.state==="reject").length, open:live.filter(c=>!c.state).length, blocked:C.length-live.length}; }
+function viewImport(){
+  const I=S.im;
+  if(!I) return `<div class="viewhead"><h1>Bring changes back</h1></div><div class="empty">Nothing open. Open a return file from Room → Bring changes back.</div>`;
+  if(I.done) return `<div class="viewhead"><h1>Bring changes back</h1></div><div class="card"><p><b>Imported ${I.done.n} change${I.done.n===1?"":"s"}.</b></p><p class="small muted">It’s one entry in the Inbox’s change list, so Undo there takes the whole import back out.</p><div class="btnrow"><a class="btn primary" href="#inbox">Go to the inbox</a><button class="btn" data-im="close">Done</button></div></div>`;
+  const r=I.ret, k=imCounts();
+  const from=I.src==="twin"?"From your twin":"From an agent"+(r.by?": "+esc(String(r.by).slice(0,80)):"");
+  const fresh=I.fresh===true?"Nothing here has changed since that handover.":I.fresh===false?"This room has changed since that handover. Anything that clashes is marked.":"";
+  return `<div class="viewhead"><h1>Bring changes back</h1><button class="btn ghost" data-im="close">Cancel</button></div>
+  <div class="card imsum"><div><b>${from}</b></div>${r.summary?`<div class="small">${esc(String(r.summary).slice(0,600))}</div>`:""}<div class="small muted">Based on ${r.based_on?`<code class="id">${esc(r.based_on)}</code>`:"an unknown handover"}${fresh?". "+fresh:""}</div>
+  <div class="imcounts small"><span>${k.accept} to apply</span><span>${k.reject} rejected</span>${k.open?`<span class="imwarn">${k.open} to decide</span>`:""}${k.blocked?`<span class="muted">${k.blocked} can’t apply</span>`:""}</div>
+  <div class="btnrow"><button class="btn" data-im="all" data-v="accept">Accept everything clean</button><button class="btn ghost" data-im="all" data-v="reject">Reject all</button></div>
+  <p class="small muted">Swipe a card right to accept it, left to reject it.</p></div>
+  <div class="list imlist">${I.cards.map(imCardHtml).join("")||`<div class="empty">The file has no changes in it.</div>`}</div>
+  <div class="imbar"><button class="btn primary" data-im="apply" ${k.accept?"":"disabled"}>${S.armed==="im-apply"?"Tap again to apply "+k.accept:"Apply "+k.accept+" change"+(k.accept===1?"":"s")}</button><span class="small muted">${k.open?k.open+" undecided count as rejected":"Undo-able in one go"}</span></div>`;
+}
+async function imApply(){
+  const I=S.im; if(!I) return; const ts=now(); const ops=[]; const stamp=ts.replace(/[^0-9]/g,"").slice(0,14);
+  for(const c of I.cards){
+    if(c.state!=="accept"||c.lock||c.already) continue;
+    if(c.op==="note"){ ops.push({type:"inbox",id:"idea_"+stamp+"_imp"+c.i,before:null,after:{text:(I.src==="twin"?"Note from the twin: ":"Note from "+(I.ret.by||"an agent")+": ")+c.text+(c.about?" (about [["+c.about+"]])":""),created:ts,source:"import"}}); continue; }
+    const cur=S[c.type][c.id];
+    if(c.op==="update"&&cur){ const n={...cur};
+      for(const r of c.fields){ if(r.locked||r.same) continue; if(r.conflict&&(c.pick[r.k]||"yours")!=="theirs") continue; if(r.to===null) delete n[r.k]; else n[r.k]=r.to; }
+      n.updated=ts; n.edited_by=I.src==="twin"?"mike":"import";
+      if(!imSame(imStrip(n),imStrip(cur))) ops.push({type:c.type,id:c.id,before:clone(cur),after:n}); }
+    if(c.op==="create"&&!cur) ops.push({type:c.type,id:c.id,before:null,after:{...c.data,created:ts,updated:ts,source:I.src==="twin"?"mike":"import"}});
+    if(c.op==="delete"&&cur) ops.push({type:c.type,id:c.id,before:clone(cur),after:null});
+  }
+  if(!ops.length){ toast("Nothing to apply."); return; }
+  try{ await commit(ops,"Imported "+(I.ret.based_on?"changes on "+I.ret.based_on:"a return file")+" ("+ops.length+")",""); }
+  catch(e){ toast("Stopped partway: "+(e.message||e)+". What did save is in the change list."); return; }
+  try{ const done=JSON.parse(recall("imported")||"[]"); done.unshift({based_on:I.ret.based_on||"",at:ts,n:ops.length,src:I.src}); store("imported",JSON.stringify(done.slice(0,20))); }catch(e){}
+  I.done={n:ops.length}; render();
+}
+
+/* ----- twin: load a handover, send changes back ----- */
+async function twinLoad(pack){
+  if(!(imRoomEmpty()||S.twin)) throw new Error("This room already has a story and isn’t a twin. A handover only loads into an empty room, so the original can never be overwritten.");
+  const strip=r=>{ const o={...r}; delete o.id; return o; };
+  const status=$("#im-status"); const say=t=>{ if(status) status.textContent=t; };
+  if(S.twin){
+    say("Clearing the old copy…");
+    const old=[]; for(const t of ["entries","beats","scenes","loose","inbox","specs","aliases"]) for(const id of Object.keys(S[t]||{})) old.push([t,id]);
+    await imPool(old,8,([t,id])=>remove(t,id));
+    const ob=await imGetAll(TWIN_BASE_COL); await imPool(ob,8,([id])=>S.db.collection(TWIN_BASE_COL).doc(id).delete());
+  }
+  const recs=[];
+  for(const [t,arr] of [["games",pack.games],["entries",pack.entries],["beats",pack.beats],["scenes",pack.scenes],["loose",pack.loose_ends],["inbox",pack.inbox],["specs",pack.specs]]) for(const r of (Array.isArray(arr)?arr:[])) if(r&&r.id) recs.push([t,r]);
+  let n=0; const total=recs.length;
+  await imPool(recs,8,async([t,r])=>{ if(!(await put(t,r.id,strip(r)))) throw new Error("Saving "+r.id+" failed."); n++; if(n%20===0) say("Loading… "+n+" of "+total); });
+  for(const [k,v] of Object.entries(pack.aliases||{})) if(typeof v==="string") await put("aliases",k,{to:v});
+  say("Keeping a copy to compare against…");
+  const base=recs.filter(([t])=>IM_TYPES.includes(t));
+  await imPool(base,8,([t,r])=>S.db.collection(TWIN_BASE_COL).doc(t+"__"+r.id).set({type:t,id:r.id,rec:strip(r)}));
+  await S.db.collection(TWIN_COL).doc("meta").set({handover:String(pack.handover||""),fingerprint:String(pack.fingerprint||""),made:String(pack.made||""),loaded:now(),sent:null,records:base.length});
+  say(""); return total;
+}
+async function twinDiff(){
+  const rows=await imGetAll(TWIN_BASE_COL); const base={};
+  for(const [,d] of rows) if(d&&d.type&&d.id) (base[d.type]=base[d.type]||{})[d.id]=d.rec||{};
+  const changes=[];
+  for(const t of IM_TYPES){
+    const B=base[t]||{}, C=S[t]||{};
+    for(const [id,cur] of Object.entries(C)){
+      const b=B[id];
+      if(!b){ changes.push({op:"create",type:t,id,data:imStrip(cur),why:"Made in the twin."}); continue; }
+      const fields={};
+      for(const k of new Set([...Object.keys(b),...Object.keys(cur)])){ if(IM_VOLATILE.has(k)) continue; if(!imSame(b[k],cur[k])) fields[k]={from:b[k]===undefined?null:b[k],to:cur[k]===undefined?null:cur[k]}; }
+      if(Object.keys(fields).length) changes.push({op:"update",type:t,id,fields,why:"Changed in the twin."});
+    }
+    for(const [id,b] of Object.entries(B)) if(!C[id]) changes.push({op:"delete",type:t,id,from:b,why:"Deleted in the twin."});
+  }
+  return changes;
+}
+async function twinSend(){
+  const T=S.twin; if(!T) return;
+  const changes=await twinDiff();
+  if(!changes.length){ toast("Nothing’s changed since the handover was loaded."); return; }
+  const ret={format:"story_room_return_v1",source:"twin",based_on:T.handover,fingerprint:T.fingerprint,by:"Story Room twin",made:now(),
+    summary:changes.length+" change"+(changes.length===1?"":"s")+" made in the twin: "+["create","update","delete"].map(op=>{ const n=changes.filter(c=>c.op===op).length; return n?n+" "+({create:"new",update:"changed",delete:"deleted"})[op]:""; }).filter(Boolean).join(", ")+".",changes};
+  const text=JSON.stringify(ret,null,1)+"\n", filename="story-return-"+(T.handover||"twin")+".json";
+  let ok=false;
+  if(S.downloads){ try{ await S.downloads.save({filename,data:text}); ok=true; toast("Saved "+filename+"."); }catch(e){ if(e?.code==="declined") return; } }
+  if(!ok){ try{ await navigator.clipboard.writeText(text); ok=true; toast("Copied the return file ("+Math.round(text.length/1000)+"k characters)."); }catch(e){ S.imSendText=text; render(); return; } }
+  try{ await S.db.collection(TWIN_COL).doc("meta").set({...T,sent:now(),sentCount:changes.length}); }catch(e){}
+}
+async function twinCount(){ try{ S.twinChanges=(await twinDiff()).length; }catch(e){ S.twinChanges=null; } if(S.route==="more") scheduleRender(); }
+
+/* ----- Room page section and the twin banner ----- */
+function imRoomHtml(){
+  const T=S.twin, last=(()=>{ try{ return JSON.parse(recall("imported")||"[]")[0]; }catch(e){ return null; } })();
+  let twin="";
+  if(T){
+    if(S.twinChanges===undefined){ S.twinChanges=null; twinCount(); }
+    const n=S.twinChanges;
+    twin=`<h2 id="twin">Twin</h2><div class="card twincard"><p><b>This room is a twin.</b> It was loaded from <code class="id">${esc(T.handover||"a handover")}</code> ${esc(ago(T.loaded))}. The original Story Room is on the other account.</p>
+      <p class="small">${n==null?"Counting changes…":n?n+" change"+(n===1?"":"s")+" since it was loaded.":"No changes since it was loaded."}${T.sent?" Last sent back "+esc(ago(T.sent))+".":""}</p>
+      <div class="btnrow"><button class="btn primary" data-im="send">Send changes back</button><button class="btn ghost" data-im="recount">Recount</button></div>
+      <p class="small muted">Sending saves a return file. Import it in the original (Room → Bring changes back), then don’t keep writing here: make a fresh handover from the original next time.</p>
+      ${S.imSendText?`<p class="small muted">Saving and copying didn’t work here. Select all of this and copy it:</p><textarea class="hopeek" rows="8" readonly>${esc(S.imSendText)}</textarea>`:""}
+      <details class="imdet"><summary class="small">Load a newer handover</summary><p class="small">This replaces everything in the twin.${n?` <b class="imwarn">${n} change${n===1?"":"s"} here haven’t gone back yet.</b>`:""}</p><button class="btn" data-im="load">Choose the handover…</button></details></div>`;
+  } else if(S.twinLoaded&&imRoomEmpty()){
+    twin=`<h2 id="twin">Twin</h2><div class="card twincard"><p><b>This room is empty.</b> Load a handover pack to make it a twin of the Story Room: the same story, to work on here, with your changes going back as a return file.</p>
+      <div class="btnrow"><button class="btn primary" data-im="load">Load a handover…</button></div><p class="small muted">The pack’s .zip, its data.json, or the one-file .md.</p></div>`;
+  }
+  const P=S.imPack;
+  const confirm=P?`<div class="card twincard"><p><b>Load ${esc(P.handover||"this handover")}?</b> ${(P.entries||[]).length} entries, ${(P.beats||[]).length} beats, ${(P.scenes||[]).length} scenes, ${(P.loose_ends||[]).length} loose ends${(P.specs||[]).length?", "+P.specs.length+" visual specs":""}.</p>
+    <div class="btnrow"><button class="btn primary" data-im="load-go">${S.twin?"Replace the twin with it":"Load it"}</button><button class="btn ghost" data-im="load-cancel">Cancel</button></div><p class="small" id="im-status"></p></div>`:"";
+  return `${twin}${confirm}<h2>Bring changes back</h2>
+  <p class="small muted">A return file from the other account: from an agent working off a handover, or from a twin. You see each change before anything is saved, and the whole import undoes in one go.</p>
+  <div class="btnrow"><button class="btn primary" data-im="open">Open a return file…</button><button class="btn" data-im="paste">${S.imPaste?"Hide the paste box":"Paste one"}</button></div>
+  ${S.imPaste?`<textarea id="im-paste" rows="6" placeholder="Paste the return file, or the agent’s whole reply with it inside"></textarea><div class="btnrow"><button class="btn" data-im="paste-go">Read it</button></div>`:""}
+  ${last?`<p class="small muted">Last import: ${last.n} change${last.n===1?"":"s"}${last.based_on?" on "+esc(last.based_on):""}, ${esc(ago(last.at))}.</p>`:""}
+  <input type="file" id="im-file" class="hidden" accept=".json,.zip,.md,.txt,application/json,application/zip,text/markdown,text/plain">`;
+}
+function twinBannerHtml(){
+  const T=S.twin; if(!T) return "";
+  return `<div class="banner twinbar"><b>Twin</b> of the Story Room, loaded from <code class="id">${esc(T.handover||"a handover")}</code> ${esc(ago(T.loaded))}. Changes here go back as a return file: <a href="#more" data-im="to-twin">Room → Twin</a>.</div>`;
+}
+function imHandle(parsed){
+  if(parsed.kind==="return"){ S.im=imBuild(parsed.data); S.armed=null; go("import"); return; }
+  if(!(imRoomEmpty()||S.twin)){ toast("That’s a handover pack. It loads only into an empty copy of the app, to make a twin."); return; }
+  S.imPack=parsed.data; render(); setTimeout(()=>{ const el=$("#twin"); if(el) el.scrollIntoView({block:"start"}); },50);
+}
+async function imAct(a,el){
+  if(a==="open"||a==="load"){ const f=$("#im-file"); if(f){ f.value=""; f.click(); } return; }
+  if(a==="paste"){ S.imPaste=!S.imPaste; render(); if(S.imPaste) setTimeout(()=>$("#im-paste")?.focus(),50); return; }
+  if(a==="paste-go"){ try{ imHandle(imParseText($("#im-paste")?.value)); }catch(e){ toast(e.message||String(e)); } return; }
+  if(a==="close"){ S.im=null; S.armed=null; go("more"); return; }
+  if(a==="state"){ const c=S.im?.cards[+el.dataset.i]; if(c){ c.state=c.state===el.dataset.v?"":el.dataset.v; S.armed=null; imRefresh(); } return; }
+  if(a==="pick"){ const c=S.im?.cards[+el.dataset.i]; if(c){ c.pick[el.dataset.k]=el.dataset.v; if(!c.state) c.state="accept"; imRefresh(); } return; }
+  if(a==="all"){ for(const c of S.im?.cards||[]){ if(c.lock||c.already) continue; if(el.dataset.v==="reject") c.state="reject"; else if(!c.clash) c.state="accept"; } imRefresh(); return; }
+  if(a==="apply"){ if(S.armed!=="im-apply"){ S.armed="im-apply"; imRefresh(); return; } S.armed=null; el.disabled=true; await imApply(); return; }
+  if(a==="load-cancel"){ S.imPack=null; render(); return; }
+  if(a==="load-go"){
+    if(S.twin&&S.twinChanges&&S.armed!=="im-replace"){ S.armed="im-replace"; el.textContent="Tap again: "+S.twinChanges+" unsent change"+(S.twinChanges===1?"":"s")+" will be lost"; return; }
+    S.armed=null; el.disabled=true;
+    try{ const n=await twinLoad(S.imPack); S.imPack=null; S.twinChanges=0; toast("Loaded "+n+" records. This room is now a twin."); render(); }
+    catch(e){ el.disabled=false; toast(e.message||String(e)); }
+    return; }
+  if(a==="send"){ el.disabled=true; try{ await twinSend(); }finally{ el.disabled=false; } return; }
+  if(a==="recount"){ S.twinChanges=null; render(); twinCount(); return; }
+  if(a==="to-twin"){ go("more"); setTimeout(()=>{ const t=$("#twin"); if(t) t.scrollIntoView({block:"start"}); },80); return; }
+}
+function imRefresh(){ if(S.route!=="import") return; const y=window.scrollY; $("#view").innerHTML=twinBannerHtml()+viewImport(); window.scrollTo(0,y); }
+document.addEventListener("click",ev=>{
+  const el=ev.target.closest&&ev.target.closest("[data-im]"); if(!el) return;
+  ev.preventDefault(); ev.stopImmediatePropagation(); imAct(el.dataset.im,el);
+},true);
+document.addEventListener("change",async ev=>{
+  if(ev.target.id!=="im-file") return;
+  const f=ev.target.files&&ev.target.files[0]; if(!f) return;
+  try{ imHandle(await imReadFile(f)); }catch(e){ toast(e.message||String(e)); }
+},true);
+/* swipe a card: right accepts, left rejects */
+let imSw=null;
+document.addEventListener("pointerdown",ev=>{ const c=ev.target.closest&&ev.target.closest(".imcard:not(.blocked)"); if(!c||ev.target.closest("button,textarea,input,a,.seg")) return; imSw={el:c,x:ev.clientX,y:ev.clientY,i:+c.dataset.imcard,dx:0}; },true);
+document.addEventListener("pointermove",ev=>{ if(!imSw) return; imSw.dx=ev.clientX-imSw.x; if(Math.abs(ev.clientY-imSw.y)>40&&Math.abs(imSw.dx)<40){ imSw.el.style.transform=""; imSw=null; return; } imSw.el.style.transform=`translateX(${Math.max(-120,Math.min(120,imSw.dx))}px)`; },true);
+document.addEventListener("pointerup",()=>{ if(!imSw) return; const s=imSw; imSw=null; s.el.style.transform=""; if(Math.abs(s.dx)>90){ const c=S.im?.cards[s.i]; if(c){ c.state=s.dx>0?"accept":"reject"; imRefresh(); } } },true);
+document.addEventListener("pointercancel",()=>{ if(imSw){ imSw.el.style.transform=""; imSw=null; } },true);
 
 /* ---------- ask claude ---------- */
 function saveThread(){ const a=S.ask; store("ask",JSON.stringify({mode:a.mode,target:a.target,game:a.game,fw:a.fw,n:a.n,write:a.write,task:a.task,label:a.label,scope:a.scope,thread:a.thread})); }
@@ -3621,7 +3974,7 @@ function pubDoc(id,set,ovBody){
 }
 function samePub(a,b){ return !!a&&!!b&&["type","name","kind","game","body","auto","order","open"].every(k=>a[k]===b[k]); }
 let shareTimer=null, shareBusy=false, shareAgain=false;
-function queueShareSync(){ if(S.mode!=="owner") return; clearTimeout(shareTimer); shareTimer=setTimeout(syncShared,1200); }
+function queueShareSync(){ if(S.mode!=="owner"||S.twin) return; clearTimeout(shareTimer); shareTimer=setTimeout(syncShared,1200); }
 function shareReady(){ return S.mode==="owner"&&S.db&&S.sharedLoaded&&S.ovLoaded&&["entries","beats","games","scenes","loose"].every(t=>S.loaded.has(t)); }
 async function syncShared(){
   if(!shareReady()) return;

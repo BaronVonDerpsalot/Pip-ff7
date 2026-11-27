@@ -19,7 +19,7 @@ An artifact belongs to the account that published it. The other account can open
 
 | Artifact | Link | Made from | Source in the repo |
 |---|---|---|---|
-| Story Room (story canon) | https://claude.ai/artifact/7PGPmyvhZp2edGCTemJ76b | a Planning Project | build notes in `docs/story-room/`; exports and handover packs go to `docs/story/`, return files to `docs/story/returns/`. The page's source and the canon itself still live only in the artifact |
+| Story Room (story canon) | https://claude.ai/artifact/7PGPmyvhZp2edGCTemJ76b | a Planning Project | build notes in `docs/story-room/`; exports and handover packs go to `docs/story/`, return files to `docs/story/returns/`. page source in `tools/story_room/`; the canon itself lives in the artifact's database, and moves between accounts by handover pack and return file (`docs/story-room/twin.md`) |
 | Pip Style Browser | https://claude.ai/artifact/U1ST3JJsFgWyApv688VFpa | Claude Code | `tools/style_browser/` builds the page; the picks live only in its database |
 
 ## Gotchas
