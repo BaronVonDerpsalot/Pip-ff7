@@ -46,4 +46,4 @@ It watches every screen at once, so a batch needs only one watcher. Don't poll i
 ## 4. End of a run
 Run `bash tools/layering_status.sh` again and report what's left. For a batch, run each screen sent in this run once with `run_scene`, with Pip standing where the overlays should meet him, and give one screenshot each so they can be reviewed together. Say what's still `TODO`. Suggest a board card for any large run to come, but don't create one.
 
-Nothing here is committed unless the person asks.
+Commit as `CLAUDE.md` "Commits" says: stage by name the scene, the screen's `_occ_` PNGs and their `.import` files, one screen's send per commit, and push. A send the person is still iterating on can wait, but nothing is left uncommitted at the end of the session.

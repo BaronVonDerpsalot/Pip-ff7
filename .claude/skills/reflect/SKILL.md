@@ -69,4 +69,4 @@ Show the user one list, grouped by file:
 - **Wins** worth keeping, placed the same way.
 - **Drift fixes**, each with what it changes.
 
-Ask which to keep. Write only the approved ones, exactly as approved. Don't commit unless asked. If the board is in use, leave a one-line comment on the session's card naming the files you changed, signed `— <agent>`.
+Ask which to keep. Write only the approved ones, exactly as approved. Commit what was written as its own commit and push, as `CLAUDE.md` "Commits" says. If the board is in use, leave a one-line comment on the session's card naming the files you changed, signed `— <agent>`.
