@@ -21,7 +21,7 @@ uniform sampler2D river_mask : filter_linear, hint_default_black;
 uniform sampler2D pond_mask : filter_linear, hint_default_black;
 uniform float tex_px_per_screen_px = 4.0;    // up the ground: set every frame by pip_shadow.gd
 uniform float tex_px_per_screen_px_x = 2.0;  // across: set every frame by pip_shadow.gd
-const vec2 SCREEN = vec2(1920.0, 1080.0);
+uniform vec2 SCREEN = vec2(1920.0, 1080.0);  // the painting's size (Screen.painting_size), set by the script
 
 varying vec2 canvas_pos;
 

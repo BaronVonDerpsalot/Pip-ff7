@@ -18,7 +18,7 @@ uniform float waver = 2.5;              // screen px, side to side
 uniform float waver_speed = 1.3;
 uniform float fade_heights = 0.9;       // gone this many Pip-heights below his feet
 uniform float tex_px_per_screen_px = 2.0;  // set every frame by pip_reflection.gd
-const vec2 SCREEN = vec2(1920.0, 1080.0);
+uniform vec2 SCREEN = vec2(1920.0, 1080.0);  // the painting's size (Screen.painting_size), set by the script
 
 varying vec2 canvas_pos;
 

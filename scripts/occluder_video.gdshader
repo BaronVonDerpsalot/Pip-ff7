@@ -6,10 +6,10 @@ shader_type canvas_item;
 // near it (the mole) isn't covered just because Pip is behind it.
 uniform sampler2D video : source_color, filter_linear;
 uniform bool has_video = false;
-uniform vec4 rect; // the occluder's x, y, width, height on the 1920x1080 screen
+uniform vec4 rect; // the occluder's x, y, width, height on the screen's painting
 uniform bool clip_to_pip = false;
 uniform vec4 pip_rect; // Pip's frame: left, top, right, bottom on the screen
-const vec2 SCREEN = vec2(1920.0, 1080.0);
+uniform vec2 SCREEN = vec2(1920.0, 1080.0);  // the painting's size (Screen.painting_size), set by the script
 
 void fragment() {
 	vec2 p = rect.xy + UV * rect.zw;

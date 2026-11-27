@@ -17,7 +17,7 @@ uniform float tolerance = 0.01;        // how much nearer than his feet a pixel 
 uniform float soft = 0.01;             // fade over this much more nearness
 uniform float grow = 3.0;              // px: whatever covers him also covers this far past its edge
 uniform bool show_mask = false;        // debug: tint what covers him red
-const vec2 SCREEN = vec2(1920.0, 1080.0);
+uniform vec2 SCREEN = vec2(1920.0, 1080.0);  // the painting's size (Screen.painting_size), set by the script
 
 float nearness(vec2 px) {
 	vec2 rg = texture(depth_tex, px / SCREEN).rg;

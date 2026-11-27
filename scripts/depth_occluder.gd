@@ -59,6 +59,8 @@ func _ready() -> void:
 	_mat.set_shader_parameter("soft", soft)
 	_mat.set_shader_parameter("grow", grow)
 	_mat.set_shader_parameter("show_mask", show_mask)
+	if _screen != null:
+		_mat.set_shader_parameter("SCREEN", _screen.painting_size())
 	material = _mat
 
 

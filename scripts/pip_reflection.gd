@@ -23,6 +23,7 @@ var _next := 0
 var _was_wet := false
 var _since_ring := 0.0
 var _setup_done := false
+var _size := Screen.VIEW  # the painting's size, which the water masks cover
 
 
 func _process(delta: float) -> void:
@@ -70,6 +71,8 @@ func _setup() -> void:
 		if value != null:
 			_mat.set_shader_parameter(u.name, value)
 	_mat.set_shader_parameter("plate", plate.texture)
+	_size = _screen.painting_size()
+	_mat.set_shader_parameter("SCREEN", _size)
 	for mask: String in ["river_mask", "pond_mask"]:
 		var t: Variant = _water_mat.get_shader_parameter(mask)
 		if t is Texture2D:
@@ -91,8 +94,8 @@ func _setup() -> void:
 func _water_at(p: Vector2) -> float:
 	var w := 0.0
 	for img in _masks:
-		var x := clampi(int(p.x * img.get_width() / 1920.0), 0, img.get_width() - 1)
-		var y := clampi(int(p.y * img.get_height() / 1080.0), 0, img.get_height() - 1)
+		var x := clampi(int(p.x * img.get_width() / _size.x), 0, img.get_width() - 1)
+		var y := clampi(int(p.y * img.get_height() / _size.y), 0, img.get_height() - 1)
 		w = maxf(w, img.get_pixel(x, y).r)
 	return w
 

@@ -38,6 +38,8 @@ func _ready() -> void:
 		var size := Vector2(texture.get_width(), texture.get_height())
 		_mat.set_shader_parameter("rect", Vector4(global_position.x, global_position.y, size.x, size.y))
 		_mat.set_shader_parameter("clip_to_pip", sort)
+		if screen is Screen:
+			_mat.set_shader_parameter("SCREEN", (screen as Screen).painting_size())
 		material = _mat
 
 

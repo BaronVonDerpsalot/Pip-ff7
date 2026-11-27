@@ -26,6 +26,7 @@ func _setup() -> void:
 	if _screen == null:
 		return
 	_mat.set_shader_parameter("strength", _screen.shadow_strength)
+	_mat.set_shader_parameter("SCREEN", _screen.painting_size())
 	# No shadow on water: borrow the shader-motion water masks, if the screen has them.
 	var plate := _screen.get_node_or_null("Loop/SubViewport/Plate") as CanvasItem
 	if plate != null and plate.material is ShaderMaterial:

@@ -11,6 +11,9 @@ extends Node2D
 
 func _ready() -> void:
 	position = Vector2.ZERO
+	var screen := get_parent() as Screen
+	if screen != null:
+		_vp.size = Vector2i(screen.painting_size())  # a wide painting gets a wide viewport
 	var bg: CanvasItem = get_parent().get_node_or_null("Background")
 	if bg != null:
 		bg.visible = false

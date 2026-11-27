@@ -24,7 +24,8 @@ const SECTORS := ["right", "downright", "down", "downright", "right", "upright",
 ## How much that light changes from his feet to his head (0 = one tint for all of him).
 @export_range(0.0, 1.0) var light_spread := 0.35
 
-## The light map: the painting shrunk to this size, then blurred this many times.
+## The light map: the painting shrunk to this size (a wider painting gets more columns, so each one still
+## covers 60 screen pixels), then blurred this many times.
 const LIGHT_MAP_SIZE := Vector2i(32, 18)
 const LIGHT_MAP_BLURS := 3
 ## Light-map pixels are kept within this range of the screen's average brightness, so
@@ -230,9 +231,11 @@ static func make_light_map(painting: Image) -> Image:
 	if image.is_compressed():
 		image.decompress()
 	image.convert(Image.FORMAT_RGBF)
-	while image.get_width() > LIGHT_MAP_SIZE.x * 2:
-		image.resize(maxi(image.get_width() >> 1, LIGHT_MAP_SIZE.x), maxi(image.get_height() >> 1, LIGHT_MAP_SIZE.y), Image.INTERPOLATE_BILINEAR)
-	image.resize(LIGHT_MAP_SIZE.x, LIGHT_MAP_SIZE.y, Image.INTERPOLATE_BILINEAR)
+	var aspect := float(image.get_width()) / image.get_height() / (16.0 / 9.0)
+	var size := Vector2i(maxi(roundi(LIGHT_MAP_SIZE.x * aspect), 1), LIGHT_MAP_SIZE.y)
+	while image.get_width() > size.x * 2:
+		image.resize(maxi(image.get_width() >> 1, size.x), maxi(image.get_height() >> 1, size.y), Image.INTERPOLATE_BILINEAR)
+	image.resize(size.x, size.y, Image.INTERPOLATE_BILINEAR)
 	for i in LIGHT_MAP_BLURS:
 		image = _box_blur(image)
 	var total := 0.0

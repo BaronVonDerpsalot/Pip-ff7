@@ -15,11 +15,19 @@ extends Node2D
 @export_range(0.0, 1.0) var shadow_strength := 0.7
 ## The painting's depth map (tools/depth/depth.py), which Pip's shadow bends over. Optional.
 @export var depth_map: Texture2D
+## On a painting wider than the view, how far (view pixels) the camera trails Pip, and how far he can
+## move from the middle of the view before it follows: FF7's scrolling screens keep him near the middle.
+@export var camera_smoothing := 4.0
+@export var camera_dead_zone := 0.12
+
+## The view the game draws (project settings: 1920x1080).
+const VIEW := Vector2(1920, 1080)
 
 @onready var walk_area: Polygon2D = $WalkArea
 @onready var pip: Pip = $World/Pip
 ## ScreenExit zones (under an Exits node) and ScreenEntry points (under Entries).
 var exits: Array[ScreenExit] = []
+var camera: Camera2D
 
 
 func _ready() -> void:
@@ -30,7 +38,57 @@ func _ready() -> void:
 				exits.append(node)
 	# The walk area and exits show in the editor for drawing, but not in the game (F toggles them).
 	_show_guides(false)
+	_add_camera()
 	_arrive()
+	if camera != null:
+		_follow(true)
+
+
+func _process(_delta: float) -> void:
+	if camera != null:
+		_follow(false)
+
+
+## The painting's size in screen pixels (the Background's texture); 1920x1080 on a screen without one.
+## Shaders that turn screen pixels into texture coordinates take this, so a wide painting works as a normal one.
+## Children ask for it in their own _ready, before this node's, so it's read from the Background each time.
+func painting_size() -> Vector2:
+	var bg := get_node_or_null("Background") as Sprite2D
+	if bg == null or bg.texture == null:
+		return VIEW
+	return bg.texture.get_size() * bg.scale
+
+
+## A painting bigger than the view gets a camera that follows Pip and stops at its edges.
+func _add_camera() -> void:
+	var size := painting_size()
+	if size.x <= VIEW.x + 1.0 and size.y <= VIEW.y + 1.0:
+		return
+	camera = Camera2D.new()
+	camera.name = "Camera"
+	camera.anchor_mode = Camera2D.ANCHOR_MODE_DRAG_CENTER
+	camera.limit_left = 0
+	camera.limit_top = 0
+	camera.limit_right = int(size.x)
+	camera.limit_bottom = int(size.y)
+	camera.position_smoothing_enabled = true
+	camera.position_smoothing_speed = camera_smoothing
+	camera.drag_horizontal_enabled = true
+	camera.drag_vertical_enabled = true
+	camera.drag_left_margin = camera_dead_zone
+	camera.drag_right_margin = camera_dead_zone
+	camera.drag_top_margin = camera_dead_zone
+	camera.drag_bottom_margin = camera_dead_zone
+	add_child(camera)
+	camera.make_current()
+
+
+## Puts the camera on Pip (his middle, not his feet). `snap` jumps straight there, for arriving on the screen.
+func _follow(snap: bool) -> void:
+	var height := height_at(pip.global_position.y)
+	camera.global_position = pip.global_position - Vector2(0, height * 0.5)
+	if snap:
+		camera.reset_smoothing()
 
 
 func _unhandled_input(event: InputEvent) -> void:
