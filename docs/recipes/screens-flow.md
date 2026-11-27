@@ -1,15 +1,7 @@
 # Recipe: screens from Google Flow
 
 ## Accounts
-Image generation is free but rate-capped per account, so work is spread across five. Each has its own Flow project.
-
-| Suffix | Account |
-| --- | --- |
-| hsd | headsmartdesign@gmail.com |
-| m35 | mike.lewis35@gmail.com |
-| wgv6 | wegotvegan6@gmail.com |
-| wgv7 | wegotvegan7@gmail.com |
-| wgv8 | wegotvegan8@gmail.com |
+Image generation is free but rate-capped per account, so work is spread across five, known by suffix: hsd, m35, wgv6, wgv7, wgv8. Each has its own Flow project. Which address each suffix is: `../kept-assets/flow-accounts.md` (outside git, since the repo is public).
 
 Before generating, confirm the active account by clicking the username at the top right of Flow. Never trust the user number in the URL. If you can't confirm it, stop and ask Mike.
 
