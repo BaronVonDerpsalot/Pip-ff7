@@ -23,15 +23,16 @@ The slice is done when Mike plays this from start to end, on the pad, on final a
 Not in the slice: sword combat, a boss, saves, Firefly, a story data pipeline, the phone, audio beyond a single track.
 
 ## Look
-Screens are hand-painted animated-film backgrounds (Miyazaki-like, with subdued colours): soft painterly fills, clean outlines, warm low light, at full HD. Pip keeps his own look: watercolour fill, pencil linework, paper grain. A muted, quiet, slightly melancholy painted world, with Pip the brightest, cleanest thing in it. Pip is the only chibi character; everyone else has grounded proportions. Lines on characters redraw every couple of frames.
+Screens are hand-painted animated-film backgrounds (for now Miyazaki-like, with subdued colours; the style is open decision 3): soft painterly fills, clean outlines, warm low light, at full HD. Pip keeps his own look: watercolour fill, pencil linework, paper grain. A muted, quiet, slightly melancholy painted world, with Pip the brightest, cleanest thing in it. Pip is the only chibi character; everyone else has grounded proportions. Lines on characters redraw every couple of frames.
 
 ## How it is made
 | Part | Made with |
 | --- | --- |
 | Engine | Godot 4.7 |
 | Pip | Rendered from his Blender rig (`recipes/pip-blender.md`) |
-| Screens | Google Flow stills (`recipes/screens-flow.md`) |
-| Screen animation | Flow video loops (`recipes/screens-flow.md`, "An animated screen") |
+| Screens | Google Flow stills (`recipes/screens-flow.md`); open decision 3 may move them to ComfyUI |
+| Screen animation | Shader motion on the still (`recipes/screens-shader-motion.md`); Flow video loops where shaders can't do it (`recipes/screens-flow.md`, "An animated screen") |
+| Hiding Pip behind things | Depth map and automatic shapes (`recipes/screens-layering.md`, "Depth occlusion"), Affinity shapes where those fail |
 | Other characters | Meshy model, rendered in Blender with Pip's look (`recipes/pip-blender.md`) |
 | Story | Story Room holds canon. The slice's lines live in a file in this repo. |
 | Input | Xbox controller first; keyboard fully supported |
@@ -40,3 +41,5 @@ Screens are hand-painted animated-film backgrounds (Miyazaki-like, with subdued 
 This is the only list of open decisions. When one closes, it moves to `DECISIONS.md` and leaves this list.
 1. The font.
 2. How often character lines redraw.
+3. The screen style, and whether stills move from Flow to ComfyUI. Settled by the style bake-off side track (DECISIONS, 2026-11-24); until then the Flow decisions stand.
+4. Whether depth occlusion replaces `/layering` for screens after the slice (DECISIONS, 2026-11-22).
