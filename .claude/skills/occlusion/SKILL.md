@@ -5,7 +5,8 @@ description: Make Pip hide correctly on a Pip FF7 screen, mostly automatically. 
 
 # Occlusion for a screen
 
-How it works, its tools and gotchas: `docs/recipes/screens-layering.md`, "Depth occlusion". Read it first. The screen's
+How it works, its tools and gotchas: `docs/recipes/screens-layering.md`, "Depth occlusion", and for the MimicPC machine
+itself `docs/recipes/comfyui.md`. Read them first. The screen's
 scene must exist (`docs/recipes/screens-flow.md`): `scenes/screens/<screen>.tscn` with its painting
 `assets/screens/<screen>/<screen>_bg.jpg` and a `WalkArea` (any rough polygon will do; step 3 replaces it).
 Python: `PY=../segment-env/venv/Scripts/python.exe`, run from the repo root. Board: claim the card first, and say on it
@@ -13,7 +14,7 @@ what you did and saw.
 
 ## 1. GPU run on ComfyUI (the person starts the machine)
 1. Ask the person to start MimicPC from their saved ComfyUI template (it has the nodes and `models/sam3/sam3.pt`) and
-   paste its URL. Don't extend or stop the machine yourself: it costs money. Don't install nodes on it: the recipe says
+   paste its URL. Don't extend or stop the machine yourself: it costs money. Don't install nodes on it: `comfyui.md` says
    which packs break it.
 2. Claude in Chrome (load its tools in one ToolSearch): `tabs_context_mcp`, then a new tab at the URL.
 3. Upload the paintings: with `javascript_tool`, add `<input type=file multiple id=pipup aria-label="pip upload">` to
@@ -22,7 +23,7 @@ what you did and saw.
    `await pipOcc.upload(document.getElementById('pipup'), ["<screen>", ...])` (same order as the files), and
    `await pipOcc.queue("<screen>")` for each screen. Poll `await pipOcc.status()` every ~40 s (a call longer than
    ~40 s times out) until "all done". About 1 min a screen on a T4. Errors: read the status line; a gated-model
-   error on SAM 3 means `sam3.pt` is missing from `models/sam3/` (the person puts it there, recipe).
+   error on SAM 3 means `sam3.pt` is missing from `models/sam3/` (the person puts it there, `comfyui.md`).
 5. Download: in MimicPC's right-hand storage panel open `output` → `pip` → `comfy`, tick the select-all box by "Name",
    click ⋮ (next to the refresh icon) → Download → Zip File, wait for "files packed successfully", click its
    Download button. Chrome saves to `../preprocessing/_inbox/` (newest `public_temporary_task_compression_*.zip`).
