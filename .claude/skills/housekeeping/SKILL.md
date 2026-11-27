@@ -23,8 +23,9 @@ Go through every item. For each, note **OK** or **a finding** with the evidence 
 9. **Board hygiene.** Are the section labels right ((DONE) / (ACTIVE))? Any open cards in a closed milestone? Does every finished card have a comment saying what was done and seen?
 10. **Look ahead.** Read the next milestone's "Done when". What will it need that is cheap to prepare or decide now and expensive later (tooling, storage like Git LFS, an open decision, an asset)? Put each as one line in the Parking lot, or as a question for Mike. Don't start the work.
 11. **Gotchas still true.** Skim each recipe's Gotchas. Any that the build or later work has made wrong or pointless?
+12. **Accounts in step.** You can see only the account you run in, so ask Mike for the other. Go through `recipes/board-and-tools.md`, "Each account needs", for both accounts. Does each Project's instructions match the block in `docs/planning.md` exactly? Ask Mike to paste what each account's Project memory holds (or confirm it's off): anything that is really a decision, rule or gotcha goes into the repo with his yes, and the rest he deletes. Is every artifact in the "Artifacts" table open in both accounts, and has anything people added to one since the last housekeeping (story canon, style picks) been copied into the repo?
 
 ## Report
 Show one list grouped as **Fix now** (small, clearly right), **Needs a yes** (scope, decisions, deletions, anything visible on the board), and **Park** (for later milestones). Each item: what's wrong, the evidence, the proposed change.
 
-Then make only what's approved. Re-run anything you changed (a scene, a tool) and look at the result. Commit the approved fixes as their own commit. Leave one comment on the closing milestone's ◆ card listing what changed, signed `— <agent> (<person>)`.
+Then make only what's approved. Re-run anything you changed (a scene, a tool) and look at the result. Commit the approved fixes as their own commit. Leave one comment on the closing milestone's ◆ card listing what changed, signed `— <agent>`.
