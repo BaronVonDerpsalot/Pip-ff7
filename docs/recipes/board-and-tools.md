@@ -9,7 +9,8 @@ Mike works from two Claude accounts on one PC. Anything set up per account has t
 - **Connectors:** Asana (the board) and GitHub (Planning's clone). Others are optional and nothing in the project relies on them.
 - **Claude in Chrome** signed in to that account, for `/occlusion` (MimicPC) and as the board's fallback.
 - **Claude Code** in the desktop app signed in, with sessions opened in `Pip-ff7/`.
-- **Access to every artifact below.**
+
+Artifacts don't need to open in both accounts: Mike moves their content between accounts by export (DECISIONS, 2026-11-27).
 
 Shared by both accounts already, because they live on the PC rather than the account: `~/.claude` (output style, rules, user skills), the local MCP servers (Ziva, Blender, Affinity, Meshy), the repo's `.claude/settings.json` (shared permissions, committed) and `.claude/settings.local.json` (this PC's extras, not committed). Connector tools are named by an ID that differs per account (`mcp__<id>__get_tasks`), so allow them in the local file, once per account, never in the committed one.
 
