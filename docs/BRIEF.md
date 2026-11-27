@@ -43,3 +43,4 @@ This is the only list of open decisions. When one closes, it moves to `DECISIONS
 2. How often character lines redraw.
 3. The screen style, and whether stills move from Flow to ComfyUI. Settled by the style bake-off side track (DECISIONS, 2026-11-24); until then the Flow decisions stand.
 4. Whether depth occlusion replaces `/layering` for screens after the slice (DECISIONS, 2026-11-22).
+5. Whether gameplay Pip becomes a live 3D model instead of rendered sprites. Settled by the M5 trial (DECISIONS, 2026-11-27).
