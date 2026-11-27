@@ -35,7 +35,6 @@ from PIL import Image
 
 FACE = float(os.environ.get("FACE", "0.3"))
 MIN_PX = 64
-W, H = 1920, 1080
 
 
 def walk_polygon(tscn: str) -> np.ndarray:
@@ -45,6 +44,7 @@ def walk_polygon(tscn: str) -> np.ndarray:
 
 def facing_lip(poly: np.ndarray, walk: np.ndarray) -> np.ndarray:
     """True where the nearest walk edge faces the camera."""
+    H, W = walk.shape
     edges = np.zeros((H, W), np.uint8)  # 0 none, 1 faces away, 2 faces the camera
     pts = np.vstack([poly, poly[:1]])
     for a, b in zip(pts[:-1], pts[1:]):
@@ -66,7 +66,7 @@ def facing_lip(poly: np.ndarray, walk: np.ndarray) -> np.ndarray:
 
 
 def bottom_line(mk: np.ndarray) -> np.ndarray:
-    b = np.full(W, -1)
+    b = np.full(mk.shape[1], -1)
     cols = np.where(mk.any(0))[0]
     for x in cols:
         b[x] = np.where(mk[:, x])[0].max()
@@ -93,6 +93,7 @@ def cut(m: np.ndarray, poly: np.ndarray, raised: np.ndarray | None = None) -> tu
     """The mask's pieces (boolean arrays, 64 px or more) and their kinds ("behind" or "front"), and the walk area.
     `raised`: bank a person has marked as raised. Inside the walk area too it follows the column rule (behind if
     there's walk area below it), instead of the lip rule, so Pip standing in it is hidden by it."""
+    H, W = m.shape  # the painting's size: 1920x1080, or wider for a scrolling screen
     walk = np.zeros((H, W), np.uint8)
     cv2.fillPoly(walk, [poly.round().astype(np.int32)], 1)
     walk = walk.astype(bool)
@@ -125,7 +126,7 @@ def main() -> None:
     poly = walk_polygon(open(tscn_path, encoding="utf-8").read())
     m = grow_ink(np.array(Image.open(mask_path).convert("L")) >= 128, painting)
     pieces, kinds, walk = cut(m, poly)
-    labels = np.zeros((H, W), np.int32)
+    labels = np.zeros(m.shape, np.int32)
     bottoms = []
     for i, mk in enumerate(pieces, 1):
         labels[mk] = i
@@ -138,7 +139,7 @@ def main() -> None:
         c = np.array((80, 120, 255) if kind == "behind" else (60, 220, 90))
         vis[labels == i] = (vis[labels == i] * 0.4 + c * 0.6).astype(np.uint8)
     vis[walk ^ cv2.erode(walk.astype(np.uint8), None, iterations=2).astype(bool)] = (255, 255, 255)
-    Image.fromarray(vis).resize((960, 540)).save(out + "_preview.jpg")
+    Image.fromarray(vis).resize((vis.shape[1] // 2, vis.shape[0] // 2)).save(out + "_preview.jpg")
     print(f"{len(bottoms)} pieces: {kinds.count('behind')} behind the path, {kinds.count('front')} in front")
 
 

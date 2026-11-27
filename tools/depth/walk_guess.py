@@ -27,6 +27,8 @@ MIN_SHARE = 0.002  # pieces smaller than this share of the picture are dropped b
 
 
 def guess(masks: list) -> np.ndarray:
+    global W, H
+    W, H = Image.open(masks[0]).size  # the painting's size: wider than 1920 on a scrolling screen
     m = np.zeros((H, W), np.uint8)
     for p in masks:
         a = (np.array(Image.open(p).convert("L")) >= 128).astype(np.uint8)

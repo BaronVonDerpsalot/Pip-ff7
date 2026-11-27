@@ -32,9 +32,10 @@ MIN_PX = 64
 
 
 def load(paths: str) -> np.ndarray:
-    m = np.zeros((cut_banks.H, cut_banks.W), bool)
+    m = None
     for p in paths.split(","):
-        m |= np.array(Image.open(p).convert("L")) >= 128
+        a = np.array(Image.open(p).convert("L")) >= 128
+        m = a if m is None else m | a
     return m
 
 
