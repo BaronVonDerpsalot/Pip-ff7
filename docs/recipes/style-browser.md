@@ -1,0 +1,8 @@
+# Recipe: the style browser
+
+The style browser in `tools/style_browser/` compares generated style samples with our paintings, for the style bake-off. Make the samples on ComfyUI (`comfy_queue.js`, see `comfyui.md`), build the page with `build.py` (one `"Label=folder"` per set; its docstring says how), publish it as an artifact, and read the person's picks from its database. To judge a single painting with Pip walking on it, use the style bench in `tools/style_test/` (its header says how to give an image its own path, depth and shapes).
+
+## Gotchas
+- **SDXL's painterly samples come out soft** (2026-11-24, style bake-off): at 1:1, Shaun Tan, gouache, pastel, Klassen and Kazuo Oga smeared grass and bank edges. Our stream painting, shrunk to 1344 wide and stretched back, kept its lines, and the WebP copies lost only 3 to 12% of fine detail. When a style looks soft, compare a 1:1 crop against our painting at the same size before blaming the page or compression.
+- **Win: score sharpness in Python before looking** (2026-11-24, style bake-off): Laplacian variance per sample, against our paintings resized to the same width, ranked all 100 in seconds. Linework and print styles came out 5 to 20 times sharper than painterly ones. When judging softness across a batch, try that first, then look at crops of the extremes.
+- **Win: keep published file paths stable** (2026-11-24, style bake-off): giving the first sample set `img/` and new sets `img/<set>/` meant the artifact republish sent only `index.html` and 4 new images, instead of re-sending (and deleting) 100. When changing a published page's layout, keep existing asset paths.

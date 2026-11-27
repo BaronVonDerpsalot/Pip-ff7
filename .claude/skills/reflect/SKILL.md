@@ -38,6 +38,11 @@ Each gotcha goes in the **Gotchas** section of the recipe for the area it's abou
 | About | File |
 | --- | --- |
 | Flow, screens, cut-outs | `docs/recipes/screens-flow.md` |
+| Layering, depth occlusion, hide-Pip shapes | `docs/recipes/screens-layering.md` |
+| Shader motion on a screen | `docs/recipes/screens-shader-motion.md` |
+| MimicPC and ComfyUI themselves | `docs/recipes/comfyui.md` |
+| The style browser and style tests | `docs/recipes/style-browser.md` |
+| Builds and delivery | `docs/recipes/delivery.md` |
 | Pip's Blender render | `docs/recipes/pip-blender.md` |
 | Pip's rig | `docs/recipes/pip-rig.md` |
 | Godot, Ziva, the editor, scenes, scripts | `docs/recipes/godot.md` |

@@ -24,7 +24,7 @@ Use Mike's prompt shape, word for word apart from the scene in the middle, and a
 - **The camera sentence is fixed** (2026-11-19): "seen from a raised viewpoint about as high as a two-storey house, looking down at the path at about 45 degrees, close enough that the path is wide and fills the lower half of the picture", plus "only a thin band of distant marsh and sky along the top". Without it Flow drifts to ground level; "seen from high above" swung between ground level and a drone shot with a tiny path. With it, 3 of 3 test screens matched the marsh's raised three-quarter view. Keep words like "towering" out of the scene: they pull the camera down.
 - **Name the path's route** (bottom left corner to top right, and so on) so exits line up between screens, and leave open ground where characters will stand.
 - **Keep the artist's name in** (2026-11-13): without it the style drifts.
-- The screens to match are the three accepted ones in `assets/screens/` (marsh, boardwalk, stream). Pip on them looks right: the brightest thing on screen, at a size that fits the path. To judge a new screen with Pip in front, use the style bench in `tools/style_test/`.
+- The screens to match are the three accepted ones in `assets/screens/` (marsh, boardwalk, stream). Pip on them looks right: the brightest thing on screen, at a size that fits the path. To judge a new screen with Pip in front, use the style bench in `tools/style_test/`; to compare many styles side by side, the style browser (`style-browser.md`).
 - Check each result for stray people (the montage has some) and lettering on signs. If they keep turning up, add "no people, no writing" and see whether the style holds.
 
 ## A still screen
