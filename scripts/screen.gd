@@ -136,11 +136,63 @@ func height_at(y: float) -> float:
 
 
 ## Inside the walk area and not where a villager stands.
+## The depth occluders ask this about a thousand times a frame, so the walk area is looked up in a grid of
+## pixels made once from its polygon (a walk area traced from masks has hundreds of points).
 func is_walkable(point: Vector2) -> bool:
 	var global := to_global(point)
-	if not Geometry2D.is_point_in_polygon(walk_area.to_local(global), walk_area.polygon):
+	if not _in_walk_area(walk_area.to_local(global)):
 		return false
-	for villager in get_tree().get_nodes_in_group(&"villagers"):
+	var frame := Engine.get_process_frames()
+	if frame != _villagers_frame:
+		_villagers_frame = frame
+		_villagers = get_tree().get_nodes_in_group(&"villagers")
+	for villager in _villagers:
 		if villager.blocks(global):
 			return false
 	return true
+
+
+var _walk_grid: BitMap
+var _walk_origin := Vector2i.ZERO
+var _villagers: Array[Node] = []
+var _villagers_frame := -1
+
+
+func _in_walk_area(p: Vector2) -> bool:
+	if _walk_grid == null:
+		_build_walk_grid()
+	var c := Vector2i(floori(p.x), floori(p.y)) - _walk_origin
+	var size := _walk_grid.get_size()
+	if c.x < 0 or c.y < 0 or c.x >= size.x or c.y >= size.y:
+		return false
+	return _walk_grid.get_bitv(c)
+
+
+## Fills the grid row by row: a pixel is inside where a line along its row has crossed the outline an odd number
+## of times by its centre (the same even-odd rule as Geometry2D.is_point_in_polygon).
+func _build_walk_grid() -> void:
+	var poly := walk_area.polygon
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	for v in poly:
+		lo = lo.min(v)
+		hi = hi.max(v)
+	_walk_origin = Vector2i(floori(lo.x), floori(lo.y))
+	var size := Vector2i(ceili(hi.x) - _walk_origin.x + 1, ceili(hi.y) - _walk_origin.y + 1)
+	_walk_grid = BitMap.new()
+	_walk_grid.create(size)
+	var n := poly.size()
+	for row in size.y:
+		var y := _walk_origin.y + row + 0.5
+		var xs: Array[float] = []
+		for i in n:
+			var a := poly[i]
+			var b := poly[(i + 1) % n]
+			if (a.y <= y) != (b.y <= y):
+				xs.append(a.x + (y - a.y) / (b.y - a.y) * (b.x - a.x))
+		xs.sort()
+		for k in range(0, xs.size() - 1, 2):
+			var x0 := clampi(ceili(xs[k] - 0.5) - _walk_origin.x, 0, size.x)
+			var x1 := clampi(ceili(xs[k + 1] - 0.5) - _walk_origin.x, 0, size.x)
+			if x1 > x0:
+				_walk_grid.set_bit_rect(Rect2i(x0, row, x1 - x0, 1), true)
