@@ -1,0 +1,36 @@
+{
+ "painting": "assets/screens/marsh_wide/marsh_wide_bg.jpg",
+ "pad": 44,
+ "groups": {
+  "ponds": {
+   "kind": "water",
+   "flow": false,
+   "words": "puddle.",
+   "threshold": 0.25,
+   "max_box": 0.015,
+   "regions": [
+    {"box": [960, 330, 1480, 720], "pos": [[1060, 420], [1260, 380], [1110, 600]], "neg": [[1210, 520]]},
+    {"box": [1680, 330, 2480, 540], "pos": [[1960, 420], [2160, 470], [1810, 470]]},
+    {"box": [2210, 680, 2880, 860], "pos": [[2410, 760], [2760, 800]]},
+    {"box": [1140, 205, 1440, 265], "pos": [[1260, 235]]},
+    {"box": [0, 380, 420, 520], "pos": [[200, 450]]},
+    {"box": [600, 400, 1240, 600], "pos": [[800, 470], [1100, 540]]},
+    {"box": [0, 640, 950, 1080], "pos": [[100, 800], [250, 950], [600, 900]]},
+    {"box": [2660, 380, 3500, 520], "pos": [[3000, 440], [3300, 450]]},
+    {"box": [2880, 540, 3800, 800], "pos": [[3000, 700], [3300, 640], [3600, 620]]}
+   ],
+   "minus": ["sway", "fronds", "fronds_left"]
+  },
+  "fronds": {"kind": "hang", "words": "hanging willow leaves.", "threshold": 0.25, "max_box": 0.25, "within": [1760, 0, 3840, 800]},
+  "fronds_left": {"kind": "hang", "words": "hanging willow leaves.", "threshold": 0.25, "max_box": 0.1, "within": [0, 0, 760, 700]},
+  "sway": {"kind": "sway", "words": "tall grass. cattail.", "threshold": 0.25, "max_box": 0.15},
+  "trunk": {
+   "kind": "still",
+   "regions": [
+    {"box": [2140, 0, 2880, 780], "pos": [[2580, 300], [2520, 620], [2410, 560]], "neg": [[2260, 150], [2760, 250]]},
+    {"box": [3380, 0, 3840, 1080], "pos": [[3650, 400], [3700, 800]], "neg": [[3450, 150]]}
+   ]
+  },
+  "mushrooms": {"kind": "still", "words": "mushroom.", "max_side": 90}
+ }
+}

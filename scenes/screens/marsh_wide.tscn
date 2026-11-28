@@ -1,0 +1,355 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://scripts/screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/marsh_wide_depth.png" id="depth_map"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/marsh_wide_bg.jpg" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/pip.tscn" id="4_pip"]
+[ext_resource type="PackedScene" path="res://scenes/mole.tscn" id="mole_scene"]
+[ext_resource type="Script" path="res://scripts/depth_occluder.gd" id="depth_occ"]
+[ext_resource type="Script" path="res://scripts/screen_exit.gd" id="8_exit"]
+[ext_resource type="Script" path="res://scripts/screen_entry.gd" id="9_entry"]
+[ext_resource type="Script" path="res://scripts/occluder.gd" id="occ_script"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_1.png" id="auto_bank_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_2.png" id="auto_bank_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_3.png" id="auto_bank_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_4.png" id="auto_bank_4"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_5.png" id="auto_bank_5"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_6.png" id="auto_bank_6"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_7.png" id="auto_bank_7"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_8.png" id="auto_bank_8"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_9.png" id="auto_bank_9"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_10.png" id="auto_bank_10"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_11.png" id="auto_bank_11"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_12.png" id="auto_bank_12"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_13.png" id="auto_bank_13"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_14.png" id="auto_bank_14"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_15.png" id="auto_bank_15"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_16.png" id="auto_bank_16"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_17.png" id="auto_bank_17"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_18.png" id="auto_bank_18"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_19.png" id="auto_bank_19"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh/auto/marsh_bank_20.png" id="auto_bank_20"]
+[ext_resource type="Script" path="res://scripts/screen_motion.gd" id="motion_script"]
+[ext_resource type="Shader" path="res://scripts/motion_water.gdshader" id="motion_water"]
+[ext_resource type="Shader" path="res://scripts/motion_sway.gdshader" id="motion_sway"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/plate.png" id="motion_plate"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/ponds_mask.png" id="motion_pond_mask"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/fronds_1.png" id="motion_sway_1"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/fronds_2.png" id="motion_sway_2"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/fronds_3.png" id="motion_sway_3"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/fronds_4.png" id="motion_sway_4"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/fronds_5.png" id="motion_sway_5"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/fronds_6.png" id="motion_sway_6"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/sway_1.png" id="motion_sway_7"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/sway_2.png" id="motion_sway_8"]
+[ext_resource type="Texture2D" path="res://assets/screens/marsh_wide/motion/sway_3.png" id="motion_sway_9"]
+
+[sub_resource type="ShaderMaterial" id="motion_water_mat"]
+shader = ExtResource("motion_water")
+shader_parameter/pond_mask = ExtResource("motion_pond_mask")
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_1"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 24.0
+shader_parameter/phase = 1.7
+shader_parameter/speed = 0.20
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_2"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 12.4
+shader_parameter/phase = 3.4
+shader_parameter/speed = 0.25
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_3"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.8
+shader_parameter/phase = 5.1
+shader_parameter/speed = 0.17
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_4"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.0
+shader_parameter/phase = 6.8
+shader_parameter/speed = 0.22
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_5"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.0
+shader_parameter/phase = 8.5
+shader_parameter/speed = 0.26
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_6"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 8.0
+shader_parameter/phase = 10.2
+shader_parameter/speed = 0.19
+shader_parameter/hang = true
+shader_parameter/stiffness = 1.2
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_7"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 9.6
+shader_parameter/phase = 11.9
+shader_parameter/speed = 0.23
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_8"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 4.0
+shader_parameter/phase = 13.6
+shader_parameter/speed = 0.28
+
+[sub_resource type="ShaderMaterial" id="motion_sway_mat_9"]
+shader = ExtResource("motion_sway")
+shader_parameter/amp = 4.0
+shader_parameter/phase = 15.3
+shader_parameter/speed = 0.20
+
+[node name="MarshWide" type="Node2D"]
+script = ExtResource("1_screen")
+shadow_dir = Vector2(-0.15, 0.4)
+depth_map = ExtResource("depth_map")
+far_y = 265.0
+far_height = 50.0
+near_height = 260.0
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("2_bg")
+centered = false
+
+[node name="Loop" type="Node2D" parent="."]
+script = ExtResource("motion_script")
+
+[node name="SubViewport" type="SubViewport" parent="Loop"]
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Plate" type="Sprite2D" parent="Loop/SubViewport"]
+texture = ExtResource("motion_plate")
+centered = false
+material = SubResource("motion_water_mat")
+
+[node name="Sway_1" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_1")
+position = Vector2(2525, 0)
+texture = ExtResource("motion_sway_1")
+centered = false
+
+[node name="Sway_2" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_2")
+position = Vector2(2298, 13)
+texture = ExtResource("motion_sway_2")
+centered = false
+
+[node name="Sway_3" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_3")
+position = Vector2(1972, 437)
+texture = ExtResource("motion_sway_3")
+centered = false
+
+[node name="Sway_4" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_4")
+position = Vector2(2118, 596)
+texture = ExtResource("motion_sway_4")
+centered = false
+
+[node name="Sway_5" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_5")
+position = Vector2(2634, 613)
+texture = ExtResource("motion_sway_5")
+centered = false
+
+[node name="Sway_6" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_6")
+position = Vector2(2621, 614)
+texture = ExtResource("motion_sway_6")
+centered = false
+
+[node name="Sway_7" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_7")
+position = Vector2(3329, 0)
+texture = ExtResource("motion_sway_7")
+centered = false
+
+[node name="Sway_8" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_8")
+position = Vector2(3490, 0)
+texture = ExtResource("motion_sway_8")
+centered = false
+
+[node name="Sway_9" type="Sprite2D" parent="Loop/SubViewport"]
+material = SubResource("motion_sway_mat_9")
+position = Vector2(3713, 0)
+texture = ExtResource("motion_sway_9")
+centered = false
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Pip" parent="World" instance=ExtResource("4_pip")]
+position = Vector2(2160, 985)
+
+[node name="Mole" parent="World" instance=ExtResource("mole_scene")]
+position = Vector2(2390, 970)
+
+[node name="Overhead" type="Node2D" parent="."]
+metadata/layered = true
+
+[node name="Auto_bank_1" type="Sprite2D" parent="Overhead"]
+position = Vector2(1425, 210)
+texture = ExtResource("auto_bank_1")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_2" type="Sprite2D" parent="Overhead"]
+position = Vector2(1808, 240)
+texture = ExtResource("auto_bank_2")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_3" type="Sprite2D" parent="Overhead"]
+position = Vector2(1824, 312)
+texture = ExtResource("auto_bank_3")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_4" type="Sprite2D" parent="Overhead"]
+position = Vector2(1566, 320)
+texture = ExtResource("auto_bank_4")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_5" type="Sprite2D" parent="Overhead"]
+position = Vector2(2363, 415)
+texture = ExtResource("auto_bank_5")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_6" type="Sprite2D" parent="Overhead"]
+position = Vector2(2314, 416)
+texture = ExtResource("auto_bank_6")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_7" type="Sprite2D" parent="Overhead"]
+position = Vector2(2326, 429)
+texture = ExtResource("auto_bank_7")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_8" type="Sprite2D" parent="Overhead"]
+position = Vector2(2682, 454)
+texture = ExtResource("auto_bank_8")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_9" type="Sprite2D" parent="Overhead"]
+position = Vector2(1705, 476)
+texture = ExtResource("auto_bank_9")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_10" type="Sprite2D" parent="Overhead"]
+position = Vector2(2046, 522)
+texture = ExtResource("auto_bank_10")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_11" type="Sprite2D" parent="Overhead"]
+position = Vector2(2303, 550)
+texture = ExtResource("auto_bank_11")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_12" type="Sprite2D" parent="Overhead"]
+position = Vector2(2163, 557)
+texture = ExtResource("auto_bank_12")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_13" type="Sprite2D" parent="Overhead"]
+position = Vector2(2443, 570)
+texture = ExtResource("auto_bank_13")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_14" type="Sprite2D" parent="Overhead"]
+position = Vector2(2170, 577)
+texture = ExtResource("auto_bank_14")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_15" type="Sprite2D" parent="Overhead"]
+position = Vector2(2059, 585)
+texture = ExtResource("auto_bank_15")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_16" type="Sprite2D" parent="Overhead"]
+position = Vector2(2277, 595)
+texture = ExtResource("auto_bank_16")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_17" type="Sprite2D" parent="Overhead"]
+position = Vector2(2663, 613)
+texture = ExtResource("auto_bank_17")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_18" type="Sprite2D" parent="Overhead"]
+position = Vector2(2617, 663)
+texture = ExtResource("auto_bank_18")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_19" type="Sprite2D" parent="Overhead"]
+position = Vector2(1574, 380)
+texture = ExtResource("auto_bank_19")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="Auto_bank_20" type="Sprite2D" parent="Overhead"]
+position = Vector2(1425, 481)
+texture = ExtResource("auto_bank_20")
+centered = false
+script = ExtResource("occ_script")
+
+[node name="DepthOcc" type="Sprite2D" parent="Overhead"]
+centered = false
+script = ExtResource("depth_occ")
+
+[node name="DepthOcc_Mole" type="Sprite2D" parent="Overhead"]
+centered = false
+script = ExtResource("depth_occ")
+target = NodePath("World/Mole")
+frame_half_width = 200.0
+frame_above_feet = 345.0
+
+[node name="WalkArea" type="Polygon2D" parent="."]
+color = Color(1, 0.2, 0.2, 0.3)
+polygon = PackedVector2Array(285, 1009, 306, 1029, 305, 1037, 297, 1044, 299, 1050, 334, 1064, 379, 1068, 523, 1059, 597, 1059, 625, 1065, 755, 1060, 776, 1066, 832, 1068, 845, 1080, 1885, 1080, 1899, 1068, 1899, 902, 1907, 896, 2107, 1066, 2117, 1080, 2713, 1080, 2696, 1065, 2704, 1055, 2769, 1064, 2793, 1072, 2798, 1080, 3247, 1080, 3255, 1071, 3288, 1071, 3296, 1080, 3805, 1080, 3821, 1057, 3818, 1046, 3795, 1036, 3765, 1030, 3734, 1041, 3726, 1035, 3737, 1003, 3728, 993, 3729, 982, 3717, 953, 3717, 926, 3712, 914, 3692, 905, 3670, 906, 3621, 934, 3595, 984, 3567, 994, 3553, 987, 3540, 991, 3521, 986, 3501, 987, 3476, 1008, 3456, 1008, 3451, 995, 3471, 956, 3502, 926, 3514, 921, 3534, 901, 3536, 892, 3530, 888, 3501, 889, 3398, 929, 3390, 923, 3390, 917, 3415, 886, 3404, 869, 3415, 848, 3424, 841, 3478, 830, 3508, 819, 3556, 782, 3554, 771, 3545, 765, 3486, 763, 3474, 749, 3457, 741, 3393, 753, 3384, 762, 3382, 794, 3365, 805, 3340, 803, 3317, 781, 3314, 766, 3309, 763, 3260, 782, 3241, 775, 3239, 781, 3251, 808, 3246, 823, 3250, 832, 3249, 865, 3261, 911, 3261, 938, 3251, 975, 3254, 992, 3239, 1008, 3222, 1016, 3144, 1038, 3087, 1039, 3009, 1018, 2928, 1008, 2923, 1003, 2931, 973, 2926, 962, 2926, 932, 2907, 898, 2905, 881, 2911, 869, 2905, 856, 2870, 845, 2862, 826, 2866, 806, 2846, 796, 2844, 778, 2811, 787, 2803, 782, 2798, 771, 2791, 771, 2787, 783, 2763, 804, 2754, 803, 2739, 791, 2732, 795, 2727, 826, 2720, 836, 2717, 865, 2701, 884, 2691, 883, 2671, 858, 2673, 831, 2659, 829, 2640, 840, 2640, 1028, 2632, 1034, 2365, 897, 2210, 860, 2093, 744, 1960, 700, 1898, 638, 1822, 581, 1678, 522, 1593, 471, 1591, 440, 1648, 397, 1820, 320, 1849, 282, 1837, 262, 1779, 263, 1739, 301, 1551, 390, 1460, 425, 1420, 479, 1213, 480, 1204, 492, 1195, 494, 1185, 507, 1169, 516, 1180, 532, 1176, 546, 1198, 558, 1207, 580, 1221, 587, 1276, 594, 1297, 609, 1341, 615, 1349, 620, 1350, 632, 1361, 654, 1341, 676, 1342, 688, 1365, 715, 1405, 726, 1458, 717, 1474, 722, 1503, 722, 1511, 728, 1508, 745, 1494, 759, 1496, 776, 1486, 788, 1451, 795, 1432, 806, 1396, 807, 1394, 813, 1401, 826, 1384, 842, 1338, 828, 1334, 823, 1336, 808, 1307, 798, 1300, 786, 1276, 789, 1268, 783, 1267, 772, 1282, 744, 1289, 723, 1287, 717, 1261, 723, 1248, 717, 1234, 723, 1212, 717, 1188, 717, 1183, 712, 1180, 670, 1169, 657, 1160, 669, 1158, 704, 1146, 709, 1138, 694, 1099, 679, 1097, 649, 1084, 630, 1073, 639, 1072, 665, 1044, 682, 1036, 676, 1021, 639, 1010, 634, 1005, 637, 1004, 650, 1012, 681, 1004, 687, 984, 683, 978, 686, 989, 741, 969, 761, 950, 761, 935, 775, 917, 778, 918, 797, 908, 806, 896, 799, 892, 780, 860, 738, 848, 732, 835, 736, 838, 751, 866, 796, 855, 803, 820, 801, 814, 805, 812, 820, 817, 841, 812, 858, 843, 863, 856, 878, 852, 887, 827, 886, 817, 894, 806, 895, 773, 885, 768, 880, 771, 862, 748, 866, 740, 860, 750, 816, 743, 811, 718, 832, 714, 849, 696, 869, 685, 865, 661, 873, 639, 868, 627, 857, 628, 840, 623, 837, 616, 838, 604, 851, 568, 848, 527, 860, 458, 866, 446, 873, 423, 860, 418, 863, 417, 872, 432, 893, 431, 904, 421, 910, 388, 911, 381, 923, 362, 937, 358, 959, 351, 967, 318, 985, 306, 1005)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="FarEnd" type="Polygon2D" parent="Exits"]
+color = Color(0.2, 0.5, 1, 0.4)
+polygon = PackedVector2Array(1750, 230, 1880, 230, 1880, 285, 1750, 285)
+script = ExtResource("8_exit")
+to_screen = "res://scenes/screens/boardwalk.tscn"
+to_entry = &"near_end"
+
+[node name="Entries" type="Node2D" parent="."]
+
+[node name="far_end" type="Marker2D" parent="Entries"]
+position = Vector2(1770, 320)
+script = ExtResource("9_entry")
+facing = Vector2(-1, 1)

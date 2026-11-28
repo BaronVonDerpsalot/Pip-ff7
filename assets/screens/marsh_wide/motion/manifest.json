@@ -1,0 +1,109 @@
+{
+ "pieces": [
+  {
+   "file": "fronds_1.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    2525,
+    0,
+    580,
+    740
+   ]
+  },
+  {
+   "file": "fronds_2.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    2298,
+    13,
+    253,
+    311
+   ]
+  },
+  {
+   "file": "fronds_3.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    1972,
+    437,
+    518,
+    219
+   ]
+  },
+  {
+   "file": "fronds_4.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    2118,
+    596,
+    222,
+    153
+   ]
+  },
+  {
+   "file": "fronds_5.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    2634,
+    613,
+    141,
+    114
+   ]
+  },
+  {
+   "file": "fronds_6.png",
+   "group": "fronds",
+   "hang": true,
+   "rect": [
+    2621,
+    614,
+    123,
+    116
+   ]
+  },
+  {
+   "file": "sway_1.png",
+   "group": "sway",
+   "hang": false,
+   "rect": [
+    3329,
+    0,
+    270,
+    575
+   ]
+  },
+  {
+   "file": "sway_2.png",
+   "group": "sway",
+   "hang": false,
+   "rect": [
+    3490,
+    0,
+    145,
+    140
+   ]
+  },
+  {
+   "file": "sway_3.png",
+   "group": "sway",
+   "hang": false,
+   "rect": [
+    3713,
+    0,
+    127,
+    209
+   ]
+  }
+ ],
+ "water_masks": [
+  {
+   "file": "ponds_mask.png",
+   "flow": false
+  }
+ ]
+}
