@@ -3,7 +3,7 @@
 Changes only when Mike has said yes. Status is on the board, decisions are in `DECISIONS.md`, how-tos are in `recipes/`. None of that is repeated here.
 
 ## What this is
-A short game for Christine starring Pip, the chibi creature she and Mike created. It follows the birthday game (Part 1, which is canon). Pip walks through hand-painted screens shown from fixed cameras, in the manner of FF7's backgrounds. Purely personal.
+A short game for Christine starring Pip, the chibi creature she and Mike created. It follows the birthday game (Part 1, which is canon). Pip walks through hand-painted screens, in the manner of FF7's backgrounds: a screen fits the view with a fixed camera, or is painted wider and scrolls as the camera follows Pip. Purely personal.
 
 ## Principles
 1. A short, complete game beats an ambitious unfinished one.
