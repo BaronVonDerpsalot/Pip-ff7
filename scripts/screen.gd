@@ -39,6 +39,7 @@ func _ready() -> void:
 	# The walk area and exits show in the editor for drawing, but not in the game (F toggles them).
 	_show_guides(false)
 	_add_camera()
+	_find_layers()
 	_arrive()
 	if camera != null:
 		_follow(true)
@@ -47,6 +48,48 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if camera != null:
 		_follow(false)
+	_order_layers()
+
+
+## Each character with the shapes that hide them (under Overhead), drawn back to front by how far down the
+## screen their feet are. A shape hiding Pip's legs behind a bank must not paint over the mole standing in front
+## of him; nor the mole's over Pip in front of the mole. Shapes that hide everyone ("Over" layers) stay on top.
+var _layers := {}  # character -> Array of the shapes that hide them
+
+
+func _find_layers() -> void:
+	var overhead := get_node_or_null("Overhead")
+	if overhead == null:
+		return
+	for shape in overhead.get_children():
+		if not shape is CanvasItem:
+			continue
+		var who: Node = pip
+		var target: Variant = shape.get("target")
+		if target is NodePath:
+			who = get_node_or_null(target)
+		elif shape.get("sort") == false:
+			(shape as CanvasItem).z_index = LAYERS_TOP
+			continue
+		if who != null:
+			if not _layers.has(who):
+				_layers[who] = []
+			_layers[who].append(shape)
+
+
+## z_index for shapes that hide everyone, above every character's pair of layers.
+const LAYERS_TOP := 100
+
+
+func _order_layers() -> void:
+	if _layers.size() < 2:
+		return  # one character: tree order already puts his shapes over him
+	var people: Array = _layers.keys().filter(func(p: Node) -> bool: return is_instance_valid(p))
+	people.sort_custom(func(a: Node2D, b: Node2D) -> bool: return a.global_position.y < b.global_position.y)
+	for rank in people.size():
+		(people[rank] as CanvasItem).z_index = rank * 2
+		for shape: CanvasItem in _layers[people[rank]]:
+			shape.z_index = rank * 2 + 1
 
 
 ## The painting's size in screen pixels (the Background's texture); 1920x1080 on a screen without one.
